@@ -130,7 +130,7 @@ export function visitAdventureWorld(worldId: AdventureWorldId): AdventureState {
 
 export function finishMainStory(): AdventureState {
   const state = loadAdventureState();
-  const completedWorlds = state.completedWorlds.includes("heart-of-ways")
+  const completedWorlds: AdventureWorldId[] = state.completedWorlds.includes("heart-of-ways")
     ? state.completedWorlds
     : [...state.completedWorlds, "heart-of-ways"];
 
