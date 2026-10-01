@@ -20,7 +20,7 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
     loadSpeechSettings(profile.id)
   );
 
-  const greeting = `Hey ${profile.displayName}! Ich komme mit. Wenn dir auf unserer Reise etwas fehlt oder du eine neue Idee hast, erzähl sie mir.`;
+  const greeting = `Hey ${profile.displayName}! Wenn dir auf unserer Reise etwas fehlt oder du eine Idee hast, erzähl sie mir. Mein Harness reagiert manchmal darauf.`;
 
   useEffect(() => {
     if (mode === "home" && settings.autoRead) {
@@ -89,7 +89,7 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
 
           <div className="dialog-actions">
             <button type="button" onClick={() => setMode("creator")}>
-              🎙️ Ich habe eine Idee
+              Ich habe eine große Idee
             </button>
             <button type="button" className="secondary-button" onClick={onClose}>
               Weiterreisen
