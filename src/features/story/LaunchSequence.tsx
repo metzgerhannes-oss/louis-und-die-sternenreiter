@@ -39,13 +39,13 @@ export function LaunchSequence({ onReturn }: LaunchSequenceProps) {
         <h2>{complete ? "Der erste Weg" : "Kurs: Cinder"}</h2>
         <p>
           {complete
-            ? "Philipp, Charly, Olli und Louis haben Hangar 3 gemeinsam verlassen. Vor ihnen liegt der erste stabile Sternenpfad."
+            ? "Philipp, Charly, Olli und Louis haben Hangar 3 gemeinsam verlassen. Vor ihnen liegt Cinder – die erste fremde Welt."
             : "Die Haupttriebwerke zünden. Hangar 3 wird kleiner und vor der Crew öffnet sich das Sternenfeld."}
         </p>
 
         {complete && (
           <button type="button" onClick={onReturn}>
-            Sternenkarte ansehen
+            Auf Cinder landen
           </button>
         )}
       </div>

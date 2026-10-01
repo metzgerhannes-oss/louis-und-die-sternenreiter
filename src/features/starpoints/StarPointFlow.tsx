@@ -6,6 +6,11 @@ import type {
   StarPointOption
 } from "../../domain/starPoints";
 import { gameEventBus } from "../../game/EventBus";
+import {
+  canSpendStardust,
+  loadCrewResources,
+  spendStardust
+} from "../../services/crewResources";
 import { completeStarPoint } from "../../services/starPointState";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
@@ -32,6 +37,11 @@ export function StarPointFlow({
   const [selectedOption, setSelectedOption] = useState<StarPointOption | null>(null);
   const [customIdea, setCustomIdea] = useState("");
   const [customInputMethod, setCustomInputMethod] = useState<"text" | "voice">("text");
+  const [, setResourceRevision] = useState(0);
+
+  const stardustCost = point.stardustCost ?? 0;
+  const resources = loadCrewResources();
+  const canAfford = canSpendStardust(stardustCost);
 
   const ideaText = useMemo(() => {
     if (selectedOption) {
@@ -63,7 +73,12 @@ export function StarPointFlow({
   };
 
   const build = () => {
-    if (!ideaText) return;
+    if (!ideaText || !canAfford) return;
+
+    if (stardustCost > 0 && !spendStardust(stardustCost)) {
+      setResourceRevision((value) => value + 1);
+      return;
+    }
 
     completeStarPoint(point, profile, {
       ideaText,
@@ -71,12 +86,14 @@ export function StarPointFlow({
       inputMethod: selectedOption ? "prepared" : customInputMethod
     });
 
+    gameEventBus.emit("resources:changed", undefined);
     gameEventBus.emit("starpoint:completed", {
       id: point.id,
       ideaText
     });
 
     setStage("done");
+    setResourceRevision((value) => value + 1);
   };
 
   return (
@@ -100,7 +117,11 @@ export function StarPointFlow({
             style={{ "--speaker-color": crewSpeakerColor[speaker] } as React.CSSProperties}
           >
             {speaker}
-            {speaker.toLowerCase() === profile.id ? " · aktiv" : speaker === "Louis" ? " · formt" : ""}
+            {speaker.toLowerCase() === profile.id
+              ? " · aktiv"
+              : speaker === "Louis"
+                ? " · formt"
+                : ""}
           </span>
         ))}
       </div>
@@ -110,6 +131,11 @@ export function StarPointFlow({
         <div>
           <strong>Sternenpunkt erkannt</strong>
           <p>{point.context}</p>
+          {stardustCost > 0 && (
+            <p className="stardust-cost">
+              Benötigt: ✦ {stardustCost} Sternenstaub · vorhanden: ✦ {resources.stardust}
+            </p>
+          )}
         </div>
       </div>
 
@@ -203,10 +229,22 @@ export function StarPointFlow({
             <p>
               Die Formung gilt nur für diesen Sternenpunkt. Bestehende Story und andere Orte bleiben unverändert.
             </p>
+            {stardustCost > 0 && (
+              <p>
+                Für diese größere Formung verbraucht Louis ✦ {stardustCost} Sternenstaub.
+              </p>
+            )}
           </div>
+
+          {!canAfford && (
+            <p className="creator-error">
+              Louis hat noch nicht genug Sternenstaub für diese Formung.
+            </p>
+          )}
+
           <div className="dialog-actions">
-            <button type="button" onClick={build}>
-              ✦ Ja, bauen
+            <button type="button" onClick={build} disabled={!canAfford}>
+              {stardustCost > 0 ? `✦ ${stardustCost} einsetzen & bauen` : "✦ Ja, bauen"}
             </button>
             <button
               type="button"

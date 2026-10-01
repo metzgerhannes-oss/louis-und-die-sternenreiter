@@ -106,23 +106,45 @@ Louis erkennt dort Sternenpunkte.
 
 ## Cinder
 
-Rostrote Wüstenwelt, Schrottcanyons, Maschinenreste und starke Space-Western-Atmosphäre.
+Rostrote Wüstenwelt mit Schrottcanyons, alten Windmaschinen und der Siedlung **Staubhafen**.
 
-Problem:
-Eine Siedlung bekommt zu wenig Wasser.
+Die Crew trifft die Mechanikerin **Rika**. Staubhafen rationiert Wasser, weil die alten Kondensatorfelder kaum noch Feuchtigkeit gewinnen.
 
-Sternenpunkt:
-Wie soll das Wasserproblem gelöst werden?
+Die Crew muss zuerst verstehen, was an der bestehenden Technik noch funktioniert. Erst danach erkennt Louis einen Sternenpunkt.
 
-Mögliche Richtungen:
-- Nebelfänger
-- unterirdische Leitung
-- mobiler Wassertank
-- Reparatur alter Kondensatoren
+### Sternenpunkt 1 – Wassergewinnung
+
+Stufe B, ohne Sternenstaub.
+
+Mögliche Lösungen:
+- Nachtnebel-Fänger
+- Tiefenkondensator
+- Windkühler
 - eigene Idee
 
-Belohnung:
-Antriebsupgrade und erste größere Menge Sternenstaub.
+Nach der ersten erfolgreichen Formung findet die Crew erstmals **Sternenstaub** und nimmt zwei Einheiten auf.
+
+### Sternenpunkt 2 – Der Weg des Wassers
+
+Das gewonnene Wasser liegt außerhalb der Siedlung. Eine größere, dauerhaft stabile Verbindung wird benötigt.
+
+Stufe C, Kosten: **1 Sternenstaub**.
+
+Mögliche Lösungen:
+- Hochbehälter und Gefälleleitung
+- unterirdische Druckleitung
+- Tankläufer
+- eigene Idee
+
+Nach der zweiten Formung erreicht Wasser wieder Staubhafen.
+
+Rika schenkt der Crew als Dank eine alte **Impulsspule** für die Seitentriebwerke. Das Upgrade stabilisiert den nächsten schwachen Sternenpfad.
+
+Auf der Karte erscheint:
+
+**Moss.**
+
+Cinder bleibt danach besuchbar und zeigt die vom Kind gewählten Lösungen dauerhaft.
 
 ## Moss
 

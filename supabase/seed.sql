@@ -132,3 +132,90 @@ set
   context_text = excluded.context_text,
   prepared_options = excluded.prepared_options,
   canon_constraints = excluded.canon_constraints;
+
+
+-- Chapter 2A / Cinder
+insert into public.world_locations (id, slug, name, kind, chapter_min, canon_data)
+values
+  (
+    '00000000-0000-0000-0000-000000001010',
+    'cinder',
+    'Cinder',
+    'planet',
+    2,
+    '{"biome":"rust_desert","settlement":"Staubhafen","next_route":"Moss"}'::jsonb
+  ),
+  (
+    '00000000-0000-0000-0000-000000001011',
+    'cinder-condensers',
+    'Alte Kondensatorfelder',
+    'site',
+    2,
+    '{"planet":"cinder","purpose":"water_capture"}'::jsonb
+  ),
+  (
+    '00000000-0000-0000-0000-000000001012',
+    'cinder-staubhafen',
+    'Staubhafen',
+    'settlement',
+    2,
+    '{"planet":"cinder","water_system":"damaged"}'::jsonb
+  )
+on conflict (id) do update
+set canon_data = excluded.canon_data;
+
+insert into public.star_points (
+  id, location_id, key, title, context_text, creation_tier_max,
+  allowed_categories, blocked_categories, material_requirements,
+  stardust_cost, canon_constraints, prepared_options, state
+)
+values
+  (
+    '00000000-0000-0000-0000-000000002010',
+    '00000000-0000-0000-0000-000000001011',
+    'cinder-moisture-capture',
+    'Wasser aus Cinders Luft',
+    'Die alten Kondensatoren brauchen eine neue Methode, um Cinders kalte Nachtluft besser zu nutzen.',
+    'B',
+    array['water','repair','climate','utility'],
+    array['settlement_destruction','story_skip'],
+    '{"salvage_mesh":1}'::jsonb,
+    0,
+    '{"must_produce_water":true,"preserve_cinder_biome":true}'::jsonb,
+    '[
+      {"id":"night-fog-sails","title":"Nachtnebel-Fänger"},
+      {"id":"deep-condenser","title":"Tiefenkondensator"},
+      {"id":"wind-cooler","title":"Windkühler"}
+    ]'::jsonb,
+    'active'
+  ),
+  (
+    '00000000-0000-0000-0000-000000002011',
+    '00000000-0000-0000-0000-000000001012',
+    'cinder-water-distribution',
+    'Der Weg des Wassers',
+    'Das gewonnene Wasser muss stabil durch den Canyon bis nach Staubhafen gelangen.',
+    'C',
+    array['water','infrastructure','transport','utility'],
+    array['settlement_destruction','story_skip'],
+    '{}'::jsonb,
+    1,
+    '{"must_reach_staubhafen":true,"preserve_canyon":true}'::jsonb,
+    '[
+      {"id":"gravity-tank","title":"Hochbehälter und Gefälleleitung"},
+      {"id":"pressure-line","title":"Unterirdische Druckleitung"},
+      {"id":"tank-crawler","title":"Tankläufer"}
+    ]'::jsonb,
+    'active'
+  )
+on conflict (key) do update
+set
+  title = excluded.title,
+  context_text = excluded.context_text,
+  stardust_cost = excluded.stardust_cost,
+  prepared_options = excluded.prepared_options,
+  canon_constraints = excluded.canon_constraints;
+
+insert into public.crew_resources (family_id, stardust, scrap_parts)
+values ('00000000-0000-0000-0000-000000000001', 0, 0)
+on conflict (family_id) do nothing;

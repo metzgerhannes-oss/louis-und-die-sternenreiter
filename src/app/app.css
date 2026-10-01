@@ -1062,3 +1062,26 @@ button:focus-visible {
 .launch-crew-badges span:nth-child(2) { border-color: rgba(214,111,143,.55); }
 .launch-crew-badges span:nth-child(3) { border-color: rgba(212,154,82,.55); }
 .launch-crew-badges span:nth-child(4) { border-color: rgba(210,163,95,.75); }
+
+
+.stardust-pill {
+  color: #f4d47d;
+  border-color: rgba(232, 194, 107, 0.42);
+  background: rgba(232, 194, 107, 0.08);
+}
+
+.stardust-cost {
+  color: #f1cd78 !important;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .profile-chip {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .control-bar .secondary-button + .secondary-button {
+    margin-left: 0;
+  }
+}

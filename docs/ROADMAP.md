@@ -20,7 +20,7 @@
 - **erste direkte Louis-Formung**
 - Werkbank durch Formung aktivieren
 
-## M2 – First Flight
+## M2 – First Flight ✅
 - Energiezelle
 - Kühlleitung
 - Navigationsmodul
@@ -30,12 +30,14 @@
 - erste Reise nach Cinder
 
 ## M3 – Cinder
-- erster vollständiger Planet
-- Wasserproblem
-- mehrere Sternenpunkte
-- Materialien + Sternenstaub
-- sichtbare Weltveränderung
-- Antriebsupgrade
+- ✅ spielbare Cinder-Szene / Staubhafen
+- ✅ Wasserproblem
+- ✅ zwei Sternenpunkte
+- ✅ erster Sternenstaub + Verbrauch bei Stufe C
+- ✅ sichtbare Weltveränderung
+- ✅ Antriebsupgrade / Moss-Pfad
+- offen: finale Art-Assets statt prozeduraler Platzhalter
+- offen: Cloud-Sync des Crew-Fortschritts
 
 ## M4 – Creator / Große Ideen
 - A/B/C/D-Klassifikation
