@@ -12,10 +12,13 @@ Diese Regeln sind verbindlich für Story, Design, Kinderideen und spätere Gener
 
 ## Konflikte
 
-- keine dedizierte realistische Gewalt als Gameplay-Kern
 - keine blutige oder explizite Gewaltdarstellung
-- Herausforderungen werden bevorzugt durch Entdecken, Ausweichen, Reparieren, Helfen, Verhandeln oder Rätsel gelöst
-- Action darf durch Flugmanöver, Stürme, Rennen, Rettungen und Zeitdruck entstehen
+- Kampf ist nicht die einzige oder zentrale Spielmechanik
+- Action darf durch Flugmanöver, Stürme, Rennen, Rettungen, Trümmer, Maschinen und Storykonflikte entstehen
+- technische Waffen und Bordwaffen sind erlaubt, wenn sie in den stilisierten Abenteuerkontext passen
+- die Schiffsbordwaffe ist fester Teil des Master-Designs
+- bevorzugte Einsatzfelder: Hindernisse, Asteroiden, Maschinen, Schutz-/Rettungssituationen und einzelne klar erzählte Konflikte
+- realistische moderne Militärästhetik wird vermieden
 
 ## Design
 
@@ -28,6 +31,8 @@ Technik soll sichtbar gebaut, repariert und individualisiert wirken:
 - Stoffelemente
 - Neon-Akzente
 - Gebrauchsspuren
+- modulare Bauteile
+- große sichtbare Antriebe
 
 ## Story-Canon
 
@@ -37,6 +42,17 @@ Technik soll sichtbar gebaut, repariert und individualisiert wirken:
 - das Finale beendet die Hauptgeschichte
 - Louis bleibt gemeinsamer Begleiter aller drei Profile
 - Charly, Philipp und Olli sind die fest vorgesehenen spielbaren Hauptprofile
+- unabhängig vom aktiven Profil sind Philipp, Charly, Olli und Louis immer die Kerncrew
+- die Profilwahl bestimmt die aktive Spielfigur, nicht die Reisegruppe
+
+## Visual-Canon
+
+- Charly ist im Ensemble leicht größer als Philipp und sichtbar größer als Olli
+- Charly ist nur subtil femininer gestaltet, ohne den gemeinsamen Abenteuerstil zu verlassen
+- Louis ist ein schlanker, goldbrauner bis brauner Golden Retriever mit deutlich sichtbarer Sci-Fi-Ausrüstung
+- Louis' Kopf-/Fellsilhouette bleibt natürlich, ohne künstliche Fellhörner oder doppelte Büschel
+- das Hauptschiff besitzt große Haupttriebwerke und eine klar sichtbare Bordkanone
+- Logo-/Wortmarkenstil entspricht dem freigegebenen Louis-Companion-Sheet
 
 ## Creator-Regeln
 
