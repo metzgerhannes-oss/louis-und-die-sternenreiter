@@ -152,10 +152,58 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
             </button>
           </div>
 
+          <div className="voice-preview-grid" aria-label="Crew-Stimmen testen">
+            <button
+              type="button"
+              onClick={() =>
+                browserSpeech.speak(
+                  "Bereit. Wir finden einen Weg. Und wenn es noch keinen gibt, bauen wir einen.",
+                  { rate: settings.rate, speaker: "Louis" }
+                )
+              }
+            >
+              Louis
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                browserSpeech.speak(
+                  "Ich prüfe zuerst, wo der sichere Weg entlangführt.",
+                  { rate: settings.rate, speaker: "Philipp" }
+                )
+              }
+            >
+              Philipp
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                browserSpeech.speak(
+                  "Wir schauen uns alles genau an und entscheiden dann gemeinsam.",
+                  { rate: settings.rate, speaker: "Charly" }
+                )
+              }
+            >
+              Charly
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                browserSpeech.speak(
+                  "Ich hab da schon eine Idee. Komm, wir probieren es aus!",
+                  { rate: settings.rate, speaker: "Olli" }
+                )
+              }
+            >
+              Olli
+            </button>
+          </div>
+
           <p className="voice-note">
-            Louis, Philipp, Charly, Olli und wichtige Figuren haben eigene
-            Stimmprofile. Welche konkrete deutsche Stimme verwendet wird,
-            hängt vom Gerät ab.
+            Die vier Crew-Stimmen werden auf diesem Gerät möglichst auf
+            unterschiedliche deutsche Systemstimmen verteilt. Falls das Gerät
+            nur eine deutsche Stimme bereitstellt, unterscheiden sie sich
+            zusätzlich deutlich in Tempo und Tonlage.
           </p>
 
           <div className="dialog-actions">
