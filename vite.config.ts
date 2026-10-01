@@ -2,7 +2,10 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
-export default defineConfig({
+const pagesBase = "/louis-und-die-sternenreiter/";
+
+export default defineConfig(({ command }) => ({
+  base: command === "build" ? pagesBase : "/",
   plugins: [
     react(),
     VitePWA({
@@ -15,10 +18,11 @@ export default defineConfig({
         theme_color: "#11131a",
         background_color: "#11131a",
         display: "standalone",
-        start_url: "/",
+        start_url: pagesBase,
+        scope: pagesBase,
         icons: [
           {
-            src: "/icon.svg",
+            src: `${pagesBase}icon.svg`,
             sizes: "any",
             type: "image/svg+xml",
             purpose: "any"
@@ -38,4 +42,4 @@ export default defineConfig({
   build: {
     sourcemap: true
   }
-});
+}));
