@@ -8,25 +8,24 @@ type GameHudProps = {
   location: string;
   stardust: number;
   level?: number;
+  onSwitchProfile?: () => void;
 };
 
 function CrewPortrait({
   name,
   id,
   active,
-  accent
+  accent,
+  onSwitchProfile
 }: {
   name: string;
   id: "philipp" | "charly" | "olli" | "louis";
   active: boolean;
   accent: string;
+  onSwitchProfile?: () => void;
 }) {
-  return (
-    <div
-      className={active ? "hud-crew-card active" : "hud-crew-card"}
-      style={{ "--crew-accent": accent } as React.CSSProperties}
-      aria-label={active ? `${name}, aktive Figur` : name}
-    >
+  const content = (
+    <>
       <div className="hud-portrait" aria-hidden="true">
         <img src={crewPortraits[id]} alt="" />
       </div>
@@ -34,6 +33,31 @@ function CrewPortrait({
       <span className="hud-crew-meter" aria-hidden="true">
         <span />
       </span>
+    </>
+  );
+
+  if (active && onSwitchProfile) {
+    return (
+      <button
+        type="button"
+        className="hud-crew-card active profile-switch"
+        style={{ "--crew-accent": accent } as React.CSSProperties}
+        aria-label={`${name}, aktive Figur wechseln`}
+        title="Aktive Figur wechseln"
+        onClick={onSwitchProfile}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className={active ? "hud-crew-card active" : "hud-crew-card"}
+      style={{ "--crew-accent": accent } as React.CSSProperties}
+      aria-label={active ? `${name}, aktive Figur` : name}
+    >
+      {content}
     </div>
   );
 }
@@ -43,7 +67,8 @@ export function GameHud({
   mission,
   location,
   stardust,
-  level = 3
+  level = 3,
+  onSwitchProfile
 }: GameHudProps) {
   const crew = [
     ...playerProfiles.map((profile) => ({
@@ -70,6 +95,7 @@ export function GameHud({
             name={member.name}
             accent={member.accent}
             active={member.active}
+            onSwitchProfile={member.active ? onSwitchProfile : undefined}
           />
         ))}
       </div>
