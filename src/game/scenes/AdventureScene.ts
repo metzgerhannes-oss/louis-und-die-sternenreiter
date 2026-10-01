@@ -18,6 +18,7 @@ import {
 import { isStarPointCompleted } from "../../services/starPointState";
 import { CrewMate } from "../entities/CrewMate";
 import { LouisCompanion } from "../entities/LouisCompanion";
+import { InteractionFocus } from "../effects/InteractionFocus";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
 import { gameEventBus, type MoveDirection } from "../EventBus";
 
@@ -42,6 +43,8 @@ export class AdventureScene extends Phaser.Scene {
   private player?: PlayerAvatar;
   private crewMates: CrewMate[] = [];
   private louis?: LouisCompanion;
+  private interactionFocus?: InteractionFocus;
+  private interactionColor = 0x65c8df;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: Record<"W" | "A" | "S" | "D", Phaser.Input.Keyboard.Key>;
   private interactKey?: Phaser.Input.Keyboard.Key;
@@ -74,6 +77,7 @@ export class AdventureScene extends Phaser.Scene {
 
     this.game.registry.set("activeWorld", worldId);
     this.drawWorld(world, profile);
+    this.interactionFocus = new InteractionFocus(this, this.interactionColor);
     this.setupKeyboard();
 
     const offMove = gameEventBus.on("input:move", ({ direction, active }) => {
@@ -136,6 +140,7 @@ export class AdventureScene extends Phaser.Scene {
       this.scale.off("resize", onResize);
       this.crewMates = [];
       this.starPoints = [];
+      this.interactionFocus = undefined;
       this.hotspots = [];
 
       for (const direction of Object.keys(this.moveState) as MoveDirection[]) {
@@ -161,7 +166,9 @@ export class AdventureScene extends Phaser.Scene {
       Number(keyboardDown || this.moveState.down) -
       Number(keyboardUp || this.moveState.up);
 
-    if (dx !== 0 || dy !== 0) {
+    const playerMoving = dx !== 0 || dy !== 0;
+
+    if (playerMoving) {
       const length = Math.hypot(dx, dy);
       dx /= length;
       dy /= length;
@@ -183,6 +190,8 @@ export class AdventureScene extends Phaser.Scene {
         )
       );
     }
+
+    this.player.updateAnimation(delta, playerMoving);
 
     for (const crewMate of this.crewMates) {
       crewMate.updateFollow(this.player.x, this.player.y, delta);
@@ -219,6 +228,7 @@ export class AdventureScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const state = loadAdventureState();
     const step = getAdventureStep(state, world.id);
+    this.interactionColor = world.theme.accent;
 
     this.cameras.main.setBackgroundColor("#070c12");
 
@@ -1228,6 +1238,7 @@ export class AdventureScene extends Phaser.Scene {
     const nearest = this.nearestInteraction();
     if (!nearest) {
       this.hint.setVisible(false);
+      this.interactionFocus?.hide();
       return;
     }
 
@@ -1238,12 +1249,32 @@ export class AdventureScene extends Phaser.Scene {
           ? "Louis zeigt einen Sternenpunkt"
           : nearest.hotspot.data.title;
 
+    const focusX =
+      nearest.kind === "louis"
+        ? this.louis?.x ?? 0
+        : nearest.kind === "starpoint"
+          ? nearest.starPoint.x
+          : nearest.hotspot.x;
+    const focusY =
+      nearest.kind === "louis"
+        ? (this.louis?.y ?? 0) - 46
+        : nearest.kind === "starpoint"
+          ? nearest.starPoint.y
+          : nearest.hotspot.y;
+    const focusColor =
+      nearest.kind === "starpoint" ? 0x9ceaf0 : this.interactionColor;
+
+    this.interactionFocus?.show(focusX, focusY, focusColor);
     this.hint.setText(`${label} · E / Aktion`).setVisible(true);
   }
 
   private openNearestInteraction(worldId: AdventureWorldId): void {
     const nearest = this.nearestInteraction();
     if (!nearest) return;
+
+    this.interactionFocus?.confirm(
+      nearest.kind === "starpoint" ? 0x9ceaf0 : this.interactionColor
+    );
 
     if (nearest.kind === "louis") {
       gameEventBus.emit("interaction:louis", undefined);
