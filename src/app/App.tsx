@@ -11,6 +11,7 @@ import {
   hangarGateStarPoint,
   type StarPointDefinition
 } from "../domain/starPoints";
+import { SoundDirector } from "../features/audio/SoundDirector";
 import { LouisDialog } from "../features/companion/LouisDialog";
 import { GameHud } from "../features/game/GameHud";
 import { TouchControls } from "../features/game/TouchControls";
@@ -316,7 +317,15 @@ export function App() {
     return (
       <>
         <ProfileSelect onSelect={selectProfile} />
-        <PwaStatus />
+        <SoundDirector
+        scene={scene}
+        worldId={adventureState.currentWorld}
+        dialogOpen={Boolean(dialog)}
+        launching={launching}
+        finale={finale}
+      />
+
+      <PwaStatus />
       </>
     );
   }
