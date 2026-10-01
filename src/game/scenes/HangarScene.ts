@@ -8,6 +8,7 @@ export class HangarScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.scale;
+    const titleSize = Math.round(Math.max(28, Math.min(64, width * 0.05)));
 
     this.add
       .rectangle(width / 2, height / 2, width, height, 0x151a24)
@@ -20,7 +21,7 @@ export class HangarScene extends Phaser.Scene {
     this.add
       .text(width * 0.08, height * 0.12, "HANGAR 3", {
         fontFamily: "system-ui, sans-serif",
-        fontSize: "clamp(28px, 5vw, 64px)",
+        fontSize: `${titleSize}px`,
         color: "#f2dfb2"
       })
       .setOrigin(0, 0.5);
@@ -34,7 +35,13 @@ export class HangarScene extends Phaser.Scene {
       .setOrigin(0, 0.5);
 
     const ship = this.add
-      .rectangle(width * 0.68, height * 0.47, Math.min(360, width * 0.3), Math.min(160, height * 0.2), 0x785b46)
+      .rectangle(
+        width * 0.68,
+        height * 0.47,
+        Math.min(360, width * 0.3),
+        Math.min(160, height * 0.2),
+        0x785b46
+      )
       .setStrokeStyle(3, 0xb88c65);
 
     this.add
@@ -46,7 +53,12 @@ export class HangarScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const louis = this.add
-      .circle(width * 0.27, height * 0.64, Math.max(34, Math.min(58, width * 0.045)), 0x4e8d91)
+      .circle(
+        width * 0.27,
+        height * 0.64,
+        Math.max(34, Math.min(58, width * 0.045)),
+        0x4e8d91
+      )
       .setStrokeStyle(3, 0xc7ece9)
       .setInteractive({ useHandCursor: true });
 
