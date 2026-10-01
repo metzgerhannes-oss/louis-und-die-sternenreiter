@@ -1,119 +1,76 @@
 import Phaser from "phaser";
 import type { PlayerProfile } from "../../domain/profiles";
-import { getCrewPortraitTexture } from "../assets/crewTextures";
+import { getCrewSpriteTexture } from "../assets/crewTextures";
+
+function spriteSize(profile: PlayerProfile): { width: number; height: number } {
+  if (profile.id === "charly") {
+    return { width: 58, height: 108 };
+  }
+
+  if (profile.id === "olli") {
+    return { width: 47, height: 91 };
+  }
+
+  return { width: 51, height: 99 };
+}
 
 export class PlayerAvatar {
   readonly container: Phaser.GameObjects.Container;
   readonly profile: PlayerProfile;
-  private readonly portrait: Phaser.GameObjects.Image;
+  private readonly sprite: Phaser.GameObjects.Image;
+  private readonly glow: Phaser.GameObjects.Image;
+  private lastMoving = false;
 
   constructor(scene: Phaser.Scene, profile: PlayerProfile, x: number, y: number) {
     this.profile = profile;
 
+    const size = spriteSize(profile);
+
     const shadow = scene.add
-      .ellipse(0, 29, 43, 13, 0x000000, 0.32)
+      .ellipse(0, 3, size.width * 0.78, 13, 0x000000, 0.34)
       .setScale(1.08, 1);
 
-    const backPack = scene.add
-      .rectangle(-12, -2, 17, 35, 0x222b33)
-      .setStrokeStyle(2, profile.accent, 0.65)
-      .setAngle(-4);
+    this.glow = scene.add
+      .image(0, -size.height * 0.5 + 2, getCrewSpriteTexture(profile.id))
+      .setDisplaySize(size.width * 1.09, size.height * 1.07)
+      .setTint(profile.accent)
+      .setAlpha(0.18);
 
-    const leftLeg = scene.add
-      .rectangle(-8, 20, 11, 28, 0x313944)
-      .setStrokeStyle(1, 0x6c7074);
-    const rightLeg = scene.add
-      .rectangle(8, 20, 11, 28, 0x313944)
-      .setStrokeStyle(1, 0x6c7074);
+    this.sprite = scene.add
+      .image(0, -size.height * 0.5 + 2, getCrewSpriteTexture(profile.id))
+      .setDisplaySize(size.width, size.height);
 
-    const leftBoot = scene.add
-      .rectangle(-9, 35, 16, 9, 0x181d23)
-      .setStrokeStyle(1, profile.accent, 0.7)
-      .setAngle(-4);
-    const rightBoot = scene.add
-      .rectangle(9, 35, 16, 9, 0x181d23)
-      .setStrokeStyle(1, profile.accent, 0.7)
-      .setAngle(4);
+    const bootLight = scene.add
+      .ellipse(0, 0, size.width * 0.72, 6, profile.accent, 0.2)
+      .setBlendMode(Phaser.BlendModes.ADD);
 
-    const bodyWidth = profile.id === "charly" ? 32 : 31;
-    const bodyHeight = profile.id === "charly" ? 48 : 45;
-    const body = scene.add
-      .rectangle(0, 0, bodyWidth, bodyHeight, profile.suit)
-      .setStrokeStyle(2, 0xb9b2a6);
-
-    const leftPanel = scene.add
-      .rectangle(-10, 2, 7, 30, profile.accent, 0.7)
-      .setAngle(-4);
-    const rightPanel = scene.add
-      .rectangle(10, 4, 5, 26, 0x202730, 0.9)
-      .setAngle(4);
-
-    const belt = scene.add
-      .rectangle(0, 15, 35, 5, 0x1b2026)
-      .setStrokeStyle(1, 0x9d7c4a);
-    const buckle = scene.add
-      .rectangle(0, 15, 7, 7, 0xc49043)
-      .setStrokeStyle(1, 0xf0c16b);
-
-    const scarf = scene.add
-      .rectangle(0, -15, 36, 8, profile.accent)
-      .setAngle(-5);
-
-    const harnessLeft = scene.add
-      .line(0, 0, -12, -14, 4, 13, 0x222830, 1)
-      .setLineWidth(3);
-    const harnessRight = scene.add
-      .line(0, 0, 12, -14, -4, 13, 0x222830, 1)
-      .setLineWidth(3);
-
-    const shoulderLight = scene.add
-      .circle(11, -7, 3.3, profile.accent, 1)
-      .setStrokeStyle(1, 0xece3d0, 0.65);
-
-    const headBack = scene.add
-      .circle(0, -33, 20, 0x111820)
-      .setStrokeStyle(3, profile.accent, 0.9);
-
-    const textureKey = getCrewPortraitTexture(profile.id);
-    this.portrait = scene.add
-      .image(0, -33, textureKey)
-      .setDisplaySize(36, 36);
-
-    const comms = scene.add
-      .rectangle(18, -30, 4, 12, 0x303943)
-      .setStrokeStyle(1, profile.accent, 0.8);
-
-    const chestBadge = scene.add
-      .circle(8, 5, 4, profile.accent)
-      .setStrokeStyle(1, 0xf4e8d0, 0.7);
+    const badge = scene.add
+      .circle(size.width * 0.38, -size.height * 0.64, 4, profile.accent, 0.95)
+      .setStrokeStyle(1, 0xf5ead8, 0.75);
 
     this.container = scene.add.container(x, y, [
       shadow,
-      backPack,
-      leftLeg,
-      rightLeg,
-      leftBoot,
-      rightBoot,
-      body,
-      leftPanel,
-      rightPanel,
-      harnessLeft,
-      harnessRight,
-      belt,
-      buckle,
-      scarf,
-      shoulderLight,
-      headBack,
-      this.portrait,
-      comms,
-      chestBadge
+      bootLight,
+      this.glow,
+      this.sprite,
+      badge
     ]);
 
     this.container.setDepth(y);
+
+    scene.tweens.add({
+      targets: this.glow,
+      alpha: { from: 0.1, to: 0.22 },
+      duration: 1250 + profile.id.length * 80,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut"
+    });
   }
 
   setPosition(x: number, y: number): void {
     const previousX = this.container.x;
+    const previousY = this.container.y;
 
     this.container.setPosition(x, y);
     this.container.setDepth(y);
@@ -127,13 +84,28 @@ export class PlayerAvatar {
     this.container.setScale(perspectiveScale * this.profile.scaleFactor);
 
     const dx = x - previousX;
+    const dy = y - previousY;
+    const moving = Math.abs(dx) > 0.2 || Math.abs(dy) > 0.2;
+
     if (Math.abs(dx) > 0.2) {
-      const facing = dx < 0 ? -1 : 1;
-      this.portrait.setScale(facing, 1);
-      this.container.setAngle(Phaser.Math.Clamp(dx * 0.16, -2.5, 2.5));
-    } else {
-      this.container.setAngle(Phaser.Math.Linear(this.container.angle, 0, 0.18));
+      const facingLeft = dx < 0;
+      this.sprite.setFlipX(facingLeft);
+      this.glow.setFlipX(facingLeft);
     }
+
+    if (moving) {
+      this.container.setAngle(Phaser.Math.Clamp(dx * 0.12, -2.2, 2.2));
+      if (!this.lastMoving) {
+        this.sprite.y -= 1.5;
+      }
+    } else {
+      this.container.setAngle(Phaser.Math.Linear(this.container.angle, 0, 0.2));
+      if (this.lastMoving) {
+        this.sprite.y += 1.5;
+      }
+    }
+
+    this.lastMoving = moving;
   }
 
   get x(): number {
