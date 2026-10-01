@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
 import type { PlayerProfile } from "../../domain/profiles";
+import {
+  loadAudioSettings,
+  saveAudioSettings,
+  type AudioSettings
+} from "../../services/audio/audioSettings";
+import { gameAudio } from "../../services/audio/gameAudio";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import {
   loadSpeechSettings,
@@ -19,6 +25,9 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
   const [settings, setSettings] = useState<SpeechSettings>(() =>
     loadSpeechSettings(profile.id)
   );
+  const [audioSettings, setAudioSettings] = useState<AudioSettings>(() =>
+    loadAudioSettings()
+  );
 
   const greeting = `Hey ${profile.displayName}! Wenn dir auf unserer Reise etwas fehlt oder du eine Idee hast, erzähl sie mir. Mein Harness reagiert manchmal darauf.`;
 
@@ -33,6 +42,15 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
   const updateSettings = (next: SpeechSettings) => {
     setSettings(next);
     saveSpeechSettings(profile.id, next);
+  };
+
+  const updateAudioSettings = (next: AudioSettings) => {
+    setAudioSettings(next);
+    saveAudioSettings(next);
+    gameAudio.configure(next);
+    if (next.enabled) {
+      void gameAudio.unlock();
+    }
   };
 
   return (
@@ -86,6 +104,59 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
               </select>
             </label>
           </div>
+
+          <div className="audio-settings" aria-label="Sound-Einstellungen">
+            <label className="audio-toggle">
+              <input
+                type="checkbox"
+                checked={audioSettings.enabled}
+                onChange={(event) =>
+                  updateAudioSettings({
+                    ...audioSettings,
+                    enabled: event.target.checked
+                  })
+                }
+              />
+              Soundkulisse &amp; Effekte
+            </label>
+
+            <label className="audio-volume">
+              Gesamtlautstärke
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={audioSettings.masterVolume}
+                disabled={!audioSettings.enabled}
+                onChange={(event) =>
+                  updateAudioSettings({
+                    ...audioSettings,
+                    masterVolume: Number(event.target.value)
+                  })
+                }
+              />
+            </label>
+
+            <button
+              type="button"
+              className="voice-preview-button"
+              onClick={() =>
+                browserSpeech.speak(
+                  "Bereit. Wir finden einen Weg. Und wenn es noch keinen gibt, bauen wir einen.",
+                  { rate: settings.rate, speaker: "Louis" }
+                )
+              }
+            >
+              Louis-Stimme testen
+            </button>
+          </div>
+
+          <p className="voice-note">
+            Louis, Philipp, Charly, Olli und wichtige Figuren haben eigene
+            Stimmprofile. Welche konkrete deutsche Stimme verwendet wird,
+            hängt vom Gerät ab.
+          </p>
 
           <div className="dialog-actions">
             <button type="button" onClick={() => setMode("creator")}>
