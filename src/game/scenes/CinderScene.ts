@@ -14,6 +14,7 @@ import { isStarPointCompleted } from "../../services/starPointState";
 import { CrewMate } from "../entities/CrewMate";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
 import { LouisCompanion } from "../entities/LouisCompanion";
+import { AmbientMotionLayer } from "../effects/AmbientMotionLayer";
 import { InteractionFocus } from "../effects/InteractionFocus";
 import { gameEventBus, type MoveDirection } from "../EventBus";
 import {
@@ -43,6 +44,7 @@ export class CinderScene extends Phaser.Scene {
   private crewMates: CrewMate[] = [];
   private louis?: LouisCompanion;
   private interactionFocus?: InteractionFocus;
+  private atmosphere?: AmbientMotionLayer;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: Record<"W" | "A" | "S" | "D", Phaser.Input.Keyboard.Key>;
   private interactKey?: Phaser.Input.Keyboard.Key;
@@ -67,8 +69,10 @@ export class CinderScene extends Phaser.Scene {
       playerProfiles[0];
 
     this.drawCinder(profile);
+    this.atmosphere = new AmbientMotionLayer(this, "cinder");
     this.interactionFocus = new InteractionFocus(this, 0xf0a05a);
     this.setupKeyboard();
+    this.cameras.main.fadeIn(320, 7, 12, 18);
 
     const offMove = gameEventBus.on("input:move", ({ direction, active }) => {
       this.moveState[direction] = active;
@@ -134,6 +138,7 @@ export class CinderScene extends Phaser.Scene {
       this.crewMates = [];
       this.starPoints = [];
       this.interactionFocus = undefined;
+      this.atmosphere = undefined;
 
       for (const direction of Object.keys(this.moveState) as MoveDirection[]) {
         this.moveState[direction] = false;
@@ -191,6 +196,7 @@ export class CinderScene extends Phaser.Scene {
     }
 
     this.louis.updateFollow(this.player.x, this.player.y, delta);
+    this.atmosphere?.update(this.player.x, this.player.y, delta);
     this.updateInteractionHint();
 
     if (this.scannerKey && Phaser.Input.Keyboard.JustDown(this.scannerKey)) {
