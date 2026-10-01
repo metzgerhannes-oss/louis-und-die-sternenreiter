@@ -1,6 +1,6 @@
 # Avatar System V1
 
-Status: **Designvorgabe**
+Status: **freigegebene Designbasis**
 
 ## 1. Ziel
 
@@ -13,7 +13,17 @@ Charly, Philipp und Olli müssen:
 
 Louis verwendet dieselbe Illustrationssprache, bleibt aber eine eigene Companion-Familie.
 
-## 2. Stil
+## 2. Ensemble-Regel
+
+Die Kerncrew besteht immer aus:
+- Philipp
+- Charly
+- Olli
+- Louis
+
+Die Profilwahl ändert nur die aktive Spielfigur. Zentrale Gruppenbilder, Storysequenzen und Crew-Darstellungen zeigen grundsätzlich die vollständige Crew.
+
+## 3. Stil
 
 ### Ziel
 Hochwertige 2.5D-Illustration mit klarer Silhouette.
@@ -23,6 +33,7 @@ Mischung aus:
 - leicht stilisierten Proportionen
 - Space-Western-Kleidung
 - Garage-Punk-Details
+- warmer, leicht filmischer Beleuchtung
 
 ### Nicht verwenden
 - Pixelart
@@ -32,7 +43,7 @@ Mischung aus:
 - austauschbare Cartoon-Avatare
 - unterschiedliche Renderstile pro Kind
 
-## 3. Proportion
+## 4. Proportion
 
 Kinderfiguren:
 - ca. 4,5–5 Köpfe hoch
@@ -40,67 +51,56 @@ Kinderfiguren:
 - Kopf groß genug für Wiedererkennung
 - keine Babyproportionen
 
-## 4. Gemeinsame Basis
+Größenrelation:
+- Charly leicht größer als Philipp
+- Olli sichtbar jünger / kleiner
+
+## 5. Gemeinsame Basis
 
 Alle drei:
 - Sternenreiter-Jacke oder Overall
 - Halstuch/Schal als markantes Element
 - robuste Boots
-- kleiner technischer Gürtel
+- technischer Gürtel / Harness
 - persönliches Abzeichen
 - sichtbare Reparatur-/Patch-Details
 
-Keine Waffe als Standardausstattung.
-
-## 5. Individuelle Identität
+## 6. Individuelle Identität
 
 ### Charly
 - Akzent: Berry / warmes Magenta
-- Silhouette etwas dynamischer
+- leicht größere Silhouette als Philipp
+- subtil femininere Schnittführung / Haltung
+- weichere Gesichtszüge
 - eigener Patch
 - Frisur und Gesichtsform klar individuell
-- optionale Accessoires später
+- robust und abenteuerlich, nicht übertrieben „mädchenhaft“
 
 ### Philipp
 - Akzent: Space Blue / Türkis
 - technischere Details
+- sportlich-schlanke Silhouette
 - eigener Patch
 - klar andere Frisur/Silhouette als Charly und Olli
 
 ### Olli
 - Akzent: Amber / warmes Orange
-- robuste, freundliche Silhouette
+- sichtbar jüngere / kleinere Silhouette
+- robuste, freundliche Erscheinung
 - eigener Patch
-- ebenfalls eigenständige Kopf-/Frisurform
+- klar eigene Kopf-/Frisurform
 
-Die Namen werden nicht über stereotype Kleidung oder Farben erklärt.
+## 7. Avatar-Ausgaben
 
-## 6. Avatar-Ausgaben
+Jeder freigegebene Avatar benötigt:
+- Master Full Body
+- Portrait
+- In-Game Sprite
+- Icon
 
-Jeder freigegebene Avatar benötigt exakt diese Varianten:
+Alle Runtime-Varianten werden aus dem Master-Look abgeleitet.
 
-### A. Master Full Body
-- transparente Fläche
-- komplette Figur
-- 3/4-Frontansicht
-- neutrale Haltung
-- dient als visuelle Referenz
-
-### B. Portrait
-- Kopf + Oberkörper
-- Profilwahl
-- Dialog-/Journalansichten
-
-### C. In-Game Sprite
-- vereinfachte, aber erkennbare Spielfigur
-- gleiche Kleidung/Farben
-- keine neue Interpretation
-
-### D. Icon
-- Kopf/Emblem
-- kleine UI-Flächen
-
-## 7. In-Game-Animation V1
+## 8. In-Game-Animation V1
 
 V1 benötigt:
 - idle front
@@ -121,13 +121,14 @@ Später:
 - celebrate
 - sit
 - ship-console
+- companion interaction
 
-## 8. Assetgrößen
+## 9. Assetgrößen
 
 ### Referenz/Master
 - Portrait-Master: 1024 × 1024 px
 - Full-Body-Master: 1536 × 2048 px
-- transparent PNG/WebP
+- transparente PNG/WebP
 
 ### Runtime
 - Portrait: 512 × 512 WebP
@@ -137,20 +138,6 @@ Später:
 
 Mastergrafik nie direkt im Game laden.
 
-## 9. Dateinamen
-
-Beispiel:
-
-```
-charly_master_full_v1.png
-charly_portrait_v1.webp
-charly_icon_v1.webp
-charly_sprite_v1.webp
-charly_sprite_v1.json
-```
-
-Analog für Philipp und Olli.
-
 ## 10. Louis
 
 Louis erhält:
@@ -159,24 +146,32 @@ Louis erhält:
 - Icon
 - Sprite/Animation
 - Sprach-/Mikrofon-Statusreaktionen
+- Travel-Gear-Variante
+
+Verbindliches finales Design:
+- schlanker, athletischer Golden Retriever
+- Fell goldbraun bis warm braun
+- natürliche Retriever-Kopfform
+- keine künstlichen Fellhörner / doppelten Büschel auf Stirn oder Krone
+- markantes Tech-Halsband / Kommunikationsmodul
+- modularer Explorer-Harness
+- orange/amber leuchtende Statusmodule
+- Planeten-/Sternenreiteremblem
+- Reisecontainer, Sensorik und Beacon möglich
+- sichtbar spaciger und technischer als ein normaler Haushund
+- trotzdem warm, freundlich und eindeutig Haustier
 
 Louis muss auch ohne Namensschild sofort erkennbar sein.
-
-Finales Design:
-- Haustier-/Aliencharakter
-- warme, sympathische Form
-- markantes Halsband/Kommunikationsmodul
-- keine generische Erd-Katze/Hund-Kopie
-- sichtbare Reaktion auf Zuhören, Sprechen, Freude, Nachdenken
 
 ## 11. Freigabeprozess
 
 1. Master-Referenz erstellen
 2. Charly/Philipp/Olli nebeneinander vergleichen
-3. Louis daneben prüfen
-4. Stil-/Licht-/Detailgrad freigeben
-5. Referenzbild unter `docs/design/reference/avatars/`
-6. Eintrag in `docs/design/reference/ASSET_MANIFEST.md`
-7. erst danach Runtime-Ableitungen erstellen
+3. Größenrelation prüfen
+4. Louis daneben prüfen
+5. Stil-/Licht-/Detailgrad freigeben
+6. Referenz dokumentieren
+7. Eintrag im Asset Manifest auf approved
+8. erst danach Runtime-Ableitungen erstellen
 
 Keine Runtime-Variante darf stärker vom Master abweichen als technisch nötig.
