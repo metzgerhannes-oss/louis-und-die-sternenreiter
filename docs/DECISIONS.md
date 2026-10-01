@@ -95,3 +95,27 @@ Die Crew findet auf Cinder erstmals Sternenstaub. Der erste Cinder-Sternenpunkt 
 
 ## D-20261001-032 – Cinder bleibt verändert
 Die gewählte Wasserlösung bleibt nach Abschluss sichtbar. Cinder bleibt besuchbar; das Antriebsupgrade öffnet den nächsten Pfad nach Moss.
+
+## D-20261001-033 – Moss
+Moss ist die zweite fremde Welt. Die Crew rettet Forschungsroboter M-4 und erhält das Scanner-Modul. Ein Sumpf-Sternenpunkt und eine Stufe-C-Bergung lehren, dass Louis Umwelt und bestehende Strukturen schützen muss.
+
+## D-20261001-034 – Junction 12
+Junction 12 ist die erste dicht belebte Station. Bram verwendet dort erstmals den Begriff „Sternenformer“ für Louis. Der reparierte Signalmast öffnet den unkartierten Pfad.
+
+## D-20261001-035 – Leerer Pfad bleibt begrenzt
+Am leeren Pfad darf Louis nur eine provisorische lokale Probe formen. Eine vollständige neue Welt darf niemals automatisch aus einer freien Kinderidee zu Canon werden; sie bleibt eine große Idee im Ideenbuch bis zur Freigabe.
+
+## D-20261001-036 – Kapitel 4 ist die Weltregel-Lektion
+Die Störung durch überlagerte Formungen wird nicht durch einen Gegner verursacht. Die Crew entwickelt mit Louis Regeln für Weltgrenzen und Sternenpfade.
+
+## D-20261001-037 – Verlorene Welten
+Glasküste und Wolkenozean liefern Navigationsfragmente. Der Schrottring enthält das Sternenformer-Archiv und enthüllt Louis als STERNENFORMER 07.
+
+## D-20261001-038 – Finale ohne Boss
+Das Herz der Wege ist ein System-/Ordnungsfinale. Die Crew stabilisiert Routen, Energie und die Leitlinie für künftige Formungen. Es gibt keinen klassischen Endgegner.
+
+## D-20261001-039 – Freie Reisen nach echtem Ende
+Nach dem Finale ist die Hauptgeschichte abgeschlossen. Freie Reisen schaltet alle besuchten Hauptwelten frei, ohne den Storyfortschritt zurückzusetzen.
+
+## D-20261001-040 – Datengetriebener Rest der Hauptstory
+Moss bis Herz der Wege verwenden eine gemeinsame AdventureScene und datengetriebene Story-/Sternenpunktdefinitionen. Neue Hauptwelten sollen nicht durch Kopieren kompletter Szenen implementiert werden.

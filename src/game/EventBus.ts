@@ -1,9 +1,11 @@
+import type { AdventureWorldId } from "../domain/adventure";
 import type { StarPointDefinition } from "../domain/starPoints";
 
 export type MoveDirection = "up" | "down" | "left" | "right";
 
 export type HotspotInteraction = {
-  area?: "hangar" | "cinder";
+  area?: "hangar" | "cinder" | "adventure";
+  worldId?: AdventureWorldId;
   id: string;
   title: string;
   text: string;
@@ -11,13 +13,15 @@ export type HotspotInteraction = {
 
 type GameEventMap = {
   "scene:ready": { sceneKey: string };
-  "scene:goto": { sceneKey: "HangarScene" | "CinderScene" };
+  "scene:goto": { sceneKey: "HangarScene" | "CinderScene" | "AdventureScene" };
+  "world:goto": { worldId: AdventureWorldId };
   "interaction:louis": undefined;
   "interaction:hotspot": HotspotInteraction;
   "interaction:starpoint": StarPointDefinition;
   "starpoint:completed": { id: string; ideaText: string };
   "chapter1:state-changed": undefined;
   "chapter2:state-changed": undefined;
+  "adventure:state-changed": undefined;
   "resources:changed": undefined;
   "ui:louis:ping": undefined;
   "input:move": { direction: MoveDirection; active: boolean };
