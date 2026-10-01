@@ -358,3 +358,23 @@ Danach:
 - freigegebene neue Inhalte entdecken
 
 Die Geschichte ist abgeschlossen. Die Kreativität bleibt offen.
+
+
+---
+
+## Spielbarer Canon-Pfad
+
+Der verbindliche spielbare Pfad lautet:
+
+**Hangar 3 → Cinder → Moss → Junction 12 → Leerer Pfad → Störungsknoten → Glasküste → Wolkenozean → Schrottring → Herz der Wege → Freie Reisen**
+
+Die detaillierten Storyboards liegen unter:
+- `docs/story/CHAPTER_1_STORYBOARD.md`
+- `docs/story/CHAPTER_2A_CINDER_STORYBOARD.md`
+- `docs/story/CHAPTERS_2B_TO_6_STORYBOARD.md`
+
+Alle Hauptstorybeats enthalten die vollständige Kerncrew Philipp, Charly, Olli und Louis. Die aktive Profilwahl verändert nur den Fokus und die direkte Steuerung.
+
+Am leeren Pfad gilt verbindlich: Eine freie Kinderidee kann eine kleine provisorische Probe erzeugen. Eine vollständige neue Welt wird dadurch nicht automatisch Canon und bleibt bis zur Prüfung im Ideenbuch.
+
+Nach dem Herz der Wege endet die Hauptgeschichte sichtbar und dauerhaft. **Freie Reisen** wird freigeschaltet; die Geschichte wird nicht zurückgesetzt.
