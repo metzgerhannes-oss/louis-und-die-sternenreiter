@@ -376,6 +376,8 @@ export function App() {
       <section className="game-stage" aria-label="Spielbereich">
         {finale ? (
           <FinaleSequence
+            autoRead={speechSettings.autoRead}
+            speechRate={speechSettings.rate}
             onFinish={() => {
               finishMainStory();
               setFinale(false);
