@@ -1,5 +1,9 @@
 import type { PlayerProfile } from "../domain/profiles";
-import type { CreatorAnswers, StructuredIdea } from "../features/creator/creatorModel";
+import {
+  creatorQuestions,
+  type CreatorAnswers,
+  type StructuredIdea
+} from "../features/creator/creatorModel";
 import { supabase } from "./supabase";
 
 export type IdeaInputMethod = "text" | "voice";
@@ -18,10 +22,23 @@ export type IdeaSaveResult = {
 
 const LOCAL_KEY = "sternenreiter.pending-ideas";
 
+function localId(): string {
+  return globalThis.crypto?.randomUUID?.() ?? `local-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 function saveLocal(profile: PlayerProfile, draft: IdeaDraft): IdeaSaveResult {
-  const id = crypto.randomUUID();
+  const id = localId();
   const existingRaw = window.localStorage.getItem(LOCAL_KEY);
-  const existing = existingRaw ? (JSON.parse(existingRaw) as unknown[]) : [];
+  let existing: unknown[] = [];
+
+  if (existingRaw) {
+    try {
+      const parsed = JSON.parse(existingRaw);
+      existing = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      existing = [];
+    }
+  }
 
   existing.push({
     id,
@@ -59,12 +76,14 @@ export async function saveIdea(
     throw new Error(error.message);
   }
 
+  const questionText = new Map(creatorQuestions.map((question) => [question.key, question.prompt]));
+
   const answers = Object.entries(draft.answers)
     .filter(([, value]) => Boolean(value?.trim()))
     .map(([key, value]) => ({
       idea_id: idea.id,
       question_key: key,
-      question_text: key,
+      question_text: questionText.get(key as keyof CreatorAnswers) ?? key,
       answer_text: value
     }));
 
