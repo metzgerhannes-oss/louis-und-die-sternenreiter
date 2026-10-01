@@ -1035,3 +1035,30 @@ button:focus-visible {
     margin-top: -11rem;
   }
 }
+
+
+.launch-crew-badges {
+  position: absolute;
+  z-index: 5;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 0.45rem;
+}
+
+.launch-crew-badges span {
+  padding: 0.38rem 0.55rem;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius-pill);
+  background: rgba(10,14,22,.7);
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.launch-crew-badges span:nth-child(1) { border-color: rgba(84,165,197,.55); }
+.launch-crew-badges span:nth-child(2) { border-color: rgba(214,111,143,.55); }
+.launch-crew-badges span:nth-child(3) { border-color: rgba(212,154,82,.55); }
+.launch-crew-badges span:nth-child(4) { border-color: rgba(210,163,95,.75); }
