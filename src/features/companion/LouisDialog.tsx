@@ -24,7 +24,7 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
 
   useEffect(() => {
     if (mode === "home" && settings.autoRead) {
-      browserSpeech.speak(greeting, { rate: settings.rate });
+      browserSpeech.speak(greeting, { rate: settings.rate, speaker: "Louis" });
     }
 
     return () => browserSpeech.stop();
@@ -57,7 +57,7 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
           <h2 id="louis-dialog-title">Was gibt’s?</h2>
           <div className="louis-prompt">
             <p>{greeting}</p>
-            <ReadAloudButton text={greeting} rate={settings.rate} />
+            <ReadAloudButton text={greeting} rate={settings.rate} speaker="Louis" />
           </div>
 
           <div className="speech-settings" aria-label="Vorlese-Einstellungen">
