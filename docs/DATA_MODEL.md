@@ -6,7 +6,7 @@
 Eltern-/Familiencontainer.
 
 ### player_profiles
-Spielprofile für Charly, Philipp und Olli sowie spätere Profile.
+Spielprofile für Charly, Philipp und Olli.
 
 Wichtige Felder:
 - id
@@ -21,16 +21,16 @@ Wichtige Felder:
 ## Welt / Canon
 
 ### world_rules
-Maschinenlesbare Regeln mit Scope, Kategorie und Schweregrad.
+Maschinenlesbare Weltregeln.
 
 ### world_locations
-Planeten, Stationen und Unterorte.
+Planeten, Stationen, Hangarbereiche und Unterorte.
 
 ### world_characters
 NPCs und wiederkehrende Figuren.
 
 ### story_chapters
-Kapitel 1–6 inklusive Freischaltbedingungen.
+Kapitel 1–6.
 
 ### quests
 Missionen.
@@ -41,45 +41,122 @@ Einzelne Missionsschritte.
 ### canon_revisions
 Versionierte offizielle Weltänderungen.
 
+## Louis / Sternenformer
+
+### star_points
+Definierte Stellen, an denen Louis Veränderungen vornehmen darf.
+
+Felder:
+- id
+- location_id
+- key
+- title
+- context_text
+- creation_tier_max
+- allowed_categories
+- blocked_categories
+- material_requirements
+- stardust_cost
+- canon_constraints
+- prepared_options
+- state
+
+### creation_blueprints
+Vorbereitete, wiederverwendbare Baulösungen.
+
+Felder:
+- id
+- key
+- category
+- title
+- description
+- creation_tier
+- required_materials
+- stardust_cost
+- runtime_payload
+
+### creations
+Tatsächlich gebaute / geformte Änderungen.
+
+Felder:
+- id
+- star_point_id
+- profile_id
+- source_idea_id
+- blueprint_id
+- creation_tier
+- title
+- configuration
+- status
+- created_at
+
+### companion_state
+Louis' Fortschritt.
+
+Felder:
+- unlocked_creation_tier
+- harness_level
+- known_world_rules
+- story_memory
+- cosmetic_state
+
+## Ressourcen
+
+### materials
+Materialkatalog.
+
+### player_materials
+Gesammelte Materialien pro Profil/Familie nach späterer Progressionsentscheidung.
+
+### stardust_balance
+Verfügbare Sternenenergie / Sternenstaub.
+
+Sternenstaub ist reine Spielressource ohne Echtgeldbezug.
+
 ## Progression
 
 ### player_progress
 Kapitel, XP, Freischaltungen.
 
 ### player_quests
-Queststatus pro Profil.
+Queststatus.
 
 ### travel_log
 Besuchte Orte und Reiseereignisse.
 
 ### ships
-Schiffzustand pro Profil bzw. nach späterer Produktentscheidung als gemeinsames oder persönliches Schiff.
+Gemeinsames Crew-Schiff mit Ausbauzustand.
 
 ### ship_modules
-Katalog möglicher Module.
+Modulkatalog.
 
 ### player_ship_modules
 Installierte Module.
 
 ### hangars
-Ausbauzustand des Hangars.
+Hangar-Ausbauzustand.
 
-### companions
-Louis-Zustand/optionale kosmetische Progression.
-
-## Creator
+## Creator / große Ideen
 
 ### ideas
-Originalidee, Status, Typ, Profilbezug.
+Originalidee, Status, Typ, Profilbezug und vorgeschlagene Umsetzungsstufe.
 
 ### idea_answers
-Antworten auf Louis-Rückfragen.
+Louis-Rückfragen und bestätigte Antworten.
 
 ### idea_reviews
-Erwachsenenreview, Änderungen und Entscheidung.
+Erwachsenenreview.
 
 ### idea_links
 Verknüpfung zu GitHub-Issue, PR und Canon-Revision.
+
+## Trennung
+
+- `star_points` definieren **wo** verändert werden darf.
+- `creation_blueprints` definieren **was vorbereitet verfügbar** ist.
+- `creations` dokumentieren **was tatsächlich gebaut wurde**.
+- `ideas` halten freie Vorschläge fest.
+- `canon_revisions` dokumentieren freigegebene dauerhafte Weltänderungen.
 
 ## Datenschutz
 

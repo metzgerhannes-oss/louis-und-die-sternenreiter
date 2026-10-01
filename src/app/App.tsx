@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import type { PlayerProfile } from "../domain/profiles";
+import type { StarPointDefinition } from "../domain/starPoints";
 import { LouisDialog } from "../features/companion/LouisDialog";
 import { TouchControls } from "../features/game/TouchControls";
 import { ProfileSelect } from "../features/profiles/ProfileSelect";
 import { ReadAloudButton } from "../features/speech/ReadAloudButton";
+import { StarPointFlow } from "../features/starpoints/StarPointFlow";
 import { PhaserGame } from "../game/PhaserGame";
 import { gameEventBus, type HotspotInteraction } from "../game/EventBus";
 import {
@@ -18,6 +20,7 @@ import { PwaStatus } from "./PwaStatus";
 type DialogState =
   | { kind: "louis" }
   | { kind: "hotspot"; interaction: HotspotInteraction }
+  | { kind: "starpoint"; point: StarPointDefinition }
   | null;
 
 export function App() {
@@ -40,10 +43,15 @@ export function App() {
       setDialog({ kind: "hotspot", interaction });
     });
 
+    const offStarPoint = gameEventBus.on("interaction:starpoint", (point) => {
+      setDialog({ kind: "starpoint", point });
+    });
+
     return () => {
       offScene();
       offLouis();
       offHotspot();
+      offStarPoint();
     };
   }, []);
 
@@ -90,11 +98,13 @@ export function App() {
     );
   }
 
+  const speechSettings = loadSpeechSettings(activeProfile.id);
+
   return (
     <main className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">M1 · Hangar 3</p>
+          <p className="eyebrow">Kapitel 1 · Hangar 3</p>
           <h1>Louis &amp; die Sternenreiter</h1>
         </div>
         <div className="profile-chip">
@@ -121,7 +131,7 @@ export function App() {
           Louis rufen
         </button>
         <span className="desktop-hint">
-          Bewegen: Pfeile / WASD · Aktion: E · Crew bleibt zusammen
+          Bewegen: Pfeile / WASD · Aktion: E · Suche nach dem leuchtenden Sternenpunkt
         </span>
         <button type="button" className="secondary-button" onClick={switchProfile}>
           Aktive Figur wechseln
@@ -134,6 +144,14 @@ export function App() {
         <div className="dialog-backdrop" role="presentation" onClick={closeDialog}>
           {dialog.kind === "louis" ? (
             <LouisDialog profile={activeProfile} onClose={closeDialog} />
+          ) : dialog.kind === "starpoint" ? (
+            <StarPointFlow
+              point={dialog.point}
+              profile={activeProfile}
+              autoRead={speechSettings.autoRead}
+              speechRate={speechSettings.rate}
+              onClose={closeDialog}
+            />
           ) : (
             <section
               className="dialog-card"
@@ -148,7 +166,7 @@ export function App() {
               <div className="dialog-actions">
                 <ReadAloudButton
                   text={`${dialog.interaction.title}. ${dialog.interaction.text}`}
-                  rate={loadSpeechSettings(activeProfile.id).rate}
+                  rate={speechSettings.rate}
                 />
                 <button
                   type="button"

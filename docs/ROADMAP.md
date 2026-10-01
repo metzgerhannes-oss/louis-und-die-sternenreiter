@@ -4,62 +4,79 @@
 - Projektstruktur
 - React/TypeScript/Vite
 - Phaser
-- typisierter EventBus
+- EventBus
 - Supabase-Grundanschluss
-- PWA-App-Shell
+- PWA
 - CI
 
-## M1 – Hangar Vertical Slice
-- Profilwahl Charly / Philipp / Olli
-- eigener Avatar je Profil
+## M1 – Hangar + Louis Vertical Slice
+- Profilwahl = aktive Spielfigur
+- vollständige Crew sichtbar
 - begehbarer Hangar
 - Louis als Begleiter
-- drei Interaktionspunkte: Schiff, Werkbank, Louis
-- Vorlesen
-- „Ich habe eine Idee“
+- Vorlesen / Spracheingabe
+- Creator-Grunddialog
+- **erster echter Sternenpunkt**
+- **erste direkte Louis-Formung**
+- Werkbank durch Formung aktivieren
 
 ## M2 – First Flight
+- Energiezelle
+- Kühlleitung
+- Navigationsmodul
+- zweiter Hangar-Sternenpunkt
 - Schiff flugfähig
 - Startsequenz
-- Reiseauswahl
-- erster kurzer Flug
+- erste Reise nach Cinder
 
 ## M3 – Cinder
 - erster vollständiger Planet
-- komplette Mission
-- Rückkehr in Hangar
-- sichtbares Upgrade
+- Wasserproblem
+- mehrere Sternenpunkte
+- Materialien + Sternenstaub
+- sichtbare Weltveränderung
+- Antriebsupgrade
 
-## M4 – Creator
-- Louis-Ideeninterview
-- Spracheingabe
-- strukturierte Ideen
-- Reviewfluss
+## M4 – Creator / Große Ideen
+- A/B/C/D-Klassifikation
+- Louis-Ideeninterview kontextsensitiv
+- Weltregelprüfung
+- Erwachsenenreview
 - serverseitige GitHub-Issue-Erstellung
+- Statusrückmeldung in Louis-Sprache
 
 ## M5 – Progression
-- Levelsystem
+- Charakterlevel
+- Louis-Harness-Level
 - Schiffsausbau
 - Hangarausbau
 - Reisejournal
+- Sternenstaub-System
 
 ## M6 – Core Galaxy
 - Moss
 - Junction 12
+- Begriff „Sternenformer“
+- Scannerupgrade
 - Sternenreiter-Netzwerk
 
 ## M7 – Kapitel 3–5
-- Unkartierte Pfade
-- verschwundenes Signal
-- verlorene Welten
+- erster leerer Sternenpfad
+- Welten-Sternenpunkt
+- zu viele / widersprüchliche Formungen
+- Schrottring
+- Ursprung der Sternenformer
 
 ## M8 – Herz der Wege
 - finales Kapitel
-- Abschlusssequenz
+- Sternenformer 07 Identifikation
+- Weltregel-/Stabilitätsrätsel
+- Abschlussentscheidungen
 - Abspann
 
 ## M9 – 1.0
 - Freie Reisen
+- freie Sternenpunkte
 - Stabilisierung
 - Accessibility/Audio
 - vollständiger Storydurchlauf

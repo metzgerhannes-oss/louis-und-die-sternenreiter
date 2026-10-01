@@ -114,10 +114,10 @@ export function CreatorFlow({
         <h2>Das gehört jetzt zu unseren Entwürfen.</h2>
         <p>
           {saveResult?.storage === "supabase"
-            ? "Die Idee wurde an die Familien-Cloud übergeben und wartet dort auf die spätere Prüfung."
-            : "Die Idee ist auf diesem Gerät sicher vorgemerkt. Sobald die Familien-Cloud verbunden ist, kann sie dort weitergegeben werden."}
+            ? "Die Idee liegt jetzt in unserem Ideenbuch. Die Sternenbauer können sie später prüfen."
+            : "Ich habe die Idee auf diesem Gerät vorgemerkt. Sobald unser Ideenbuch verbunden ist, kann sie weitergegeben werden."}
         </p>
-        <p className="creator-status">Noch keine Canon-Änderung · noch kein automatischer Spieleinbau</p>
+        <p className="creator-status">Noch nicht Teil der Sternenkarte · die Welt wurde dadurch noch nicht verändert.</p>
         <div className="dialog-actions">
           <button type="button" onClick={onClose}>
             Zurück in den Hangar

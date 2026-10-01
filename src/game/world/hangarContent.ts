@@ -15,7 +15,7 @@ export const hangarHotspots: Record<HangarHotspotId, HangarHotspot> = {
   workbench: {
     id: "workbench",
     title: "Werkbank",
-    text: "Hier werden später Module repariert, gebaut und verbessert."
+    text: "Hier repariert und baut die Crew Module für Schiff und Hangar."
   },
   "hangar-door": {
     id: "hangar-door",
