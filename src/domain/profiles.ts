@@ -2,6 +2,7 @@ export type ProfileId = "charly" | "philipp" | "olli";
 
 export type PlayerProfile = {
   id: ProfileId;
+  databaseId: string;
   displayName: string;
   avatarId: string;
   accent: number;
@@ -14,6 +15,7 @@ export type PlayerProfile = {
 export const playerProfiles: readonly PlayerProfile[] = [
   {
     id: "charly",
+    databaseId: "00000000-0000-0000-0000-000000000101",
     displayName: "Charly",
     avatarId: "charly-default",
     accent: 0xd66f8f,
@@ -24,6 +26,7 @@ export const playerProfiles: readonly PlayerProfile[] = [
   },
   {
     id: "philipp",
+    databaseId: "00000000-0000-0000-0000-000000000102",
     displayName: "Philipp",
     avatarId: "philipp-default",
     accent: 0x54a5c5,
@@ -34,6 +37,7 @@ export const playerProfiles: readonly PlayerProfile[] = [
   },
   {
     id: "olli",
+    databaseId: "00000000-0000-0000-0000-000000000103",
     displayName: "Olli",
     avatarId: "olli-default",
     accent: 0xd49a52,
