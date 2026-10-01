@@ -220,82 +220,192 @@ export class AdventureScene extends Phaser.Scene {
     const state = loadAdventureState();
     const step = getAdventureStep(state, world.id);
 
-    this.add.rectangle(width / 2, height / 2, width, height, world.theme.sky);
+    this.cameras.main.setBackgroundColor("#070c12");
+
+    const sky = this.add.graphics().setDepth(-30);
+    sky.fillGradientStyle(
+      world.theme.sky,
+      world.theme.sky,
+      world.theme.horizon,
+      world.theme.horizon,
+      1
+    );
+    sky.fillRect(0, 0, width, height * 0.48);
+
+    const horizonGlow = this.add
+      .ellipse(
+        width * 0.5,
+        height * 0.36,
+        width * 0.96,
+        height * 0.18,
+        world.theme.glow,
+        world.id === "empty-path" ? 0.025 : 0.055
+      )
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setDepth(-22);
+
+    const celestialX =
+      world.id === "cloud-ocean" || world.id === "glass-coast"
+        ? width * 0.82
+        : width * 0.18;
+    const celestialY = height * (world.id === "empty-path" ? 0.17 : 0.14);
+    const celestialRadius = Math.max(32, width * 0.038);
 
     this.add
-      .rectangle(
-        width / 2,
-        height * 0.28,
-        width,
-        height * 0.34,
-        world.theme.horizon
+      .circle(
+        celestialX,
+        celestialY,
+        celestialRadius,
+        world.theme.glow,
+        world.id === "empty-path" ? 0.16 : 0.3
       )
-      .setDepth(0);
+      .setDepth(-20);
+    this.add
+      .circle(
+        celestialX,
+        celestialY,
+        celestialRadius * 1.9,
+        world.theme.accent,
+        0.045
+      )
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setDepth(-21);
 
-    const ground = this.add.graphics().setDepth(1);
-    ground.fillStyle(world.theme.ground, 1);
-    ground.fillRect(0, height * 0.42, width, height * 0.58);
+    const ground = this.add.graphics().setDepth(-4);
+    ground.fillGradientStyle(
+      world.theme.ground,
+      world.theme.ground,
+      world.theme.sky,
+      world.theme.sky,
+      1
+    );
+    ground.fillRect(0, height * 0.41, width, height * 0.59);
 
-    for (let i = 0; i < 6; i += 1) {
-      const y = height * (0.48 + i * 0.07);
-      ground.lineStyle(2, world.theme.accent, 0.12 + i * 0.02);
+    // Perspective structure keeps each world readable as a playable space.
+    for (let i = 0; i < 7; i += 1) {
+      const y = height * (0.47 + i * 0.071);
+      ground.lineStyle(2, world.theme.accent, 0.08 + i * 0.018);
       ground.lineBetween(0, y, width, y + (i % 2 === 0 ? 7 : -7));
     }
 
+    for (let i = -4; i <= 4; i += 1) {
+      ground.lineStyle(1, world.theme.glow, 0.055);
+      ground.lineBetween(
+        width * 0.5 + i * width * 0.045,
+        height * 0.42,
+        width * 0.5 + i * width * 0.135,
+        height
+      );
+    }
+
     this.drawWorldDecor(world, width, height);
+    this.drawForegroundAccents(world, width, height);
+
+    const titlePanel = this.add
+      .rectangle(
+        width * 0.045,
+        height * 0.058,
+        Math.min(width * 0.44, 430),
+        Math.min(height * 0.115, 88),
+        0x08121c,
+        0.72
+      )
+      .setOrigin(0, 0)
+      .setStrokeStyle(1, world.theme.accent, 0.3)
+      .setDepth(9);
 
     this.add
-      .text(width * 0.045, height * 0.062, world.title.toUpperCase(), {
+      .rectangle(
+        width * 0.045,
+        height * 0.058,
+        5,
+        Math.min(height * 0.115, 88),
+        world.theme.accent,
+        0.9
+      )
+      .setOrigin(0, 0)
+      .setDepth(10);
+
+    this.add
+      .text(width * 0.061, height * 0.07, world.title.toUpperCase(), {
         fontFamily: "system-ui, sans-serif",
-        fontSize: `${Math.round(Math.max(26, Math.min(58, width * 0.045)))}px`,
+        fontSize: `${Math.round(Math.max(25, Math.min(52, width * 0.041)))}px`,
         fontStyle: "900",
         color: world.theme.labelColor
       })
-      .setDepth(10);
+      .setDepth(11);
 
     this.add
-      .text(width * 0.047, height * 0.135, world.subtitle, {
+      .text(width * 0.063, height * 0.132, world.subtitle, {
         fontFamily: "system-ui, sans-serif",
-        fontSize: "15px",
-        color: world.theme.labelColor
+        fontSize: "14px",
+        color: "#e9eee9"
       })
-      .setAlpha(0.78)
-      .setDepth(10);
+      .setAlpha(0.72)
+      .setDepth(11);
+
+    void titlePanel;
 
     this.hotspots = [];
 
     for (const hotspot of world.hotspots) {
       const x = width * hotspot.x;
       const y = height * hotspot.y;
-      const active =
-        step.kind === "story" && step.hotspotId === hotspot.id;
+      const active = step.kind === "story" && step.hotspotId === hotspot.id;
 
-      const marker = this.add
-        .rectangle(
+      const outer = this.add
+        .circle(
           x,
           y,
-          Math.max(82, width * 0.09),
-          Math.max(54, height * 0.065),
-          active ? world.theme.accent : world.theme.horizon,
-          active ? 0.86 : 0.62
+          active ? 31 : 25,
+          world.theme.accent,
+          active ? 0.18 : 0.08
         )
-        .setStrokeStyle(3, active ? world.theme.glow : world.theme.accent, active ? 1 : 0.5)
-        .setDepth(y)
-        .setInteractive({ useHandCursor: true });
+        .setStrokeStyle(
+          active ? 3 : 2,
+          active ? world.theme.glow : world.theme.accent,
+          active ? 0.95 : 0.45
+        )
+        .setDepth(y - 2);
+
+      const marker = this.add
+        .star(
+          x,
+          y,
+          6,
+          active ? 8 : 7,
+          active ? 17 : 14,
+          active ? world.theme.glow : world.theme.accent,
+          active ? 0.9 : 0.7
+        )
+        .setStrokeStyle(2, world.theme.glow, active ? 1 : 0.52)
+        .setDepth(y - 1);
 
       this.add
-        .text(x, y, hotspot.title, {
-          fontFamily: "system-ui, sans-serif",
-          fontSize: "12px",
-          fontStyle: "700",
-          color: active ? "#10151d" : world.theme.labelColor,
-          align: "center",
-          wordWrap: { width: Math.max(76, width * 0.08) }
-        })
-        .setOrigin(0.5)
-        .setDepth(y + 1);
+        .line(x, y, 0, 26, 0, 48, world.theme.accent, 0.52)
+        .setLineWidth(2)
+        .setDepth(y - 1);
 
-      marker.on("pointerdown", () => {
+      const label = this.add
+        .text(x, y + 57, hotspot.title, {
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "11px",
+          fontStyle: "800",
+          color: active ? "#fff7df" : world.theme.labelColor,
+          align: "center",
+          backgroundColor: "#08121ddd",
+          padding: { x: 7, y: 4 },
+          wordWrap: { width: Math.max(110, width * 0.12) }
+        })
+        .setOrigin(0.5, 0)
+        .setDepth(y + 2);
+
+      const hit = this.add
+        .zone(x, y + 18, Math.max(110, width * 0.12), 92)
+        .setInteractive({ useHandCursor: true })
+        .setDepth(y + 3);
+
+      hit.on("pointerdown", () => {
         gameEventBus.emit("interaction:hotspot", {
           area: "adventure",
           worldId: world.id,
@@ -305,12 +415,22 @@ export class AdventureScene extends Phaser.Scene {
 
       if (active) {
         this.tweens.add({
-          targets: marker,
-          alpha: { from: 0.72, to: 1 },
-          scale: { from: 0.96, to: 1.05 },
+          targets: [outer, marker],
+          alpha: { from: 0.55, to: 1 },
+          scale: { from: 0.9, to: 1.13 },
           yoyo: true,
           repeat: -1,
-          duration: 850
+          duration: 760,
+          ease: "Sine.easeInOut"
+        });
+
+        this.tweens.add({
+          targets: label,
+          y: label.y - 4,
+          duration: 950,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut"
         });
       }
 
@@ -322,6 +442,17 @@ export class AdventureScene extends Phaser.Scene {
       const x = width * step.x;
       const y = height * step.y;
       const completed = isStarPointCompleted(step.point.id);
+
+      const halo = this.add
+        .circle(
+          x,
+          y,
+          completed ? 38 : 44,
+          completed ? world.theme.glow : world.theme.accent,
+          completed ? 0.06 : 0.1
+        )
+        .setBlendMode(Phaser.BlendModes.ADD)
+        .setDepth(2498);
 
       const star = this.add
         .star(
@@ -342,13 +473,14 @@ export class AdventureScene extends Phaser.Scene {
         });
 
         this.tweens.add({
-          targets: star,
+          targets: [star, halo],
           angle: 45,
-          scale: { from: 0.88, to: 1.14 },
-          alpha: { from: 0.7, to: 1 },
+          scale: { from: 0.86, to: 1.16 },
+          alpha: { from: 0.58, to: 1 },
           yoyo: true,
           repeat: -1,
-          duration: 900
+          duration: 880,
+          ease: "Sine.easeInOut"
         });
 
         this.starPoints.push({ data: step.point, x, y });
@@ -396,6 +528,127 @@ export class AdventureScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(5000)
       .setVisible(false);
+  }
+
+  private drawForegroundAccents(
+    world: AdventureWorld,
+    width: number,
+    height: number
+  ): void {
+    const edgeDepth = 28;
+
+    if (world.id === "moss") {
+      for (let i = 0; i < 7; i += 1) {
+        const left = i < 4;
+        const x = left
+          ? width * (0.015 + i * 0.035)
+          : width * (0.87 + (i - 4) * 0.045);
+        const h = height * (0.12 + (i % 3) * 0.055);
+        this.add
+          .rectangle(x, height - h * 0.45, 9, h, 0x244c3c, 0.96)
+          .setAngle(left ? -8 : 9)
+          .setDepth(edgeDepth);
+        this.add
+          .ellipse(
+            x + (left ? 14 : -14),
+            height - h,
+            64 + (i % 2) * 28,
+            24,
+            world.theme.accent,
+            0.48
+          )
+          .setAngle(left ? -18 : 18)
+          .setDepth(edgeDepth + 1);
+      }
+      return;
+    }
+
+    if (world.id === "junction-12") {
+      for (let i = 0; i < 5; i += 1) {
+        const x = i < 3 ? width * (0.02 + i * 0.045) : width * (0.91 + (i - 3) * 0.045);
+        const h = height * (0.12 + (i % 2) * 0.07);
+        this.add
+          .rectangle(x, height - h / 2, 34 + (i % 2) * 18, h, 0x17242f, 0.92)
+          .setStrokeStyle(2, world.theme.accent, 0.3)
+          .setDepth(edgeDepth);
+      }
+      return;
+    }
+
+    if (world.id === "glass-coast") {
+      for (let i = 0; i < 8; i += 1) {
+        const x = i < 4 ? width * (0.015 + i * 0.03) : width * (0.88 + (i - 4) * 0.03);
+        const h = 45 + (i % 4) * 24;
+        this.add
+          .polygon(
+            x,
+            height - h * 0.3,
+            [0, h, 13, 0, 28, h, 20, h + 12, 5, h + 10],
+            i % 2 ? world.theme.accent : world.theme.glow,
+            0.35
+          )
+          .setStrokeStyle(2, world.theme.glow, 0.45)
+          .setDepth(edgeDepth);
+      }
+      return;
+    }
+
+    if (world.id === "cloud-ocean") {
+      for (let i = 0; i < 7; i += 1) {
+        this.add
+          .ellipse(
+            width * (0.03 + i * 0.16),
+            height * (0.9 + (i % 2) * 0.035),
+            180 + (i % 3) * 55,
+            52,
+            0xffffff,
+            0.12
+          )
+          .setDepth(edgeDepth);
+      }
+      return;
+    }
+
+    if (world.id === "scrap-ring") {
+      for (let i = 0; i < 10; i += 1) {
+        const x = i < 5 ? width * (0.015 + i * 0.035) : width * (0.84 + (i - 5) * 0.035);
+        this.add
+          .rectangle(
+            x,
+            height * (0.88 + (i % 3) * 0.025),
+            30 + (i % 4) * 18,
+            9 + (i % 2) * 10,
+            i % 2 ? world.theme.accent : 0x625d58,
+            0.48
+          )
+          .setAngle((i * 37) % 170)
+          .setDepth(edgeDepth);
+      }
+      return;
+    }
+
+    // Empty Path, Distortion and Heart: drifting luminous traces frame the play space.
+    for (let i = 0; i < 12; i += 1) {
+      const mote = this.add
+        .circle(
+          width * (((i * 41) % 97) / 100),
+          height * (0.73 + (((i * 17) % 23) / 100)),
+          2 + (i % 3),
+          i % 2 ? world.theme.glow : world.theme.accent,
+          0.18 + (i % 4) * 0.06
+        )
+        .setDepth(edgeDepth);
+
+      this.tweens.add({
+        targets: mote,
+        y: mote.y - 18 - (i % 4) * 7,
+        alpha: { from: mote.alpha, to: 0.03 },
+        duration: 1800 + i * 130,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut"
+      });
+    }
   }
 
   private drawWorldDecor(world: AdventureWorld, width: number, height: number): void {
