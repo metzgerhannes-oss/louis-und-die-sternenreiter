@@ -6,21 +6,41 @@
 
 Spielbar sind **Charly, Philipp und Olli** als getrennte Profile mit eigenen Avataren, persönlichem Fortschritt, Kleidung und Reiseerinnerungen. **Louis** ist der gemeinsame tierische Begleiter.
 
+Wichtig: Die Profilwahl bestimmt die **aktive Spielfigur**, nicht die Reisegruppe. Philipp, Charly, Olli und Louis bilden immer die Kerncrew und bleiben narrativ gemeinsam unterwegs.
+
 ## Fantasy
 
-Das Kind übernimmt einen alten Hangar und ein reparaturbedürftiges Raumschiff. Von dort startet es zu fremden Welten, löst Probleme ohne dedizierte Gewalt, entdeckt neue Orte und baut Charakter, Schiff und Zuhause aus.
+Das Kind übernimmt einen alten Hangar und ein reparaturbedürftiges Raumschiff. Von dort startet die Crew zu fremden Welten, löst Probleme, entdeckt neue Orte und baut Charaktere, Schiff und Zuhause aus.
 
 ## Hauptloop
 
 1. Im Hangar ankommen.
-2. Reise oder Mission auswählen.
-3. Start / Flug / Anreise.
-4. Welt erkunden.
-5. Rätsel, Begegnung, Reparatur oder Hilfsmission lösen.
-6. Fundstücke, Erfahrung und Storyfortschritt erhalten.
-7. Zum Hangar zurückkehren.
-8. Charakter, Schiff, Louis oder Hangar weiterentwickeln.
-9. Optional Louis eine eigene Welt- oder Missionsidee erzählen.
+2. Aktives Profil / Spielfigur verwenden.
+3. Reise oder Mission auswählen.
+4. Gemeinsam starten / fliegen / anreisen.
+5. Welt erkunden.
+6. Rätsel, Begegnung, Reparatur, Action- oder Hilfsmission lösen.
+7. Fundstücke, Erfahrung und Storyfortschritt erhalten.
+8. Zum Hangar zurückkehren.
+9. Charaktere, Schiff, Louis oder Hangar weiterentwickeln.
+10. Optional Louis eine eigene Welt- oder Missionsidee erzählen.
+
+## Crew
+
+Kerncrew:
+- Philipp
+- Charly
+- Olli
+- Louis
+
+Das aktive Profil steuert:
+- direkte Player-Control
+- persönliches XP / Level
+- Profilfarbe
+- persönliches Reisejournal
+- kosmetische Entwicklung
+
+Die beiden anderen Kinder bleiben Teil der Szene bzw. der Story und können als Companion/NPC, Dialogpartner oder Helfer auftreten.
 
 ## Spielende
 
@@ -36,9 +56,10 @@ Fortschritt entsteht durch:
 - Rätsel
 - Kommunikation
 - Erkundung
+- Action-/Gefahrensituationen
 - kreative Beiträge
 
-Keine XP-Pflicht durch Kampf.
+Kampf ist nicht die alleinige oder zentrale XP-Quelle.
 
 ## Spielerentwicklung
 
@@ -56,10 +77,19 @@ Zehn Charakterstufen:
 
 ## Schiff
 
-Das Startschiff bleibt über das ganze Spiel erhalten und wird sichtbar zum persönlichen Schiff des Profils.
+Das Startschiff bleibt über das ganze Spiel erhalten und wird sichtbar zum gemeinsamen Crew-Schiff. Profilakzente und persönliche Elemente dürfen am Schiff sichtbar werden.
+
+Verbindliche Master-Merkmale:
+- großes Panorama-Cockpit
+- überdimensionierte Haupt-/Raketenantriebe
+- modulare Seiten-/Hecktriebwerke
+- klare Bordkanone / Bordwaffe
+- sichtbare Reparaturen und Patchwork-Panels
+- Blau-, Berry- und Amber-Akzente der Crew
 
 Upgrade-Bereiche:
 - Antrieb
+- Bordwaffe
 - Scanner
 - Laderaum
 - Schutzsysteme
@@ -71,3 +101,12 @@ Upgrade-Bereiche:
 ## Hangar
 
 Der Hangar ist Startpunkt, Zuhause und visuelles Reisetagebuch. Ausbau und Dekoration spiegeln den Fortschritt wider.
+
+Pflichtbereiche:
+- Schiffsplatz
+- Werkbank
+- Louis-Ecke
+- Mission Wall / Sternenkarte
+- Upgrade-Station
+- persönliche Bereiche der drei Kinder
+- großes Hangartor
