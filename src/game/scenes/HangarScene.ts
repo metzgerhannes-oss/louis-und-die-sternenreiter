@@ -213,29 +213,144 @@ export class HangarScene extends Phaser.Scene {
     const energyRestored = isStarPointCompleted(hangarEnergyStarPoint.id);
     const gateOpen = isStarPointCompleted(hangarGateStarPoint.id);
 
-    this.add.rectangle(width / 2, height / 2, width, height, 0x10151d);
+    this.cameras.main.setBackgroundColor("#070c12");
 
+    const atmosphere = this.add.graphics().setDepth(-20);
+    atmosphere.fillGradientStyle(0x111c28, 0x172431, 0x080d14, 0x0a1018, 1);
+    atmosphere.fillRect(0, 0, width, height);
+
+    // Massive patched back wall with visible steel framing.
     const backWall = this.add
-      .rectangle(width * 0.5, height * 0.27, width * 0.94, height * 0.42, 0x222933)
-      .setStrokeStyle(3, 0x394550);
-    backWall.setDepth(0);
+      .rectangle(width * 0.5, height * 0.27, width * 0.96, height * 0.44, 0x1a232d)
+      .setStrokeStyle(4, 0x465463)
+      .setDepth(-12);
 
-    const floor = this.add.graphics();
-    floor.fillStyle(0x343238, 1);
+    for (let i = 0; i < 8; i += 1) {
+      const x = width * (0.06 + i * 0.125);
+      this.add
+        .rectangle(x, height * 0.27, Math.max(7, width * 0.009), height * 0.43, 0x303c48)
+        .setStrokeStyle(1, 0x66727a, 0.55)
+        .setDepth(-11);
+    }
+
+    // Upper catwalk, workshop clutter and hanging repair cables.
+    this.add
+      .rectangle(width * 0.24, height * 0.17, width * 0.34, 10, 0x5b4838)
+      .setStrokeStyle(2, 0xa2764c, 0.62)
+      .setDepth(-8);
+
+    for (let i = 0; i < 5; i += 1) {
+      const cableX = width * (0.12 + i * 0.11);
+      const cable = this.add.graphics().setDepth(-7);
+      cable.lineStyle(3, i % 2 === 0 ? 0x9d6639 : 0x394c56, 0.78);
+      cable.beginPath();
+      cable.moveTo(cableX, 0);
+      cable.lineTo(cableX + (i % 2 === 0 ? 14 : -11), height * (0.12 + (i % 3) * 0.035));
+      cable.lineTo(cableX + (i % 2 === 0 ? 3 : 8), height * (0.2 + (i % 2) * 0.035));
+      cable.strokePath();
+    }
+
+    // Open hangar door gives the scene real depth and a destination.
+    const vistaX = width * 0.76;
+    const vistaY = height * 0.25;
+    const vistaW = width * 0.34;
+    const vistaH = height * 0.3;
+
+    this.add
+      .rectangle(vistaX, vistaY, vistaW, vistaH, 0x07111e)
+      .setStrokeStyle(7, 0x4c5b64)
+      .setDepth(-10);
+
+    this.add
+      .ellipse(vistaX + vistaW * 0.21, vistaY + vistaH * 0.18, vistaW * 0.34, vistaW * 0.34, 0x5f708c, 0.58)
+      .setDepth(-9);
+    this.add
+      .ellipse(vistaX + vistaW * 0.24, vistaY + vistaH * 0.15, vistaW * 0.29, vistaW * 0.29, 0xc38c69, 0.22)
+      .setDepth(-8);
+
+    for (let i = 0; i < 26; i += 1) {
+      const starX = vistaX - vistaW * 0.44 + ((i * 71) % Math.max(60, vistaW * 0.86));
+      const starY = vistaY - vistaH * 0.4 + ((i * 37) % Math.max(36, vistaH * 0.78));
+      this.add
+        .circle(starX, starY, i % 6 === 0 ? 1.7 : 0.8, 0xe8f2ef, 0.65)
+        .setDepth(-7);
+    }
+
+    // Warm practical lights: the hangar should feel repaired and lived in.
+    const lampXs = [0.12, 0.31, 0.49, 0.66, 0.89];
+    for (const ratio of lampXs) {
+      const lx = width * ratio;
+      this.add
+        .rectangle(lx, height * 0.055, 34, 9, 0x4a3e33)
+        .setStrokeStyle(2, 0xb9874d)
+        .setDepth(-5);
+      const glow = this.add
+        .ellipse(lx, height * 0.075, 82, 44, 0xffb457, 0.07)
+        .setBlendMode(Phaser.BlendModes.ADD)
+        .setDepth(-6);
+      this.add
+        .circle(lx, height * 0.062, 5, 0xffcf79, 0.96)
+        .setDepth(-4);
+
+      this.tweens.add({
+        targets: glow,
+        alpha: { from: 0.045, to: 0.095 },
+        duration: 1500 + ratio * 800,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut"
+      });
+    }
+
+    // Floor perspective, rails, patched plates and orange guide markings.
+    const floor = this.add.graphics().setDepth(-4);
+    floor.fillStyle(0x29282b, 1);
     floor.fillTriangle(
-      width * 0.04,
+      width * 0.02,
       height * 0.43,
-      width * 0.96,
+      width * 0.98,
       height * 0.43,
       width,
       height
     );
-    floor.fillTriangle(width * 0.04, height * 0.43, width, height, 0, height);
-    floor.lineStyle(2, 0x675c51, 0.75);
+    floor.fillTriangle(width * 0.02, height * 0.43, width, height, 0, height);
+    floor.lineStyle(2, 0x665d53, 0.72);
 
-    for (let i = 1; i <= 5; i += 1) {
-      const y = Phaser.Math.Linear(height * 0.48, height * 0.92, i / 5);
-      floor.lineBetween(width * 0.04, y, width * 0.96, y);
+    for (let i = 1; i <= 7; i += 1) {
+      const y = Phaser.Math.Linear(height * 0.46, height * 0.96, i / 7);
+      floor.lineBetween(width * 0.02, y, width * 0.98, y);
+    }
+
+    for (let i = -4; i <= 4; i += 1) {
+      floor.lineBetween(
+        width * 0.5 + i * width * 0.06,
+        height * 0.43,
+        width * 0.5 + i * width * 0.145,
+        height
+      );
+    }
+
+    floor.lineStyle(5, 0xb46e2b, 0.62);
+    floor.lineBetween(width * 0.53, height * 0.49, width * 0.59, height * 0.98);
+    floor.lineBetween(width * 0.91, height * 0.5, width * 0.82, height * 0.98);
+
+    // Workshop details.
+    this.add
+      .rectangle(width * 0.095, height * 0.34, width * 0.12, height * 0.15, 0x25303a)
+      .setStrokeStyle(3, 0x715b47)
+      .setDepth(-2);
+
+    for (let i = 0; i < 6; i += 1) {
+      this.add
+        .rectangle(
+          width * (0.055 + (i % 3) * 0.04),
+          height * (0.305 + Math.floor(i / 3) * 0.055),
+          width * 0.026,
+          height * 0.025,
+          i % 2 === 0 ? 0x485663 : 0x6b4733
+        )
+        .setStrokeStyle(1, 0xa77c52, 0.55)
+        .setDepth(-1);
     }
 
     this.add
@@ -324,85 +439,208 @@ export class HangarScene extends Phaser.Scene {
     doorHit.on("pointerdown", () => this.openHotspot("hangar-door"));
 
     const shipX = width * 0.72;
-    const shipY = height * 0.58;
-    const ship = this.add
-      .ellipse(
-        shipX,
-        shipY,
-        Math.min(390, width * 0.34),
-        Math.min(150, height * 0.2),
-        0x765b48
-      )
-      .setStrokeStyle(4, 0xb98761)
-      .setInteractive({ useHandCursor: true })
-      .setDepth(shipY - 20);
+    const shipY = height * 0.59;
+    const shipScale = Phaser.Math.Clamp(width / 1180, 0.68, 1.03);
 
-    this.add
-      .triangle(shipX + width * 0.12, shipY, 0, -35, 74, 0, 0, 35, 0x584c46)
-      .setDepth(shipY - 19);
+    const shipShadow = this.add.ellipse(0, 57, 360, 58, 0x000000, 0.34);
 
-    this.add
-      .circle(shipX - 25, shipY - 14, 22, chapterState.navigationRestored ? 0x3c7d87 : 0x274f59)
-      .setStrokeStyle(3, chapterState.navigationRestored ? 0x9ce6dc : 0x73afb6)
-      .setDepth(shipY - 18);
+    const rearGlowTop = this.add
+      .ellipse(-149, -31, 78, 33, chapterState.shipTested ? 0xffaa45 : 0x624b3e, chapterState.shipTested ? 0.48 : 0.18)
+      .setBlendMode(Phaser.BlendModes.ADD);
+    const rearGlowBottom = this.add
+      .ellipse(-149, 29, 78, 33, chapterState.shipTested ? 0xffaa45 : 0x624b3e, chapterState.shipTested ? 0.48 : 0.18)
+      .setBlendMode(Phaser.BlendModes.ADD);
 
-    if (chapterState.energyCellInstalled) {
-      this.add
-        .circle(shipX + 28, shipY + 10, 7, 0xe1b45e, 0.95)
-        .setDepth(shipY + 4);
-    }
+    const engineTop = this.add
+      .ellipse(-118, -31, 92, 48, 0x4a5054)
+      .setStrokeStyle(4, 0xc2894c);
+    const engineBottom = this.add
+      .ellipse(-118, 29, 92, 48, 0x4a5054)
+      .setStrokeStyle(4, 0xc2894c);
 
-    if (chapterState.coolingRepaired) {
-      const cooling = this.add.graphics().setDepth(shipY + 2);
-      cooling.lineStyle(5, 0x5daeb3, 0.9);
-      cooling.beginPath();
-      cooling.moveTo(shipX - 70, shipY + 38);
-      cooling.lineTo(shipX + 38, shipY + 38);
-      cooling.strokePath();
+    const engineTopCore = this.add
+      .circle(-135, -31, 15, chapterState.shipTested ? 0xffb34d : 0x6e523d)
+      .setStrokeStyle(3, 0xead0a4);
+    const engineBottomCore = this.add
+      .circle(-135, 29, 15, chapterState.shipTested ? 0xffb34d : 0x6e523d)
+      .setStrokeStyle(3, 0xead0a4);
+
+    const leftWing = this.add
+      .triangle(-24, 34, -65, 0, 40, 5, 10, 50, 0x58616a)
+      .setStrokeStyle(3, 0xb49d7e);
+    const rightWing = this.add
+      .triangle(-14, -35, -58, 0, 38, -6, 13, -48, 0x58616a)
+      .setStrokeStyle(3, 0xb49d7e);
+
+    const hull = this.add
+      .ellipse(20, 0, 305, 100, 0xd4c8b0)
+      .setStrokeStyle(4, 0x72685c);
+
+    const nose = this.add
+      .triangle(164, 0, -28, -43, 52, 0, -28, 43, 0xb9aa92)
+      .setStrokeStyle(3, 0x6b6258);
+
+    const cockpit = this.add
+      .ellipse(76, -12, 112, 56, chapterState.navigationRestored ? 0x376c7b : 0x2d4852, 0.96)
+      .setStrokeStyle(4, chapterState.navigationRestored ? 0x8bdde4 : 0x587a83);
+    const cockpitGlass = this.add
+      .ellipse(87, -18, 82, 37, 0x7ec5d6, chapterState.navigationRestored ? 0.26 : 0.1)
+      .setStrokeStyle(2, 0xcbeff1, 0.38);
+
+    const dorsal = this.add
+      .rectangle(-5, -48, 98, 23, 0x7d7567)
+      .setStrokeStyle(3, 0xb8a589)
+      .setAngle(-2);
+
+    const blueStripe = this.add
+      .rectangle(16, 23, 145, 10, 0x356f8e, 0.9)
+      .setAngle(-3);
+    const berryStripe = this.add
+      .rectangle(10, 34, 74, 8, 0x9d4c67, 0.9)
+      .setAngle(-3);
+    const amberStripe = this.add
+      .rectangle(65, 32, 52, 7, 0xd08b38, 0.95)
+      .setAngle(-3);
+
+    const servicePanelA = this.add
+      .rectangle(-44, -6, 34, 23, 0x665f55)
+      .setStrokeStyle(2, 0xa9916c);
+    const servicePanelB = this.add
+      .rectangle(13, -31, 27, 18, 0x5f625f)
+      .setStrokeStyle(2, 0xb49972);
+    const servicePanelC = this.add
+      .rectangle(111, 19, 25, 20, 0x766c5c)
+      .setStrokeStyle(2, 0x9c8666);
+
+    const energyCell = this.add
+      .circle(-48, 10, 8, chapterState.energyCellInstalled ? 0xf4b244 : 0x604739, chapterState.energyCellInstalled ? 1 : 0.55)
+      .setStrokeStyle(2, chapterState.energyCellInstalled ? 0xffd78b : 0x856a55);
+
+    const coolingLine = this.add
+      .line(0, 0, -66, 40, 34, 40, chapterState.coolingRepaired ? 0x69c7d4 : 0x59636a, chapterState.coolingRepaired ? 0.95 : 0.42)
+      .setLineWidth(5);
+
+    const turretBase = this.add
+      .ellipse(-4, -67, 42, 18, 0x454d53)
+      .setStrokeStyle(3, 0xc18a4c);
+    const turret = this.add
+      .rectangle(10, -72, 57, 10, 0x5c6265)
+      .setStrokeStyle(2, 0xb5996f)
+      .setAngle(-5);
+    const turretMuzzle = this.add
+      .circle(39, -75, 6, 0x2a3034)
+      .setStrokeStyle(2, 0xe29b42);
+
+    const antenna = this.add
+      .line(0, 0, 5, -56, 14, -94, 0xa8bcc0, 0.9)
+      .setLineWidth(2);
+    const antennaTip = this.add
+      .circle(14, -94, 3.5, chapterState.navigationRestored ? 0x7fe6e6 : 0x9a6a49)
+      .setStrokeStyle(1, 0xe3e8dc);
+
+    const gearLeft = this.add
+      .line(0, 0, -54, 38, -63, 63, 0x3e4549, 1)
+      .setLineWidth(5);
+    const gearRight = this.add
+      .line(0, 0, 86, 35, 92, 62, 0x3e4549, 1)
+      .setLineWidth(5);
+    const footLeft = this.add
+      .rectangle(-64, 65, 35, 7, 0x252b30)
+      .setStrokeStyle(1, 0xb28a58);
+    const footRight = this.add
+      .rectangle(92, 64, 35, 7, 0x252b30)
+      .setStrokeStyle(1, 0xb28a58);
+
+    const shipName = this.add
+      .text(27, 4, "STERNE", {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "10px",
+        fontStyle: "900",
+        color: "#243442"
+      })
+      .setOrigin(0.5);
+
+    const shipContainer = this.add.container(shipX, shipY, [
+      shipShadow,
+      rearGlowTop,
+      rearGlowBottom,
+      engineTop,
+      engineBottom,
+      engineTopCore,
+      engineBottomCore,
+      leftWing,
+      rightWing,
+      hull,
+      nose,
+      blueStripe,
+      berryStripe,
+      amberStripe,
+      servicePanelA,
+      servicePanelB,
+      servicePanelC,
+      coolingLine,
+      energyCell,
+      dorsal,
+      cockpit,
+      cockpitGlass,
+      turretBase,
+      turret,
+      turretMuzzle,
+      antenna,
+      antennaTip,
+      gearLeft,
+      gearRight,
+      footLeft,
+      footRight,
+      shipName
+    ]);
+
+    shipContainer
+      .setScale(shipScale)
+      .setDepth(shipY - 20)
+      .setSize(380, 180)
+      .setInteractive({ useHandCursor: true });
+
+    if (chapterState.shipTested) {
+      this.tweens.add({
+        targets: [rearGlowTop, rearGlowBottom, engineTopCore, engineBottomCore],
+        alpha: { from: 0.55, to: 1 },
+        scale: { from: 0.96, to: 1.08 },
+        duration: 620,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut"
+      });
     }
 
     if (chapterState.navigationRestored) {
-      this.add
-        .line(shipX, shipY, 28, -45, 42, -83, 0x9ccfd1, 0.9)
-        .setLineWidth(2)
-        .setDepth(shipY - 17);
-      this.add
-        .circle(shipX + 42, shipY - 83, 4, 0x9ccfd1, 1)
-        .setDepth(shipY - 16);
-    }
-
-    if (chapterState.shipTested) {
-      this.add
-        .ellipse(shipX - 155, shipY - 27, 42, 24, 0x5a5650)
-        .setStrokeStyle(3, 0xd2a35f)
-        .setDepth(shipY - 17);
-      this.add
-        .ellipse(shipX - 155, shipY + 28, 42, 24, 0x5a5650)
-        .setStrokeStyle(3, 0xd2a35f)
-        .setDepth(shipY - 17);
-      this.add
-        .ellipse(shipX - 181, shipY - 27, 46, 12, 0xe7a84f, 0.5)
-        .setDepth(shipY - 18);
-      this.add
-        .ellipse(shipX - 181, shipY + 28, 46, 12, 0xe7a84f, 0.5)
-        .setDepth(shipY - 18);
+      this.tweens.add({
+        targets: antennaTip,
+        alpha: { from: 0.45, to: 1 },
+        duration: 760,
+        yoyo: true,
+        repeat: -1
+      });
     }
 
     this.add
       .text(
         shipX,
-        shipY + 52,
-        chapterState.shipTested ? "Sternenschiff · STARTKLAR" : "altes Sternenschiff",
+        shipY + 78 * shipScale,
+        chapterState.shipTested ? "DIE STERNENREITER · STARTKLAR" : "DIE STERNENREITER · IN REPARATUR",
         {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: "14px",
-          color: chapterState.shipTested ? "#f1c975" : "#d2b99c"
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "14px",
+          fontStyle: "800",
+          color: chapterState.shipTested ? "#f1c975" : "#d2b99c",
+          backgroundColor: "#10151dcc",
+          padding: { x: 8, y: 4 }
         }
       )
       .setOrigin(0.5)
-      .setDepth(shipY + 53);
+      .setDepth(shipY + 80);
 
-    ship.on("pointerdown", () => this.openHotspot("ship"));
+    shipContainer.on("pointerdown", () => this.openHotspot("ship"));
 
     const benchX = width * 0.18;
     const benchY = height * 0.56;
