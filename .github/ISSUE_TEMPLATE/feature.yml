@@ -1,0 +1,37 @@
+name: Feature
+description: Neue Spiel- oder Plattformfunktion
+title: "[Feature] "
+labels: []
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Ziel
+      description: Was soll erreicht werden?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Akzeptanzkriterien
+      description: Wann ist das Feature fertig?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Bereich
+      options:
+        - Game
+        - Story
+        - World
+        - Louis
+        - Ship
+        - Hangar
+        - Backend
+        - Audio/Speech
+        - Art
+        - PWA
+        - Creator
+    validations:
+      required: true
