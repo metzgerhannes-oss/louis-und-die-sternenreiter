@@ -14,6 +14,7 @@ import { isStarPointCompleted } from "../../services/starPointState";
 import { CrewMate } from "../entities/CrewMate";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
 import { LouisCompanion } from "../entities/LouisCompanion";
+import { InteractionFocus } from "../effects/InteractionFocus";
 import { gameEventBus, type MoveDirection } from "../EventBus";
 import {
   hangarHotspots,
@@ -42,6 +43,7 @@ export class HangarScene extends Phaser.Scene {
   private player?: PlayerAvatar;
   private crewMates: CrewMate[] = [];
   private louis?: LouisCompanion;
+  private interactionFocus?: InteractionFocus;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: Record<"W" | "A" | "S" | "D", Phaser.Input.Keyboard.Key>;
   private interactKey?: Phaser.Input.Keyboard.Key;
@@ -65,6 +67,7 @@ export class HangarScene extends Phaser.Scene {
       (this.game.registry.get("activeProfile") as PlayerProfile | undefined) ?? playerProfiles[0];
 
     this.drawHangar(profile);
+    this.interactionFocus = new InteractionFocus(this, 0xf0b45e);
     this.setupKeyboard();
 
     const offMove = gameEventBus.on("input:move", ({ direction, active }) => {
@@ -129,6 +132,7 @@ export class HangarScene extends Phaser.Scene {
       this.scale.off("resize", onResize);
       this.crewMates = [];
       this.starPoints = [];
+      this.interactionFocus = undefined;
 
       for (const direction of Object.keys(this.moveState) as MoveDirection[]) {
         this.moveState[direction] = false;
@@ -155,7 +159,9 @@ export class HangarScene extends Phaser.Scene {
       Number(keyboardDown || this.moveState.down) -
       Number(keyboardUp || this.moveState.up);
 
-    if (dx !== 0 || dy !== 0) {
+    const playerMoving = dx !== 0 || dy !== 0;
+
+    if (playerMoving) {
       const length = Math.hypot(dx, dy);
       dx /= length;
       dy /= length;
@@ -176,6 +182,8 @@ export class HangarScene extends Phaser.Scene {
 
       this.player.setPosition(nextX, nextY);
     }
+
+    this.player.updateAnimation(delta, playerMoving);
 
     for (const crewMate of this.crewMates) {
       crewMate.updateFollow(this.player.x, this.player.y, delta);
@@ -846,6 +854,7 @@ export class HangarScene extends Phaser.Scene {
 
     if (!nearest) {
       this.hint.setVisible(false);
+      this.interactionFocus?.hide();
       return;
     }
 
@@ -856,6 +865,22 @@ export class HangarScene extends Phaser.Scene {
           ? "Louis zeigt einen Sternenpunkt"
           : nearest.hotspot.data.title;
 
+    const focusX =
+      nearest.kind === "louis"
+        ? this.louis?.x ?? 0
+        : nearest.kind === "starpoint"
+          ? nearest.starPoint.x
+          : nearest.hotspot.x;
+    const focusY =
+      nearest.kind === "louis"
+        ? (this.louis?.y ?? 0) - 46
+        : nearest.kind === "starpoint"
+          ? nearest.starPoint.y
+          : nearest.hotspot.y;
+    const focusColor =
+      nearest.kind === "starpoint" ? 0x9ceaf0 : 0xf0b45e;
+
+    this.interactionFocus?.show(focusX, focusY, focusColor);
     this.hint.setText(`${label} · E / Aktion`).setVisible(true);
   }
 
@@ -865,6 +890,10 @@ export class HangarScene extends Phaser.Scene {
     if (!nearest) {
       return;
     }
+
+    this.interactionFocus?.confirm(
+      nearest.kind === "starpoint" ? 0x9ceaf0 : 0xf0b45e
+    );
 
     if (nearest.kind === "louis") {
       gameEventBus.emit("interaction:louis", undefined);
