@@ -1,7 +1,18 @@
+export type MoveDirection = "up" | "down" | "left" | "right";
+
+export type HotspotInteraction = {
+  id: "ship" | "workbench" | "hangar-door";
+  title: string;
+  text: string;
+};
+
 type GameEventMap = {
   "scene:ready": { sceneKey: string };
   "interaction:louis": undefined;
+  "interaction:hotspot": HotspotInteraction;
   "ui:louis:ping": undefined;
+  "input:move": { direction: MoveDirection; active: boolean };
+  "input:interact": undefined;
 };
 
 type Handler<Payload> = (payload: Payload) => void;
