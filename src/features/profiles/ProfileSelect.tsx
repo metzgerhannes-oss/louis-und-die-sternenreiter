@@ -8,11 +8,12 @@ export function ProfileSelect({ onSelect }: ProfileSelectProps) {
   return (
     <section className="profile-screen" aria-labelledby="profile-title">
       <div className="profile-intro">
-        <p className="eyebrow">Hangar 3 wartet</p>
-        <h1 id="profile-title">Wer startet heute mit Louis?</h1>
+        <p className="eyebrow">Louis &amp; die Sternenreiter</p>
+        <h1 id="profile-title">Wen steuerst du heute?</h1>
         <p>
-          Jeder Sternenreiter hat seinen eigenen Avatar, Fortschritt und seine eigenen
-          Reiseerinnerungen.
+          Philipp, Charly, Olli und Louis reisen immer gemeinsam. Du wählst nur,
+          wen du direkt spielst. Fortschritt und Reiseerinnerungen bleiben pro
+          Sternenreiter getrennt.
         </p>
       </div>
 
@@ -30,14 +31,14 @@ export function ProfileSelect({ onSelect }: ProfileSelectProps) {
               <span className="profile-avatar-scarf" />
             </span>
             <strong>{profile.displayName}</strong>
-            <span>Sternenreiter · Level 1</span>
+            <span>aktive Spielfigur · Crew bleibt zusammen</span>
           </button>
         ))}
       </div>
 
       <p className="profile-note">
-        Die Avatare sind aktuell technische Platzhalter und bekommen später ihre eigene
-        freigegebene Grafik.
+        Freigegebene Mastergrafiken: Philipp blau · Charly berry · Olli amber ·
+        Louis goldbraun.
       </p>
     </section>
   );

@@ -22,7 +22,9 @@ type DialogState =
 
 export function App() {
   const [scene, setScene] = useState("Boot");
-  const [activeProfile, setActiveProfile] = useState<PlayerProfile | null>(() => loadActiveProfile());
+  const [activeProfile, setActiveProfile] = useState<PlayerProfile | null>(() =>
+    loadActiveProfile()
+  );
   const [dialog, setDialog] = useState<DialogState>(null);
 
   useEffect(() => {
@@ -101,8 +103,8 @@ export function App() {
             style={{ background: activeProfile.accentCss }}
             aria-hidden="true"
           />
-          <strong>{activeProfile.displayName}</strong>
-          <span className="status-pill">{scene}</span>
+          <strong>Aktiv: {activeProfile.displayName}</strong>
+          <span className="status-pill">Crew 4/4 · {scene}</span>
         </div>
       </header>
 
@@ -112,12 +114,17 @@ export function App() {
       </section>
 
       <footer className="control-bar">
-        <button type="button" onClick={() => gameEventBus.emit("ui:louis:ping", undefined)}>
+        <button
+          type="button"
+          onClick={() => gameEventBus.emit("ui:louis:ping", undefined)}
+        >
           Louis rufen
         </button>
-        <span className="desktop-hint">Bewegen: Pfeile / WASD · Aktion: E</span>
+        <span className="desktop-hint">
+          Bewegen: Pfeile / WASD · Aktion: E · Crew bleibt zusammen
+        </span>
         <button type="button" className="secondary-button" onClick={switchProfile}>
-          Profil wechseln
+          Aktive Figur wechseln
         </button>
       </footer>
 
@@ -135,7 +142,7 @@ export function App() {
               aria-labelledby="game-dialog-title"
               onClick={(event) => event.stopPropagation()}
             >
-              <p className="eyebrow">Hangar 3</p>
+              <p className="eyebrow">Hangar 3 · ganze Crew</p>
               <h2 id="game-dialog-title">{dialog.interaction.title}</h2>
               <p>{dialog.interaction.text}</p>
               <div className="dialog-actions">
@@ -143,7 +150,11 @@ export function App() {
                   text={`${dialog.interaction.title}. ${dialog.interaction.text}`}
                   rate={loadSpeechSettings(activeProfile.id).rate}
                 />
-                <button type="button" className="secondary-button" onClick={closeDialog}>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={closeDialog}
+                >
                   Weiter
                 </button>
               </div>

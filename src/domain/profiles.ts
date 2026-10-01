@@ -10,6 +10,7 @@ export type PlayerProfile = {
   suit: number;
   suitCss: string;
   initials: string;
+  scaleFactor: number;
 };
 
 export const playerProfiles: readonly PlayerProfile[] = [
@@ -22,7 +23,8 @@ export const playerProfiles: readonly PlayerProfile[] = [
     accentCss: "#d66f8f",
     suit: 0x4e5f72,
     suitCss: "#4e5f72",
-    initials: "C"
+    initials: "C",
+    scaleFactor: 1.05
   },
   {
     id: "philipp",
@@ -33,7 +35,8 @@ export const playerProfiles: readonly PlayerProfile[] = [
     accentCss: "#54a5c5",
     suit: 0x4d5b48,
     suitCss: "#4d5b48",
-    initials: "P"
+    initials: "P",
+    scaleFactor: 1
   },
   {
     id: "olli",
@@ -44,10 +47,15 @@ export const playerProfiles: readonly PlayerProfile[] = [
     accentCss: "#d49a52",
     suit: 0x665a4e,
     suitCss: "#665a4e",
-    initials: "O"
+    initials: "O",
+    scaleFactor: 0.92
   }
 ] as const;
 
 export function getProfile(id: string | null | undefined): PlayerProfile | null {
   return playerProfiles.find((profile) => profile.id === id) ?? null;
+}
+
+export function getCrewMates(activeProfileId: ProfileId): PlayerProfile[] {
+  return playerProfiles.filter((profile) => profile.id !== activeProfileId);
 }
