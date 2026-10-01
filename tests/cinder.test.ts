@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { cinderStoryBeats } from "../src/domain/chapter2";
+import type { CrewSpeaker } from "../src/domain/chapter1";
 import {
   cinderDistributionStarPoint,
   cinderMoistureStarPoint
@@ -7,12 +8,12 @@ import {
 
 describe("Cinder chapter 2A", () => {
   it("keeps Philipp, Charly, Olli and Louis present in every major Cinder story beat", () => {
-    const coreCrew = ["Philipp", "Charly", "Olli", "Louis"];
+    const coreCrew: CrewSpeaker[] = ["Philipp", "Charly", "Olli", "Louis"];
 
     for (const beat of Object.values(cinderStoryBeats)) {
       const speakers = new Set(beat.lines.map((line) => line.speaker));
       for (const member of coreCrew) {
-        expect(speakers.has(member as never)).toBe(true);
+        expect(speakers.has(member)).toBe(true);
       }
     }
   });
