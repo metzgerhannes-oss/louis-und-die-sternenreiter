@@ -35,3 +35,18 @@ Keine dedizierte realistische Gewalt als Kernmechanik. Konflikte bevorzugen Entd
 
 ## D-20261001-012 – Architektur
 Canon, Player State und Ideas sind getrennte Domänen.
+
+## D-20261001-013 – Design-System
+Das Produkt verwendet ein verbindliches Design-System unter `docs/design/`. Neue Screens dürfen nicht ohne Zuordnung zu einer bestehenden oder neu beschlossenen Layoutfamilie entstehen.
+
+## D-20261001-014 – Avatar-Familie
+Charly, Philipp und Olli verwenden dieselbe hochwertige 2.5D-Illustrationssprache mit gemeinsamen Grundproportionen, aber klar eigener Silhouette, Frisur, Patch und Profilakzent. Keine Mischung aus Pixelart, Chibi, Anime und Fotorealismus.
+
+## D-20261001-015 – Avatar-Quelle
+Jeder Avatar besitzt einen freigegebenen Master-Look. Portrait, Icon, In-Game-Sprite und Animationen werden daraus abgeleitet und dürfen nicht unabhängig neu interpretiert werden.
+
+## D-20261001-016 – Asset-Freigabe
+Freigegebene visuelle Referenzen werden unter `docs/design/reference/` dokumentiert. Spieloptimierte Runtime-Dateien liegen unter `public/assets/`. Der Status jedes zentralen Assets wird im `ASSET_MANIFEST.md` geführt.
+
+## D-20261001-017 – Produktlayouts
+V1 verwendet zehn definierte Layoutfamilien L01–L10 für Profilwahl, Game-HUD, Louis-Dialog, Creator, Sternenkarte, Journal, Schiff, Hangarausbau, Ergebnisse und Elternreview.
