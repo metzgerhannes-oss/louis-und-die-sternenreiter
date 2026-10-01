@@ -1,3 +1,5 @@
+import type { StarPointDefinition } from "../domain/starPoints";
+
 export type MoveDirection = "up" | "down" | "left" | "right";
 
 export type HotspotInteraction = {
@@ -10,6 +12,8 @@ type GameEventMap = {
   "scene:ready": { sceneKey: string };
   "interaction:louis": undefined;
   "interaction:hotspot": HotspotInteraction;
+  "interaction:starpoint": StarPointDefinition;
+  "starpoint:completed": { id: string; ideaText: string };
   "ui:louis:ping": undefined;
   "input:move": { direction: MoveDirection; active: boolean };
   "input:interact": undefined;
