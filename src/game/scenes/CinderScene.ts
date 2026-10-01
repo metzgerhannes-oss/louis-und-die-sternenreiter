@@ -44,6 +44,7 @@ export class CinderScene extends Phaser.Scene {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: Record<"W" | "A" | "S" | "D", Phaser.Input.Keyboard.Key>;
   private interactKey?: Phaser.Input.Keyboard.Key;
+  private scannerKey?: Phaser.Input.Keyboard.Key;
   private hint?: Phaser.GameObjects.Text;
   private hotspots: RuntimeHotspot[] = [];
   private starPoints: RuntimeStarPoint[] = [];
@@ -72,6 +73,10 @@ export class CinderScene extends Phaser.Scene {
 
     const offInteract = gameEventBus.on("input:interact", () => {
       this.openNearestInteraction();
+    });
+
+    const offScanner = gameEventBus.on("ui:scanner:pulse", () => {
+      this.pulseScanner();
     });
 
     const offPing = gameEventBus.on("ui:louis:ping", () => {
@@ -119,6 +124,7 @@ export class CinderScene extends Phaser.Scene {
       offMove();
       offInteract();
       offPing();
+      offScanner();
       offStarPoint();
       offChapter();
       this.scale.off("resize", onResize);
@@ -178,6 +184,10 @@ export class CinderScene extends Phaser.Scene {
     this.louis.updateFollow(this.player.x, this.player.y, delta);
     this.updateInteractionHint();
 
+    if (this.scannerKey && Phaser.Input.Keyboard.JustDown(this.scannerKey)) {
+      this.pulseScanner();
+    }
+
     if (this.interactKey && Phaser.Input.Keyboard.JustDown(this.interactKey)) {
       this.openNearestInteraction();
     }
@@ -192,6 +202,7 @@ export class CinderScene extends Phaser.Scene {
       Phaser.Input.Keyboard.Key
     >;
     this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+    this.scannerKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
   }
 
   private drawCinder(profile: PlayerProfile): void {
@@ -587,4 +598,48 @@ export class CinderScene extends Phaser.Scene {
 
     gameEventBus.emit("interaction:hotspot", nearest.hotspot.data);
   }
+
+  private pulseScanner(): void {
+    const { width, height } = this.scale;
+    const originX = this.player?.x ?? width / 2;
+    const originY = this.player?.y ?? height * 0.7;
+
+    const pulse = this.add
+      .circle(originX, originY, 28, 0x65c8df, 0)
+      .setStrokeStyle(3, 0x83e2ed, 0.88)
+      .setDepth(4900);
+
+    this.tweens.add({
+      targets: pulse,
+      scale: Math.max(width, height) / 32,
+      alpha: { from: 0.8, to: 0 },
+      duration: 760,
+      ease: "Sine.easeOut",
+      onComplete: () => pulse.destroy()
+    });
+
+    const targets = [
+      ...this.hotspots.map((hotspot) => ({ x: hotspot.x, y: hotspot.y })),
+      ...this.starPoints.map((starPoint) => ({ x: starPoint.x, y: starPoint.y }))
+    ];
+
+    for (const target of targets) {
+      const ring = this.add
+        .circle(target.x, target.y, 24, 0x65c8df, 0.08)
+        .setStrokeStyle(3, 0x9ceaf0, 0.95)
+        .setDepth(4901);
+
+      this.tweens.add({
+        targets: ring,
+        scale: { from: 0.65, to: 1.65 },
+        alpha: { from: 1, to: 0 },
+        duration: 900,
+        yoyo: true,
+        repeat: 1,
+        ease: "Sine.easeOut",
+        onComplete: () => ring.destroy()
+      });
+    }
+  }
+
 }
