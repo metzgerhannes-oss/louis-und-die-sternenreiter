@@ -1067,14 +1067,14 @@ export class AdventureScene extends Phaser.Scene {
   }
 
   private drawSkySailer(x: number, y: number, scale: number): void {
-    this.add
-      .ellipse(x, y, 58 * scale, 14 * scale, 0x5d5145, 0.92)
-      .setStrokeStyle(2, 0xd29b58, 0.62)
-      .setDepth(8);
-    this.add
+    const hull = this.add
+      .ellipse(0, 0, 58 * scale, 14 * scale, 0x5d5145, 0.92)
+      .setStrokeStyle(2, 0xd29b58, 0.62);
+
+    const sail = this.add
       .triangle(
-        x,
-        y - 18 * scale,
+        0,
+        -18 * scale,
         0,
         32 * scale,
         18 * scale,
@@ -1084,8 +1084,35 @@ export class AdventureScene extends Phaser.Scene {
         0xefe0b7,
         0.86
       )
-      .setStrokeStyle(1, 0xd29b58, 0.6)
+      .setStrokeStyle(1, 0xd29b58, 0.6);
+
+    const mast = this.add
+      .rectangle(4 * scale, -15 * scale, 2 * scale, 34 * scale, 0xc59a62, 0.86);
+
+    const craft = this.add
+      .container(x, y, [hull, mast, sail])
       .setDepth(9);
+
+    this.tweens.add({
+      targets: craft,
+      x: x + 22 * scale,
+      y: y - 5 * scale,
+      angle: 1.2,
+      duration: 3100 + Math.round(scale * 500),
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut"
+    });
+
+    this.tweens.add({
+      targets: sail,
+      scaleX: { from: 0.96, to: 1.04 },
+      angle: { from: -1.4, to: 1.4 },
+      duration: 1250,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut"
+    });
   }
 
   private drawScrapRingVista(
