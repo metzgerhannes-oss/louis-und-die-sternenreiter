@@ -14,6 +14,7 @@ type GameEventMap = {
   "interaction:hotspot": HotspotInteraction;
   "interaction:starpoint": StarPointDefinition;
   "starpoint:completed": { id: string; ideaText: string };
+  "chapter1:state-changed": undefined;
   "ui:louis:ping": undefined;
   "input:move": { direction: MoveDirection; active: boolean };
   "input:interact": undefined;
