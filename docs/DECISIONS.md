@@ -86,3 +86,12 @@ Sternenstaub ist eine reine In-Game-Formungsressource ohne Echtgeldbezug und wir
 
 ## D-20261001-029 – Gemeinsamer Storyfortschritt
 Weil Philipp, Charly, Olli und Louis immer gemeinsam reisen, ist der Hauptstory-Fortschritt crewweit geteilt. Profilbezogen bleiben aktive Steuerung, persönliches XP/Level, Reisejournal und kosmetische Entwicklung. Ein abgeschlossenes Kapitel wird nicht pro Kind separat erneut gespielt.
+
+## D-20261001-030 – Cinder / Staubhafen
+Die erste fremde Welt ist Cinder. Die Siedlung Staubhafen und die Mechanikerin Rika führen das Wasserproblem ein. Zwei aufeinander aufbauende Sternenpunkte machen die Welt sichtbar veränderbar.
+
+## D-20261001-031 – Sternenstaub-Lernmoment
+Die Crew findet auf Cinder erstmals Sternenstaub. Der erste Cinder-Sternenpunkt kostet keinen Sternenstaub; der zweite ist die erste Stufe-C-Formung und verbraucht genau 1 Einheit. Sternenstaub ist crewweit geteilt.
+
+## D-20261001-032 – Cinder bleibt verändert
+Die gewählte Wasserlösung bleibt nach Abschluss sichtbar. Cinder bleibt besuchbar; das Antriebsupgrade öffnet den nächsten Pfad nach Moss.
