@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { browserSpeech } from "../../services/speech/browserSpeech";
+import { ReadAloudButton } from "../speech/ReadAloudButton";
 
 type FinaleSequenceProps = {
+  autoRead: boolean;
+  speechRate: number;
   onFinish: () => void;
 };
 
@@ -21,7 +25,7 @@ const pages = [
     eyebrow: "Die Sternenkarte",
     title: "Ein paar Punkte bleiben leer",
     text:
-      "Zwischen den wiederhergestellten Wegen erscheinen kleine, unbeschriftete Lichtpunkte. Louis schaut lange auf die Karte und sagt: „Die sind noch leer.“ Dann wedelt er. „Gut so.“"
+      "Zwischen den wiederhergestellten Wegen erscheinen kleine, unbeschriftete Lichtpunkte. Louis schaut lange auf die Karte und sagt: Die sind noch leer. Dann wedelt er. Gut so."
   },
   {
     eyebrow: "Hüter der Wege",
@@ -31,10 +35,30 @@ const pages = [
   }
 ] as const;
 
-export function FinaleSequence({ onFinish }: FinaleSequenceProps) {
+export function FinaleSequence({
+  autoRead,
+  speechRate,
+  onFinish
+}: FinaleSequenceProps) {
   const [page, setPage] = useState(0);
   const current = pages[page];
   const last = page === pages.length - 1;
+
+  const spokenText = useMemo(() => {
+    const quote =
+      page === 2
+        ? " Die Galaxie braucht keine perfekten Karten. Sie braucht Menschen, die neugierig genug sind, neue Wege zu finden."
+        : "";
+    return `${current.title}. ${current.text}${quote}`;
+  }, [current.text, current.title, page]);
+
+  useEffect(() => {
+    if (autoRead) {
+      browserSpeech.speak(spokenText, { rate: speechRate });
+    }
+
+    return () => browserSpeech.stop();
+  }, [autoRead, speechRate, spokenText]);
 
   return (
     <section className="finale-sequence" aria-live="polite">
@@ -63,18 +87,21 @@ export function FinaleSequence({ onFinish }: FinaleSequenceProps) {
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={() => {
-            if (last) {
-              onFinish();
-              return;
-            }
-            setPage((value) => value + 1);
-          }}
-        >
-          {last ? "Freie Reisen starten" : "Weiter"}
-        </button>
+        <div className="dialog-actions finale-actions">
+          <ReadAloudButton text={spokenText} rate={speechRate} />
+          <button
+            type="button"
+            onClick={() => {
+              if (last) {
+                onFinish();
+                return;
+              }
+              setPage((value) => value + 1);
+            }}
+          >
+            {last ? "Freie Reisen starten" : "Weiter"}
+          </button>
+        </div>
       </div>
 
       <p className="finale-credit">
