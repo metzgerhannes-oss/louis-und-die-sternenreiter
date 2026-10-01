@@ -317,15 +317,7 @@ export function App() {
     return (
       <>
         <ProfileSelect onSelect={selectProfile} />
-        <SoundDirector
-        scene={scene}
-        worldId={adventureState.currentWorld}
-        dialogOpen={Boolean(dialog)}
-        launching={launching}
-        finale={finale}
-      />
-
-      <PwaStatus />
+        <PwaStatus />
       </>
     );
   }
@@ -496,6 +488,14 @@ export function App() {
           <span>Philipp · Charly · Olli · Louis · Das Herz der Wege</span>
         )}
       </footer>
+
+      <SoundDirector
+        scene={scene}
+        worldId={adventureState.currentWorld}
+        dialogOpen={Boolean(dialog)}
+        launching={launching}
+        finale={finale}
+      />
 
       <PwaStatus />
 
