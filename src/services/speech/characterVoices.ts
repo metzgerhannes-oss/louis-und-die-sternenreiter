@@ -17,61 +17,68 @@ export type VoiceProfile = {
   preferredNames: readonly string[];
 };
 
+export const coreVoiceRoles: readonly VoiceRole[] = [
+  "Louis",
+  "Philipp",
+  "Charly",
+  "Olli"
+];
+
 export const voiceProfiles: Record<VoiceRole, VoiceProfile> = {
   Narrator: {
-    rateMultiplier: 0.98,
+    rateMultiplier: 0.96,
     pitch: 1,
-    preferredNames: ["Anna", "Petra", "Helena", "Markus", "Martin"]
+    preferredNames: ["Helena", "Anna", "Petra", "Markus", "Martin"]
   },
   Louis: {
-    rateMultiplier: 0.94,
-    pitch: 0.88,
-    preferredNames: ["Markus", "Martin", "Daniel", "Thomas", "Yannick"]
+    rateMultiplier: 0.86,
+    pitch: 0.72,
+    preferredNames: ["Markus", "Martin", "Thomas", "Daniel", "Yannick"]
   },
   Philipp: {
-    rateMultiplier: 1.02,
-    pitch: 1.08,
-    preferredNames: ["Yannick", "Markus", "Martin", "Daniel"]
+    rateMultiplier: 0.98,
+    pitch: 0.92,
+    preferredNames: ["Daniel", "Yannick", "Martin", "Markus", "Thomas"]
   },
   Charly: {
-    rateMultiplier: 1.02,
-    pitch: 1.13,
-    preferredNames: ["Anna", "Helena", "Petra", "Marlene", "Katja"]
+    rateMultiplier: 1,
+    pitch: 1.16,
+    preferredNames: ["Anna", "Helena", "Marlene", "Petra", "Katja"]
   },
   Olli: {
-    rateMultiplier: 1.06,
-    pitch: 1.2,
-    preferredNames: ["Yannick", "Markus", "Martin", "Daniel"]
+    rateMultiplier: 1.08,
+    pitch: 1.3,
+    preferredNames: ["Yannick", "Daniel", "Markus", "Martin", "Thomas"]
   },
   Rika: {
     rateMultiplier: 0.98,
-    pitch: 1.02,
+    pitch: 1.06,
     preferredNames: ["Petra", "Anna", "Helena", "Katja"]
   },
   "Dr. Niva": {
-    rateMultiplier: 0.95,
-    pitch: 1,
+    rateMultiplier: 0.94,
+    pitch: 1.02,
     preferredNames: ["Helena", "Petra", "Anna", "Marlene"]
   },
   "M-4": {
-    rateMultiplier: 0.9,
-    pitch: 0.78,
-    preferredNames: ["Markus", "Martin", "Daniel"]
+    rateMultiplier: 0.88,
+    pitch: 0.72,
+    preferredNames: ["Daniel", "Martin", "Markus"]
   },
   Bram: {
-    rateMultiplier: 0.9,
-    pitch: 0.82,
-    preferredNames: ["Markus", "Martin", "Thomas", "Daniel"]
+    rateMultiplier: 0.88,
+    pitch: 0.76,
+    preferredNames: ["Thomas", "Markus", "Martin", "Daniel"]
   },
   Archiv: {
-    rateMultiplier: 0.84,
-    pitch: 0.74,
-    preferredNames: ["Markus", "Martin", "Daniel", "Thomas"]
-  },
-  Herz: {
     rateMultiplier: 0.82,
     pitch: 0.7,
-    preferredNames: ["Markus", "Martin", "Daniel", "Thomas"]
+    preferredNames: ["Martin", "Markus", "Daniel", "Thomas"]
+  },
+  Herz: {
+    rateMultiplier: 0.8,
+    pitch: 0.66,
+    preferredNames: ["Markus", "Martin", "Thomas", "Daniel"]
   }
 };
 

@@ -1,3 +1,4 @@
+import { crewPortraits } from "../../domain/crewPortraits";
 import { playerProfiles, type PlayerProfile } from "../../domain/profiles";
 
 type ProfileSelectProps = {
@@ -27,8 +28,7 @@ export function ProfileSelect({ onSelect }: ProfileSelectProps) {
             onClick={() => onSelect(profile)}
           >
             <span className="profile-avatar" aria-hidden="true">
-              <span className="profile-avatar-head">{profile.initials}</span>
-              <span className="profile-avatar-scarf" />
+              <img src={crewPortraits[profile.id]} alt="" />
             </span>
             <strong>{profile.displayName}</strong>
             <span>aktive Spielfigur · Crew bleibt zusammen</span>
@@ -37,8 +37,7 @@ export function ProfileSelect({ onSelect }: ProfileSelectProps) {
       </div>
 
       <p className="profile-note">
-        Freigegebene Mastergrafiken: Philipp blau · Charly berry · Olli amber ·
-        Louis goldbraun.
+        Die drei Sternenreiter und Louis bleiben in jeder Hauptmission als Crew zusammen.
       </p>
     </section>
   );

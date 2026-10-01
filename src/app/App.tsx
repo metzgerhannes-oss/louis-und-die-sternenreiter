@@ -497,7 +497,7 @@ export function App() {
         finale={finale}
       />
 
-      <PwaStatus />
+      <PwaStatus suppressed={Boolean(dialog) || launching || finale} />
 
       {dialog && !launching && !finale && (
         <div className="dialog-backdrop" role="presentation" onClick={closeDialog}>

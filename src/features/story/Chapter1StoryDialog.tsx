@@ -41,6 +41,7 @@ export function Chapter1StoryDialog({
   }, [autoRead, speechRate, spokenText]);
 
   const advance = () => {
+    browserSpeech.stop();
     if (!isLast) {
       setLineIndex((index) => index + 1);
       return;

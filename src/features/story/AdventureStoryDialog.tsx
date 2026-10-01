@@ -40,6 +40,7 @@ export function AdventureStoryDialog({
   }, [autoRead, speechRate, spokenText]);
 
   const advance = () => {
+    browserSpeech.stop();
     if (!isLast) {
       setLineIndex((index) => index + 1);
       return;
