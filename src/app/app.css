@@ -2263,3 +2263,296 @@ button:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* === Mobile gameplay safe-area layout =================================== */
+.hud-crew-card.profile-switch {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.hud-crew-card.profile-switch:focus-visible {
+  outline: 2px solid var(--crew-accent);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+@media (max-width: 860px), (pointer: coarse) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  .app-shell {
+    position: relative;
+    min-height: 100svh;
+    height: 100svh;
+    grid-template-rows: 100svh 0;
+    overflow: hidden;
+  }
+
+  .game-stage {
+    min-height: 100svh;
+    height: 100svh;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .phaser-root {
+    inset: 0;
+  }
+
+  .game-hud {
+    z-index: 12;
+    filter: none;
+  }
+
+  /* Top safe zone: portraits left, resource counter right, mission below. */
+  .hud-crew {
+    top: calc(env(safe-area-inset-top, 0px) + 0.28rem);
+    left: 0.38rem;
+    gap: 0.22rem;
+    max-width: calc(100% - 4.9rem);
+  }
+
+  .hud-crew-card {
+    width: 2.55rem;
+    gap: 0;
+  }
+
+  .hud-crew-card:last-child {
+    display: none;
+  }
+
+  .hud-portrait {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-width: 2px;
+    box-shadow:
+      0 0 0 1px rgba(4, 12, 19, 0.94),
+      0 0 0 2px color-mix(in srgb, var(--crew-accent) 52%, transparent);
+  }
+
+  .hud-portrait::after,
+  .hud-crew-name,
+  .hud-crew-meter {
+    display: none;
+  }
+
+  .hud-crew-card.active .hud-portrait {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 0 1px rgba(4, 12, 19, 0.94),
+      0 0 0 3px var(--crew-accent),
+      0 0 0.65rem color-mix(in srgb, var(--crew-accent) 42%, transparent);
+  }
+
+  .hud-resources {
+    top: calc(env(safe-area-inset-top, 0px) + 0.28rem);
+    right: 0.38rem;
+    gap: 0;
+  }
+
+  .hud-resource-card {
+    min-width: 3.65rem;
+    min-height: 2.55rem;
+    gap: 0.3rem;
+    padding: 0.25rem 0.38rem;
+    border-radius: 0.62rem;
+  }
+
+  .hud-resource-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+    font-size: 0.92rem;
+  }
+
+  .hud-resource-card small,
+  .hud-level-card {
+    display: none;
+  }
+
+  .hud-resource-card strong {
+    font-size: 0.88rem;
+    line-height: 1;
+  }
+
+  .hud-mission {
+    top: calc(env(safe-area-inset-top, 0px) + 3.12rem);
+    left: 0.38rem;
+    right: 0.38rem;
+    width: auto;
+    min-height: 2.8rem;
+    transform: none;
+    grid-template-columns: 1.65rem minmax(0, 1fr);
+    gap: 0.42rem;
+    padding: 0.35rem 0.58rem;
+    border-radius: 0.56rem;
+    clip-path: none;
+    box-shadow: 0 0.35rem 0.9rem rgba(0, 0, 0, 0.18);
+  }
+
+  .hud-mission-star {
+    width: 1.45rem;
+    height: 1.45rem;
+    font-size: 1rem;
+  }
+
+  .hud-mission span {
+    display: none;
+  }
+
+  .hud-mission strong {
+    font-size: clamp(0.68rem, 3.15vw, 0.82rem);
+    line-height: 1.16;
+    -webkit-line-clamp: 2;
+  }
+
+  /* Radar/location is redundant on a phone and consumed the movement zone. */
+  .hud-location {
+    display: none;
+  }
+
+  /* Bottom safe zone. The middle of the screen is kept completely clear. */
+  .hud-actions {
+    right: 0.42rem;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.42rem);
+    gap: 0.24rem;
+  }
+
+  .hud-action {
+    width: 3.18rem;
+    min-height: 3.35rem;
+    padding: 0.24rem 0.16rem;
+    gap: 0.08rem;
+    border-radius: 0.58rem;
+    clip-path: none;
+    box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.18);
+  }
+
+  .hud-action > span {
+    font-size: 1.08rem;
+  }
+
+  .hud-action strong {
+    max-width: 3rem;
+    overflow: hidden;
+    font-size: 0.43rem;
+    line-height: 1.05;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hud-action small {
+    display: none;
+  }
+
+  .touch-controls {
+    inset: auto auto calc(env(safe-area-inset-bottom, 0px) + 0.38rem) 0.38rem;
+    width: 6.6rem;
+    height: 6.6rem;
+    display: block;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .touch-dpad {
+    width: 6.6rem;
+    height: 6.6rem;
+    gap: 0.14rem;
+  }
+
+  .touch-direction {
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0.6rem;
+    padding: 0;
+    font-size: 0.92rem;
+    background: rgba(14, 20, 28, 0.7);
+    box-shadow: 0 0.28rem 0.7rem rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(5px);
+  }
+
+  .touch-interact {
+    display: none;
+  }
+
+  /* Footer controls must never reserve a second screen-height strip. */
+  .control-bar {
+    position: absolute;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 7.2rem);
+    z-index: 15;
+    width: max-content;
+    max-width: calc(100% - 1rem);
+    min-height: 0;
+    height: auto;
+    transform: translateX(-50%);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .control-bar > * {
+    pointer-events: auto;
+  }
+
+  .profile-switch-footer {
+    display: none !important;
+  }
+
+  .journey-button,
+  .free-travel-controls {
+    margin: 0;
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.3);
+  }
+
+  .chapter-objective {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .hud-crew {
+    gap: 0.15rem;
+  }
+
+  .hud-crew-card {
+    width: 2.3rem;
+  }
+
+  .hud-portrait {
+    width: 2.12rem;
+    height: 2.12rem;
+  }
+
+  .hud-mission {
+    top: calc(env(safe-area-inset-top, 0px) + 2.85rem);
+  }
+
+  .hud-action {
+    width: 3rem;
+    min-height: 3.15rem;
+  }
+
+  .hud-action strong {
+    font-size: 0.4rem;
+  }
+
+  .touch-controls,
+  .touch-dpad {
+    width: 6.15rem;
+    height: 6.15rem;
+  }
+}
