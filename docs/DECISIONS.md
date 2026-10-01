@@ -65,3 +65,21 @@ Das Starter-Schiff besitzt überdimensionierte Haupttriebwerke und eine klar erk
 
 ## D-20261001-022 – Logo
 Der Wortmarken-/Logo-Look aus dem freigegebenen Louis-Companion-Sheet ist verbindlich: klare Sans-Wortmarke, dünne Amber-Linie mit vierzackigem Stern, ruhige gesperrte Sekundärzeile.
+
+## D-20261001-023 – Louis als Sternenformer
+Louis ist der zentrale Story- und Gameplay-Drehpunkt. Sein Tech-Harness übersetzt Ideen der Kinder in strukturierte, ortsgebundene Weltveränderungen.
+
+## D-20261001-024 – Sternenpunkte
+Direkte freie Weltveränderungen erfolgen an definierten Sternenpunkten. Sternenpunkte besitzen Kontext, erlaubte Kategorien, Canon-Grenzen, Ressourcenbedarf und mögliche vorbereitete Lösungen.
+
+## D-20261001-025 – Vier Formungsstufen
+Louis unterscheidet: A Sofort formen, B materialgebunden bauen, C mit Sternenstaub sternenformen, D große Idee ins Ideenbuch / Review.
+
+## D-20261001-026 – Louis ist Sternenformer 07
+Die Identität „Sternenformer 07“ ist Canon, wird der Crew aber erst im späteren Storyverlauf vollständig erklärt.
+
+## D-20261001-027 – Neue Hauptstory
+Die Hauptgeschichte handelt davon, Louis' Formungsfähigkeit zu entdecken, verantwortungsvoll zu lernen und am Herz der Wege eine kontrollierte Ordnung für neue Ideen zu schaffen.
+
+## D-20261001-028 – Sternenstaub
+Sternenstaub ist eine reine In-Game-Formungsressource ohne Echtgeldbezug und wird für große ortsgebundene Veränderungen verwendet.
