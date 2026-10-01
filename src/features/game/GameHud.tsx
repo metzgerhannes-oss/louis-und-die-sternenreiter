@@ -1,3 +1,4 @@
+import { crewPortraits } from "../../domain/crewPortraits";
 import { playerProfiles, type PlayerProfile } from "../../domain/profiles";
 import { gameEventBus } from "../../game/EventBus";
 
@@ -26,19 +27,8 @@ function CrewPortrait({
       style={{ "--crew-accent": accent } as React.CSSProperties}
       aria-label={active ? `${name}, aktive Figur` : name}
     >
-      <div className={`hud-portrait hud-portrait-${id}`} aria-hidden="true">
-        {id === "louis" ? (
-          <>
-            <span className="hud-dog-ear left" />
-            <span className="hud-dog-ear right" />
-            <span className="hud-dog-face">●</span>
-          </>
-        ) : (
-          <>
-            <span className="hud-hair" />
-            <span className="hud-face">{name.slice(0, 1)}</span>
-          </>
-        )}
+      <div className="hud-portrait" aria-hidden="true">
+        <img src={crewPortraits[id]} alt="" />
       </div>
       <span className="hud-crew-name">{name}</span>
       <span className="hud-crew-meter" aria-hidden="true">
