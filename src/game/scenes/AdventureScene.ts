@@ -185,8 +185,8 @@ export class AdventureScene extends Phaser.Scene {
         ),
         Phaser.Math.Clamp(
           this.player.y + dy * speed * 0.74 * seconds,
-          height * 0.47,
-          height * 0.9
+          height * (width <= 860 && height > width ? 0.37 : 0.47),
+          height * (width <= 860 && height > width ? 0.78 : 0.9)
         )
       );
     }
@@ -228,6 +228,7 @@ export class AdventureScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const state = loadAdventureState();
     const step = getAdventureStep(state, world.id);
+    const compact = width <= 860 && height > width;
     this.interactionColor = world.theme.accent;
 
     this.cameras.main.setBackgroundColor("#070c12");
@@ -322,7 +323,8 @@ export class AdventureScene extends Phaser.Scene {
       )
       .setOrigin(0, 0)
       .setStrokeStyle(1, world.theme.accent, 0.3)
-      .setDepth(9);
+      .setDepth(9)
+      .setVisible(!compact);
 
     this.add
       .rectangle(
@@ -334,7 +336,8 @@ export class AdventureScene extends Phaser.Scene {
         0.9
       )
       .setOrigin(0, 0)
-      .setDepth(10);
+      .setDepth(10)
+      .setVisible(!compact);
 
     this.add
       .text(width * 0.061, height * 0.07, world.title.toUpperCase(), {
@@ -343,7 +346,8 @@ export class AdventureScene extends Phaser.Scene {
         fontStyle: "900",
         color: world.theme.labelColor
       })
-      .setDepth(11);
+      .setDepth(11)
+      .setVisible(!compact);
 
     this.add
       .text(width * 0.063, height * 0.132, world.subtitle, {
@@ -352,7 +356,8 @@ export class AdventureScene extends Phaser.Scene {
         color: "#e9eee9"
       })
       .setAlpha(0.72)
-      .setDepth(11);
+      .setDepth(11)
+      .setVisible(!compact);
 
     void titlePanel;
 
@@ -408,7 +413,8 @@ export class AdventureScene extends Phaser.Scene {
           wordWrap: { width: Math.max(110, width * 0.12) }
         })
         .setOrigin(0.5, 0)
-        .setDepth(y + 2);
+        .setDepth(y + 2)
+        .setVisible(!compact);
 
       const hit = this.add
         .zone(x, y + 18, Math.max(110, width * 0.12), 92)
@@ -499,16 +505,21 @@ export class AdventureScene extends Phaser.Scene {
 
     this.drawCompletedCreations(world);
 
-    const startX = width * 0.48;
-    const startY = height * 0.78;
+    const startX = width * (compact ? 0.5 : 0.48);
+    const startY = height * (compact ? 0.68 : 0.78);
 
     this.player = new PlayerAvatar(this, profile, startX, startY);
     this.player.setPosition(startX, startY);
 
-    const formation = [
-      { x: -108, y: 70 },
-      { x: 98, y: 65 }
-    ];
+    const formation = compact
+      ? [
+          { x: -72, y: 48 },
+          { x: 70, y: 44 }
+        ]
+      : [
+          { x: -108, y: 70 },
+          { x: 98, y: 65 }
+        ];
 
     this.crewMates = getCrewMates(profile.id).map((crewProfile, index) => {
       const offset = formation[index];
@@ -522,18 +533,23 @@ export class AdventureScene extends Phaser.Scene {
       );
     });
 
-    this.louis = new LouisCompanion(this, startX - 62, startY + 20, () => {
-      gameEventBus.emit("interaction:louis", undefined);
-    });
+    this.louis = new LouisCompanion(
+      this,
+      startX - (compact ? 46 : 62),
+      startY + (compact ? 12 : 20),
+      () => {
+        gameEventBus.emit("interaction:louis", undefined);
+      }
+    );
 
     this.hint = this.add
-      .text(width / 2, height * 0.43, "", {
+      .text(width / 2, compact ? height * 0.19 : height * 0.43, "", {
         fontFamily: "system-ui, sans-serif",
-        fontSize: "15px",
+        fontSize: compact ? "12px" : "15px",
         fontStyle: "700",
         color: "#fff7e7",
         backgroundColor: "#10151ddd",
-        padding: { x: 11, y: 7 }
+        padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
       })
       .setOrigin(0.5)
       .setDepth(5000)

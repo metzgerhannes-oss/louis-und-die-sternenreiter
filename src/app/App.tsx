@@ -382,6 +382,7 @@ export function App() {
               mission={objective}
               location={locationLabel}
               stardust={resources.stardust}
+              onSwitchProfile={switchProfile}
             />
             <TouchControls />
           </>
@@ -473,7 +474,7 @@ export function App() {
 
             <button
               type="button"
-              className="secondary-button"
+              className="secondary-button profile-switch-footer"
               onClick={switchProfile}
             >
               Aktive Figur wechseln
