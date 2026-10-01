@@ -4,6 +4,11 @@ import {
   playerProfiles,
   type PlayerProfile
 } from "../../domain/profiles";
+import {
+  hangarEnergyStarPoint,
+  type StarPointDefinition
+} from "../../domain/starPoints";
+import { isStarPointCompleted } from "../../services/starPointState";
 import { CrewMate } from "../entities/CrewMate";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
 import { LouisCompanion } from "../entities/LouisCompanion";
@@ -20,6 +25,17 @@ type RuntimeHotspot = {
   y: number;
 };
 
+type RuntimeStarPoint = {
+  data: StarPointDefinition;
+  x: number;
+  y: number;
+};
+
+type NearestInteraction =
+  | { kind: "louis"; distance: number }
+  | { kind: "hotspot"; hotspot: RuntimeHotspot; distance: number }
+  | { kind: "starpoint"; starPoint: RuntimeStarPoint; distance: number };
+
 export class HangarScene extends Phaser.Scene {
   private player?: PlayerAvatar;
   private crewMates: CrewMate[] = [];
@@ -29,6 +45,7 @@ export class HangarScene extends Phaser.Scene {
   private interactKey?: Phaser.Input.Keyboard.Key;
   private hint?: Phaser.GameObjects.Text;
   private hotspots: RuntimeHotspot[] = [];
+  private starPoints: RuntimeStarPoint[] = [];
   private readonly moveState: Record<MoveDirection, boolean> = {
     up: false,
     down: false,
@@ -82,6 +99,12 @@ export class HangarScene extends Phaser.Scene {
       });
     });
 
+    const offStarPointCompleted = gameEventBus.on("starpoint:completed", ({ id }) => {
+      if (id === hangarEnergyStarPoint.id) {
+        this.scene.restart();
+      }
+    });
+
     const onResize = () => this.scene.restart();
     this.scale.on("resize", onResize);
 
@@ -89,8 +112,11 @@ export class HangarScene extends Phaser.Scene {
       offMove();
       offInteract();
       offPing();
+      offStarPointCompleted();
       this.scale.off("resize", onResize);
       this.crewMates = [];
+      this.starPoints = [];
+
       for (const direction of Object.keys(this.moveState) as MoveDirection[]) {
         this.moveState[direction] = false;
       }
@@ -165,6 +191,7 @@ export class HangarScene extends Phaser.Scene {
 
   private drawHangar(profile: PlayerProfile): void {
     const { width, height } = this.scale;
+    const energyRestored = isStarPointCompleted(hangarEnergyStarPoint.id);
 
     this.add.rectangle(width / 2, height / 2, width, height, 0x10151d);
 
@@ -185,6 +212,7 @@ export class HangarScene extends Phaser.Scene {
     );
     floor.fillTriangle(width * 0.04, height * 0.43, width, height, 0, height);
     floor.lineStyle(2, 0x675c51, 0.75);
+
     for (let i = 1; i <= 5; i += 1) {
       const y = Phaser.Math.Linear(height * 0.48, height * 0.92, i / 5);
       floor.lineBetween(width * 0.04, y, width * 0.96, y);
@@ -219,9 +247,11 @@ export class HangarScene extends Phaser.Scene {
       .setStrokeStyle(5, 0x59646a)
       .setInteractive({ useHandCursor: true })
       .setDepth(1);
+
     this.add
       .rectangle(doorX, doorY, width * 0.008, height * 0.29, 0x63747a)
       .setDepth(2);
+
     this.add
       .text(doorX, height * 0.12, "AUSGANG ZUM STERNENFELD", {
         fontFamily: "system-ui, sans-serif",
@@ -230,6 +260,7 @@ export class HangarScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
       .setDepth(2);
+
     door.on("pointerdown", () => this.openHotspot("hangar-door"));
 
     const shipX = width * 0.72;
@@ -268,9 +299,12 @@ export class HangarScene extends Phaser.Scene {
 
     const benchX = width * 0.18;
     const benchY = height * 0.56;
+    const benchColor = energyRestored ? 0x6b5540 : 0x463c34;
+    const benchStroke = energyRestored ? 0xd2a35f : 0x735b49;
+
     const bench = this.add
-      .rectangle(benchX, benchY, Math.min(190, width * 0.21), 56, 0x5d4938)
-      .setStrokeStyle(3, 0x9a7656)
+      .rectangle(benchX, benchY, Math.min(190, width * 0.21), 56, benchColor)
+      .setStrokeStyle(3, benchStroke)
       .setInteractive({ useHandCursor: true })
       .setDepth(benchY);
 
@@ -283,16 +317,86 @@ export class HangarScene extends Phaser.Scene {
       .setDepth(benchY - 1);
 
     this.add
-      .text(benchX, benchY - 44, "WERKBANK", {
+      .text(benchX, benchY - 44, energyRestored ? "WERKBANK · ONLINE" : "WERKBANK · OHNE STROM", {
         fontFamily: "system-ui, sans-serif",
         fontSize: "14px",
         fontStyle: "700",
-        color: "#e5c590"
+        color: energyRestored ? "#f1c975" : "#a58d76"
       })
       .setOrigin(0.5)
       .setDepth(benchY + 1);
 
     bench.on("pointerdown", () => this.openHotspot("workbench"));
+
+    const energyX = width * 0.34;
+    const energyY = height * 0.55;
+
+    const energyNode = this.add
+      .rectangle(
+        energyX,
+        energyY,
+        Math.min(88, width * 0.085),
+        72,
+        energyRestored ? 0x254e4f : 0x482d2b
+      )
+      .setStrokeStyle(3, energyRestored ? 0x74d1c9 : 0xc0715d)
+      .setDepth(energyY);
+
+    this.add
+      .circle(
+        energyX,
+        energyY,
+        12,
+        energyRestored ? 0x7de0d0 : 0xd66f5c,
+        energyRestored ? 0.95 : 0.7
+      )
+      .setDepth(energyY + 1);
+
+    this.add
+      .text(energyX, energyY - 54, energyRestored ? "ENERGIE STABIL" : "✦ STERNENPUNKT", {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "12px",
+        fontStyle: "700",
+        color: energyRestored ? "#9ce6dc" : "#e7a37c"
+      })
+      .setOrigin(0.5)
+      .setDepth(energyY + 2);
+
+    if (energyRestored) {
+      const cable = this.add.graphics().setDepth(benchY - 2);
+      cable.lineStyle(6, 0x5daeb3, 0.78);
+      cable.beginPath();
+      cable.moveTo(energyX - 30, energyY + 18);
+      cable.lineTo(benchX + 70, benchY + 18);
+      cable.lineTo(benchX + 45, benchY + 4);
+      cable.strokePath();
+
+      this.add
+        .circle(benchX + 72, benchY - 8, 7, 0x79d7ca, 0.9)
+        .setDepth(benchY + 3);
+    } else {
+      energyNode.setInteractive({ useHandCursor: true });
+      energyNode.on("pointerdown", () => {
+        gameEventBus.emit("interaction:starpoint", hangarEnergyStarPoint);
+      });
+
+      this.tweens.add({
+        targets: energyNode,
+        alpha: { from: 0.72, to: 1 },
+        duration: 850,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut"
+      });
+
+      this.starPoints = [
+        {
+          data: hangarEnergyStarPoint,
+          x: energyX,
+          y: energyY + 34
+        }
+      ];
+    }
 
     this.hotspots = [
       { data: hangarHotspots["hangar-door"], x: doorX, y: height * 0.47 },
@@ -342,10 +446,7 @@ export class HangarScene extends Phaser.Scene {
       .setVisible(false);
   }
 
-  private nearestInteraction():
-    | { kind: "louis"; distance: number }
-    | { kind: "hotspot"; hotspot: RuntimeHotspot; distance: number }
-    | null {
+  private nearestInteraction(): NearestInteraction | null {
     if (!this.player || !this.louis) {
       return null;
     }
@@ -357,9 +458,7 @@ export class HangarScene extends Phaser.Scene {
       this.louis.y
     );
 
-    let nearest:
-      | { kind: "louis"; distance: number }
-      | { kind: "hotspot"; hotspot: RuntimeHotspot; distance: number } = {
+    let nearest: NearestInteraction = {
       kind: "louis",
       distance: louisDistance
     };
@@ -377,6 +476,19 @@ export class HangarScene extends Phaser.Scene {
       }
     }
 
+    for (const starPoint of this.starPoints) {
+      const distance = Phaser.Math.Distance.Between(
+        this.player.x,
+        this.player.y,
+        starPoint.x,
+        starPoint.y
+      );
+
+      if (distance < nearest.distance) {
+        nearest = { kind: "starpoint", starPoint, distance };
+      }
+    }
+
     return nearest.distance <= 130 ? nearest : null;
   }
 
@@ -386,24 +498,36 @@ export class HangarScene extends Phaser.Scene {
     }
 
     const nearest = this.nearestInteraction();
+
     if (!nearest) {
       this.hint.setVisible(false);
       return;
     }
 
     const label =
-      nearest.kind === "louis" ? "Mit Louis sprechen" : nearest.hotspot.data.title;
+      nearest.kind === "louis"
+        ? "Mit Louis sprechen"
+        : nearest.kind === "starpoint"
+          ? "Louis zeigt einen Sternenpunkt"
+          : nearest.hotspot.data.title;
+
     this.hint.setText(`${label} · E / Aktion`).setVisible(true);
   }
 
   private openNearestInteraction(): void {
     const nearest = this.nearestInteraction();
+
     if (!nearest) {
       return;
     }
 
     if (nearest.kind === "louis") {
       gameEventBus.emit("interaction:louis", undefined);
+      return;
+    }
+
+    if (nearest.kind === "starpoint") {
+      gameEventBus.emit("interaction:starpoint", nearest.starPoint.data);
       return;
     }
 
