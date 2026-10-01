@@ -6,7 +6,7 @@ import {
   type CinderStoryBeat
 } from "../../domain/chapter2";
 import { gameEventBus } from "../../game/EventBus";
-import { applyCinderAction } from "../../services/cinderState";
+import { applyCinderAction, loadCinderState } from "../../services/cinderState";
 import { addStardust } from "../../services/crewResources";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
@@ -21,7 +21,7 @@ type CinderStoryDialogProps = {
 };
 
 function applyRewards(action: CinderAction | undefined): void {
-  if (action === "stardust-collected") {
+  if (action === "stardust-collected" && !loadCinderState().stardustCollected) {
     addStardust(2);
     gameEventBus.emit("resources:changed", undefined);
   }
