@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Chapter1StoryBeat } from "../domain/chapter1";
+import type { CinderStoryBeat } from "../domain/chapter2";
 import type { PlayerProfile } from "../domain/profiles";
 import {
   hangarGateStarPoint,
@@ -11,6 +12,7 @@ import { ProfileSelect } from "../features/profiles/ProfileSelect";
 import { ReadAloudButton } from "../features/speech/ReadAloudButton";
 import { StarPointFlow } from "../features/starpoints/StarPointFlow";
 import { Chapter1StoryDialog } from "../features/story/Chapter1StoryDialog";
+import { CinderStoryDialog } from "../features/story/CinderStoryDialog";
 import { LaunchSequence } from "../features/story/LaunchSequence";
 import { PhaserGame } from "../game/PhaserGame";
 import { gameEventBus, type HotspotInteraction } from "../game/EventBus";
@@ -20,6 +22,13 @@ import {
   getStoryBeat,
   loadChapter1State
 } from "../services/chapter1State";
+import {
+  getCinderBeat,
+  getCinderBeatForHotspot,
+  getCinderObjective,
+  loadCinderState
+} from "../services/cinderState";
+import { loadCrewResources } from "../services/crewResources";
 import {
   clearActiveProfile,
   loadActiveProfile,
@@ -34,8 +43,15 @@ type DialogState =
   | { kind: "louis" }
   | { kind: "hotspot"; interaction: HotspotInteraction }
   | { kind: "starpoint"; point: StarPointDefinition }
-  | { kind: "story"; beat: Chapter1StoryBeat }
+  | { kind: "chapter1-story"; beat: Chapter1StoryBeat }
+  | { kind: "cinder-story"; beat: CinderStoryBeat }
   | null;
+
+type HangarHotspotId = "ship" | "workbench" | "hangar-door";
+
+function isHangarHotspotId(id: string): id is HangarHotspotId {
+  return id === "ship" || id === "workbench" || id === "hangar-door";
+}
 
 export function App() {
   const [scene, setScene] = useState("Boot");
@@ -43,17 +59,23 @@ export function App() {
     loadActiveProfile()
   );
   const [dialog, setDialog] = useState<DialogState>(null);
-  const [chapterRevision, setChapterRevision] = useState(0);
+  const [storyRevision, setStoryRevision] = useState(0);
+  const [resourceRevision, setResourceRevision] = useState(0);
   const [launching, setLaunching] = useState(false);
 
-  const refreshChapter = () => {
-    setChapterRevision((revision) => revision + 1);
+  const refreshStory = () => {
+    setStoryRevision((revision) => revision + 1);
+  };
+
+  const refreshChapter1 = () => {
+    refreshStory();
     gameEventBus.emit("chapter1:state-changed", undefined);
   };
 
   useEffect(() => {
     const offScene = gameEventBus.on("scene:ready", ({ sceneKey }) => {
       setScene(sceneKey);
+      setDialog(null);
     });
 
     const offLouis = gameEventBus.on("interaction:louis", () => {
@@ -61,6 +83,22 @@ export function App() {
     });
 
     const offHotspot = gameEventBus.on("interaction:hotspot", (interaction) => {
+      if (interaction.area === "cinder") {
+        const beat = getCinderBeatForHotspot(interaction.id, loadCinderState());
+        if (beat) {
+          setDialog({ kind: "cinder-story", beat });
+          return;
+        }
+
+        setDialog({ kind: "hotspot", interaction });
+        return;
+      }
+
+      if (!isHangarHotspotId(interaction.id)) {
+        setDialog({ kind: "hotspot", interaction });
+        return;
+      }
+
       const chapterState = loadChapter1State();
 
       if (
@@ -74,7 +112,7 @@ export function App() {
 
       const beat = getChapter1BeatForHotspot(interaction.id, chapterState);
       if (beat) {
-        setDialog({ kind: "story", beat });
+        setDialog({ kind: "chapter1-story", beat });
         return;
       }
 
@@ -86,7 +124,15 @@ export function App() {
     });
 
     const offStarPointCompleted = gameEventBus.on("starpoint:completed", () => {
-      refreshChapter();
+      refreshStory();
+    });
+
+    const offChapter2 = gameEventBus.on("chapter2:state-changed", () => {
+      refreshStory();
+    });
+
+    const offResources = gameEventBus.on("resources:changed", () => {
+      setResourceRevision((revision) => revision + 1);
     });
 
     return () => {
@@ -95,6 +141,8 @@ export function App() {
       offHotspot();
       offStarPoint();
       offStarPointCompleted();
+      offChapter2();
+      offResources();
     };
   }, []);
 
@@ -103,11 +151,21 @@ export function App() {
       return;
     }
 
-    const state = loadChapter1State();
-    if (!state.introSeen) {
-      setDialog({ kind: "story", beat: getStoryBeat("intro") });
+    if (scene === "CinderScene") {
+      const cinder = loadCinderState();
+      if (!cinder.landingSeen) {
+        setDialog({ kind: "cinder-story", beat: getCinderBeat("landing") });
+      }
+      return;
     }
-  }, [activeProfile, chapterRevision, dialog, launching]);
+
+    if (scene === "HangarScene") {
+      const chapter1 = loadChapter1State();
+      if (!chapter1.introSeen) {
+        setDialog({ kind: "chapter1-story", beat: getStoryBeat("intro") });
+      }
+    }
+  }, [activeProfile, dialog, launching, scene, storyRevision]);
 
   useEffect(() => {
     if (!activeProfile || dialog?.kind !== "hotspot") {
@@ -154,14 +212,29 @@ export function App() {
     );
   }
 
+  void resourceRevision;
+
   const speechSettings = loadSpeechSettings(activeProfile.id);
-  const objective = getChapter1Objective(loadChapter1State());
+  const cinderState = loadCinderState();
+  const resources = loadCrewResources();
+  const onCinder = scene === "CinderScene";
+  const objective = onCinder
+    ? getCinderObjective(cinderState)
+    : cinderState.complete
+      ? "Cinder versorgt · Neuer Sternenpfad entdeckt: Moss"
+      : getChapter1Objective(loadChapter1State());
+
+  const locationLabel = onCinder
+    ? "Kapitel 2 · Cinder"
+    : cinderState.complete
+      ? "Hangar 3 · Zwischenstopp"
+      : "Kapitel 1 · Hangar 3";
 
   return (
     <main className="app-shell">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Kapitel 1 · Hangar 3</p>
+          <p className="eyebrow">{locationLabel}</p>
           <h1>Louis &amp; die Sternenreiter</h1>
         </div>
         <div className="profile-chip">
@@ -171,9 +244,12 @@ export function App() {
             aria-hidden="true"
           />
           <strong>Aktiv: {activeProfile.displayName}</strong>
-          <span className="status-pill">
-            Crew 4/4 · {launching ? "Start" : scene}
-          </span>
+          <span className="status-pill">Crew 4/4</span>
+          {(onCinder || resources.stardust > 0) && (
+            <span className="status-pill stardust-pill">
+              ✦ {resources.stardust}
+            </span>
+          )}
         </div>
       </header>
 
@@ -202,11 +278,37 @@ export function App() {
               Louis rufen
             </button>
             <span className="desktop-hint">{objective}</span>
+
+            {onCinder && cinderState.complete && (
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() =>
+                  gameEventBus.emit("scene:goto", { sceneKey: "HangarScene" })
+                }
+              >
+                Zurück zu Hangar 3
+              </button>
+            )}
+
+            {!onCinder && cinderState.complete && (
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() =>
+                  gameEventBus.emit("scene:goto", { sceneKey: "CinderScene" })
+                }
+              >
+                Cinder besuchen
+              </button>
+            )}
+
             <button type="button" className="secondary-button" onClick={switchProfile}>
               Aktive Figur wechseln
             </button>
           </>
         )}
+
         {launching && <span>Philipp · Charly · Olli · Louis · Kurs Cinder</span>}
       </footer>
 
@@ -224,19 +326,28 @@ export function App() {
               speechRate={speechSettings.rate}
               onClose={closeDialog}
             />
-          ) : dialog.kind === "story" ? (
+          ) : dialog.kind === "chapter1-story" ? (
             <Chapter1StoryDialog
               beat={dialog.beat}
               profile={activeProfile}
               autoRead={speechSettings.autoRead}
               speechRate={speechSettings.rate}
-              onStateChange={refreshChapter}
+              onStateChange={refreshChapter1}
               onClose={closeDialog}
               onLaunch={() => {
                 browserSpeech.stop();
                 setDialog(null);
                 setLaunching(true);
               }}
+            />
+          ) : dialog.kind === "cinder-story" ? (
+            <CinderStoryDialog
+              beat={dialog.beat}
+              profile={activeProfile}
+              autoRead={speechSettings.autoRead}
+              speechRate={speechSettings.rate}
+              onStateChange={refreshStory}
+              onClose={closeDialog}
             />
           ) : (
             <section
@@ -246,7 +357,11 @@ export function App() {
               aria-labelledby="game-dialog-title"
               onClick={(event) => event.stopPropagation()}
             >
-              <p className="eyebrow">Hangar 3 · ganze Crew</p>
+              <p className="eyebrow">
+                {dialog.interaction.area === "cinder"
+                  ? "Cinder · ganze Crew"
+                  : "Hangar 3 · ganze Crew"}
+              </p>
               <h2 id="game-dialog-title">{dialog.interaction.title}</h2>
               <p>{dialog.interaction.text}</p>
               <div className="dialog-actions">
