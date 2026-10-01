@@ -90,3 +90,45 @@ set
   context_text = excluded.context_text,
   prepared_options = excluded.prepared_options,
   canon_constraints = excluded.canon_constraints;
+
+
+insert into public.star_points (
+  id,
+  location_id,
+  key,
+  title,
+  context_text,
+  creation_tier_max,
+  allowed_categories,
+  blocked_categories,
+  material_requirements,
+  stardust_cost,
+  canon_constraints,
+  prepared_options,
+  state
+)
+values (
+  '00000000-0000-0000-0000-000000002002',
+  '00000000-0000-0000-0000-000000001001',
+  'hangar-gate-assist',
+  'Das schwere Hangartor',
+  'Der alte Torantrieb funktioniert, ist aber zu schwach für die verklemmten Segmente.',
+  'B',
+  array['mechanical','utility','hangar'],
+  array['hangar_destruction','story_skip'],
+  '{"scrap_parts":2}'::jsonb,
+  0,
+  '{"preserve_hangar":true,"must_open_gate":true}'::jsonb,
+  '[
+    {"id":"magnetic-rails","title":"Magnetische Führungsschienen"},
+    {"id":"servo-pair","title":"Zwei Zusatzservos"},
+    {"id":"counterweight","title":"Gegengewicht-System"}
+  ]'::jsonb,
+  'active'
+)
+on conflict (key) do update
+set
+  title = excluded.title,
+  context_text = excluded.context_text,
+  prepared_options = excluded.prepared_options,
+  canon_constraints = excluded.canon_constraints;

@@ -6,8 +6,10 @@ import {
 } from "../../domain/profiles";
 import {
   hangarEnergyStarPoint,
+  hangarGateStarPoint,
   type StarPointDefinition
 } from "../../domain/starPoints";
+import { loadChapter1State } from "../../services/chapter1State";
 import { isStarPointCompleted } from "../../services/starPointState";
 import { CrewMate } from "../entities/CrewMate";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
@@ -100,9 +102,13 @@ export class HangarScene extends Phaser.Scene {
     });
 
     const offStarPointCompleted = gameEventBus.on("starpoint:completed", ({ id }) => {
-      if (id === hangarEnergyStarPoint.id) {
+      if (id === hangarEnergyStarPoint.id || id === hangarGateStarPoint.id) {
         this.scene.restart();
       }
+    });
+
+    const offChapterState = gameEventBus.on("chapter1:state-changed", () => {
+      this.scene.restart();
     });
 
     const onResize = () => this.scene.restart();
@@ -113,6 +119,7 @@ export class HangarScene extends Phaser.Scene {
       offInteract();
       offPing();
       offStarPointCompleted();
+      offChapterState();
       this.scale.off("resize", onResize);
       this.crewMates = [];
       this.starPoints = [];
@@ -191,7 +198,9 @@ export class HangarScene extends Phaser.Scene {
 
   private drawHangar(profile: PlayerProfile): void {
     const { width, height } = this.scale;
+    const chapterState = loadChapter1State();
     const energyRestored = isStarPointCompleted(hangarEnergyStarPoint.id);
+    const gateOpen = isStarPointCompleted(hangarGateStarPoint.id);
 
     this.add.rectangle(width / 2, height / 2, width, height, 0x10151d);
 
@@ -242,26 +251,66 @@ export class HangarScene extends Phaser.Scene {
 
     const doorX = width * 0.52;
     const doorY = height * 0.29;
-    const door = this.add
-      .rectangle(doorX, doorY, width * 0.32, height * 0.3, 0x171c24)
-      .setStrokeStyle(5, 0x59646a)
+    const doorWidth = width * 0.32;
+    const doorHeight = height * 0.3;
+
+    if (gateOpen) {
+      this.add
+        .rectangle(doorX, doorY, doorWidth, doorHeight, 0x07101f)
+        .setStrokeStyle(4, 0x536c78)
+        .setDepth(1);
+
+      for (let i = 0; i < 16; i += 1) {
+        const starX = doorX - doorWidth * 0.43 + ((i * 47) % Math.max(40, doorWidth * 0.86));
+        const starY = doorY - doorHeight * 0.4 + ((i * 29) % Math.max(30, doorHeight * 0.78));
+        this.add
+          .circle(starX, starY, i % 4 === 0 ? 2 : 1, 0xf5efe2, 0.8)
+          .setDepth(1.5);
+      }
+
+      this.add
+        .rectangle(doorX - doorWidth * 0.43, doorY, doorWidth * 0.12, doorHeight, 0x303a43)
+        .setStrokeStyle(3, 0x63747a)
+        .setDepth(2);
+      this.add
+        .rectangle(doorX + doorWidth * 0.43, doorY, doorWidth * 0.12, doorHeight, 0x303a43)
+        .setStrokeStyle(3, 0x63747a)
+        .setDepth(2);
+    } else {
+      this.add
+        .rectangle(doorX, doorY, doorWidth, doorHeight, 0x171c24)
+        .setStrokeStyle(5, chapterState.shipTested ? 0xd2a35f : 0x59646a)
+        .setDepth(1);
+
+      this.add
+        .rectangle(doorX, doorY, width * 0.008, height * 0.29, 0x63747a)
+        .setDepth(2);
+    }
+
+    const doorHit = this.add
+      .rectangle(doorX, doorY, doorWidth, doorHeight, 0xffffff, 0.001)
       .setInteractive({ useHandCursor: true })
-      .setDepth(1);
+      .setDepth(3);
 
     this.add
-      .rectangle(doorX, doorY, width * 0.008, height * 0.29, 0x63747a)
-      .setDepth(2);
-
-    this.add
-      .text(doorX, height * 0.12, "AUSGANG ZUM STERNENFELD", {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: "13px",
-        color: "#82979a"
-      })
+      .text(
+        doorX,
+        height * 0.12,
+        gateOpen
+          ? "STERNENFELD · CINDER"
+          : chapterState.shipTested
+            ? "✦ STERNENPUNKT · HANGARTOR"
+            : "AUSGANG ZUM STERNENFELD",
+        {
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "13px",
+          color: gateOpen ? "#9ccfd1" : chapterState.shipTested ? "#e7b96c" : "#82979a"
+        }
+      )
       .setOrigin(0.5)
-      .setDepth(2);
+      .setDepth(4);
 
-    door.on("pointerdown", () => this.openHotspot("hangar-door"));
+    doorHit.on("pointerdown", () => this.openHotspot("hangar-door"));
 
     const shipX = width * 0.72;
     const shipY = height * 0.58;
@@ -282,16 +331,63 @@ export class HangarScene extends Phaser.Scene {
       .setDepth(shipY - 19);
 
     this.add
-      .circle(shipX - 25, shipY - 14, 22, 0x274f59)
-      .setStrokeStyle(3, 0x73afb6)
+      .circle(shipX - 25, shipY - 14, 22, chapterState.navigationRestored ? 0x3c7d87 : 0x274f59)
+      .setStrokeStyle(3, chapterState.navigationRestored ? 0x9ce6dc : 0x73afb6)
       .setDepth(shipY - 18);
 
+    if (chapterState.energyCellInstalled) {
+      this.add
+        .circle(shipX + 28, shipY + 10, 7, 0xe1b45e, 0.95)
+        .setDepth(shipY + 4);
+    }
+
+    if (chapterState.coolingRepaired) {
+      const cooling = this.add.graphics().setDepth(shipY + 2);
+      cooling.lineStyle(5, 0x5daeb3, 0.9);
+      cooling.beginPath();
+      cooling.moveTo(shipX - 70, shipY + 38);
+      cooling.lineTo(shipX + 38, shipY + 38);
+      cooling.strokePath();
+    }
+
+    if (chapterState.navigationRestored) {
+      this.add
+        .line(shipX, shipY, 28, -45, 42, -83, 0x9ccfd1, 0.9)
+        .setLineWidth(2)
+        .setDepth(shipY - 17);
+      this.add
+        .circle(shipX + 42, shipY - 83, 4, 0x9ccfd1, 1)
+        .setDepth(shipY - 16);
+    }
+
+    if (chapterState.shipTested) {
+      this.add
+        .ellipse(shipX - 155, shipY - 27, 42, 24, 0x5a5650)
+        .setStrokeStyle(3, 0xd2a35f)
+        .setDepth(shipY - 17);
+      this.add
+        .ellipse(shipX - 155, shipY + 28, 42, 24, 0x5a5650)
+        .setStrokeStyle(3, 0xd2a35f)
+        .setDepth(shipY - 17);
+      this.add
+        .ellipse(shipX - 181, shipY - 27, 46, 12, 0xe7a84f, 0.5)
+        .setDepth(shipY - 18);
+      this.add
+        .ellipse(shipX - 181, shipY + 28, 46, 12, 0xe7a84f, 0.5)
+        .setDepth(shipY - 18);
+    }
+
     this.add
-      .text(shipX, shipY + 52, "altes Sternenschiff", {
+      .text(
+        shipX,
+        shipY + 52,
+        chapterState.shipTested ? "Sternenschiff · STARTKLAR" : "altes Sternenschiff",
+        {
         fontFamily: "system-ui, sans-serif",
         fontSize: "14px",
-        color: "#d2b99c"
-      })
+          color: chapterState.shipTested ? "#f1c975" : "#d2b99c"
+        }
+      )
       .setOrigin(0.5)
       .setDepth(shipY + 53);
 

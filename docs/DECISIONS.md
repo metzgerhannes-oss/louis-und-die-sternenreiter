@@ -83,3 +83,6 @@ Die Hauptgeschichte handelt davon, Louis' Formungsfähigkeit zu entdecken, veran
 
 ## D-20261001-028 – Sternenstaub
 Sternenstaub ist eine reine In-Game-Formungsressource ohne Echtgeldbezug und wird für große ortsgebundene Veränderungen verwendet.
+
+## D-20261001-029 – Gemeinsamer Storyfortschritt
+Weil Philipp, Charly, Olli und Louis immer gemeinsam reisen, ist der Hauptstory-Fortschritt crewweit geteilt. Profilbezogen bleiben aktive Steuerung, persönliches XP/Level, Reisejournal und kosmetische Entwicklung. Ein abgeschlossenes Kapitel wird nicht pro Kind separat erneut gespielt.

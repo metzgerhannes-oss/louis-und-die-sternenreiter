@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { crewSpeakerColor } from "../../domain/chapter1";
 import type { PlayerProfile } from "../../domain/profiles";
 import type {
   StarPointDefinition,
@@ -36,7 +37,6 @@ export function StarPointFlow({
     if (selectedOption) {
       return `${selectedOption.title}: ${selectedOption.description}`;
     }
-
     return customIdea.trim();
   }, [customIdea, selectedOption]);
 
@@ -44,7 +44,7 @@ export function StarPointFlow({
     stage === "choose"
       ? point.louisPrompt
       : stage === "custom"
-        ? "Erzähl mir genau, wie du die Energie zur Werkbank bringen würdest."
+        ? point.customPrompt ?? "Erzähl mir deine Lösung so genau wie möglich."
         : stage === "review"
           ? `Ich habe verstanden: ${ideaText}. Soll ich das so bauen?`
           : point.resultSummary;
@@ -53,7 +53,6 @@ export function StarPointFlow({
     if (autoRead) {
       browserSpeech.speak(spokenText, { rate: speechRate });
     }
-
     return () => browserSpeech.stop();
   }, [autoRead, spokenText, speechRate]);
 
@@ -64,9 +63,7 @@ export function StarPointFlow({
   };
 
   const build = () => {
-    if (!ideaText) {
-      return;
-    }
+    if (!ideaText) return;
 
     completeStarPoint(point, profile, {
       ideaText,
@@ -94,6 +91,19 @@ export function StarPointFlow({
       <h2 id="starpoint-title">
         {stage === "done" ? "Es funktioniert!" : point.title}
       </h2>
+
+      <div className="story-crew-strip" aria-label="Die ganze Crew ist anwesend">
+        {(["Philipp", "Charly", "Olli", "Louis"] as const).map((speaker) => (
+          <span
+            key={speaker}
+            className={speaker === "Louis" ? "story-crew active" : "story-crew"}
+            style={{ "--speaker-color": crewSpeakerColor[speaker] } as React.CSSProperties}
+          >
+            {speaker}
+            {speaker.toLowerCase() === profile.id ? " · aktiv" : speaker === "Louis" ? " · formt" : ""}
+          </span>
+        ))}
+      </div>
 
       <div className="starpoint-context">
         <span className="starpoint-symbol" aria-hidden="true">✦</span>
@@ -149,7 +159,7 @@ export function StarPointFlow({
                 setCustomIdea(event.target.value);
                 setCustomInputMethod("text");
               }}
-              placeholder="Zum Beispiel: Wir bauen eine leuchtende Energieröhre an der Decke …"
+              placeholder="Erzähl Louis deine Lösung …"
               rows={4}
               autoFocus
             />
@@ -191,8 +201,7 @@ export function StarPointFlow({
             <span>Louis baut daraus</span>
             <strong>{ideaText}</strong>
             <p>
-              Diese erste Formung verändert nur diesen Sternenpunkt im Hangar.
-              Die restliche Welt bleibt unverändert.
+              Die Formung gilt nur für diesen Sternenpunkt. Bestehende Story und andere Orte bleiben unverändert.
             </p>
           </div>
           <div className="dialog-actions">
@@ -215,7 +224,7 @@ export function StarPointFlow({
           <div className="starpoint-complete">
             <span aria-hidden="true">✦</span>
             <div>
-              <strong>Werkbank aktiviert</strong>
+              <strong>{point.resultTitle}</strong>
               <p>{point.resultSummary}</p>
             </div>
           </div>
