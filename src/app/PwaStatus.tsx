@@ -1,13 +1,17 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-export function PwaStatus() {
+type PwaStatusProps = {
+  suppressed?: boolean;
+};
+
+export function PwaStatus({ suppressed = false }: PwaStatusProps) {
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker
   } = useRegisterSW();
 
-  if (!offlineReady && !needRefresh) {
+  if (suppressed || (!offlineReady && !needRefresh)) {
     return null;
   }
 
