@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PhaserGame } from "../game/PhaserGame";
 import { gameEventBus } from "../game/EventBus";
+import { PwaStatus } from "./PwaStatus";
 
 export function App() {
   const [scene, setScene] = useState("Boot");
@@ -41,6 +42,8 @@ export function App() {
         </button>
         <span>Erster technischer Hangar-Prototyp</span>
       </footer>
+
+      <PwaStatus />
 
       {louisOpen && (
         <div className="dialog-backdrop" role="presentation" onClick={() => setLouisOpen(false)}>

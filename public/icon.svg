@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Louis und die Sternenreiter">
+  <rect width="512" height="512" rx="112" fill="#11131a"/>
+  <circle cx="256" cy="256" r="170" fill="#27474b"/>
+  <path d="M98 287c74-19 110-67 146-141 17 57 61 97 170 111-59 25-109 72-135 140-41-59-94-94-181-110Z" fill="#e3bb73"/>
+  <circle cx="178" cy="220" r="18" fill="#f7efe1"/>
+  <circle cx="334" cy="203" r="12" fill="#9bd0cf"/>
+</svg>
