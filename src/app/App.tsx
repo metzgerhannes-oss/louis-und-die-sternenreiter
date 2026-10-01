@@ -48,6 +48,7 @@ export function App() {
 
   const refreshChapter = () => {
     setChapterRevision((revision) => revision + 1);
+    gameEventBus.emit("chapter1:state-changed", undefined);
   };
 
   useEffect(() => {
