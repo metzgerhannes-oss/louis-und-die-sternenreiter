@@ -55,30 +55,38 @@
 - Reisejournal
 - Sternenstaub-System
 
-## M6 – Core Galaxy
-- Moss
-- Junction 12
-- Begriff „Sternenformer“
-- Scannerupgrade
-- Sternenreiter-Netzwerk
+## M6 – Core Galaxy ✅
+- ✅ Moss
+- ✅ Junction 12
+- ✅ Begriff „Sternenformer“
+- ✅ Scannerupgrade
+- ✅ Übergang zum unkartierten Sternenpfad
 
-## M7 – Kapitel 3–5
-- erster leerer Sternenpfad
-- Welten-Sternenpunkt
-- zu viele / widersprüchliche Formungen
-- Schrottring
-- Ursprung der Sternenformer
+## M7 – Kapitel 3–5 ✅
+- ✅ erster leerer Sternenpfad
+- ✅ provisorischer Welten-Sternenpunkt
+- ✅ zu viele / widersprüchliche Formungen
+- ✅ Welt- und Wegeregeln
+- ✅ Glasküste
+- ✅ Wolkenozean
+- ✅ Schrottring
+- ✅ Ursprung der Sternenformer
 
-## M8 – Herz der Wege
-- finales Kapitel
-- Sternenformer 07 Identifikation
-- Weltregel-/Stabilitätsrätsel
-- Abschlussentscheidungen
-- Abspann
+## M8 – Herz der Wege ✅
+- ✅ finales Kapitel
+- ✅ Sternenformer 07 Identifikation
+- ✅ Routen-/Energie-/Weltregel-Formungen
+- ✅ Abschlussentscheidung
+- ✅ Abspann / Hüter der Wege
 
 ## M9 – 1.0
-- Freie Reisen
-- freie Sternenpunkte
-- Stabilisierung
-- Accessibility/Audio
-- vollständiger Storydurchlauf
+- ✅ Freie Reisen nach abgeschlossenem Finale
+- ✅ vollständiger Storypfad Kapitel 1–6 im Browser
+- ✅ alle Hauptdialoge und Finale vorlesbar
+- ✅ gemeinsame Crew in allen Storybeats
+- offen: freie zusätzliche Sternenpunkte außerhalb des Storypfads
+- offen: finale Art-Assets statt prozeduraler Weltplatzhalter
+- offen: Supabase-Cloud-Sync / Familien-Auth produktiv aktivieren
+- offen: Creator-Review → GitHub serverseitig produktiv
+- offen: vollständige Progression/XP/Hangar-/Schiffsausbau
+- offen: Stabilisierung und Endgeräte-Abnahme
