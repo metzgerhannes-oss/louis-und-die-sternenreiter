@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { crewSpeakerColor } from "../../domain/chapter1";
 import type { PlayerProfile } from "../../domain/profiles";
+import type { WishBlueprint } from "../../domain/wishes";
 import type {
   StarPointDefinition,
   StarPointOption
 } from "../../domain/starPoints";
 import { gameEventBus } from "../../game/EventBus";
 import { completeStarPoint } from "../../services/starPointState";
+import { interpretWish } from "../../services/wishService";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
 import { VoiceInputButton } from "../speech/VoiceInputButton";
@@ -19,7 +21,7 @@ type StarPointFlowProps = {
   onClose: () => void;
 };
 
-type Stage = "choose" | "custom" | "review" | "done";
+type Stage = "choose" | "custom" | "interpreting" | "review" | "done";
 
 export function StarPointFlow({
   point,
@@ -32,6 +34,9 @@ export function StarPointFlow({
   const [selectedOption, setSelectedOption] = useState<StarPointOption | null>(null);
   const [customIdea, setCustomIdea] = useState("");
   const [customInputMethod, setCustomInputMethod] = useState<"text" | "voice">("text");
+  const [wishBlueprint, setWishBlueprint] = useState<WishBlueprint | null>(null);
+  const [wishSource, setWishSource] = useState<"ai" | "offline" | null>(null);
+  const [wishNotice, setWishNotice] = useState("");
 
   const ideaText = useMemo(() => {
     if (selectedOption) {
@@ -45,9 +50,11 @@ export function StarPointFlow({
       ? point.louisPrompt
       : stage === "custom"
         ? point.customPrompt ?? "Erzähl mir deine Lösung so genau wie möglich."
-        : stage === "review"
-          ? `Ich habe verstanden: ${ideaText}. Soll ich das so bauen?`
-          : point.resultSummary;
+        : stage === "interpreting"
+          ? "Ich prüfe deinen Wunsch und übersetze ihn in einen Bauplan."
+          : stage === "review"
+            ? wishBlueprint?.louisReply ?? `Ich habe verstanden: ${ideaText}. Soll ich das so bauen?`
+            : point.resultSummary;
 
   useEffect(() => {
     if (autoRead) {
@@ -59,6 +66,25 @@ export function StarPointFlow({
   const choosePrepared = (option: StarPointOption) => {
     setSelectedOption(option);
     setCustomIdea("");
+    setStage("review");
+  };
+
+  const interpretCustomWish = async () => {
+    if (!customIdea.trim()) return;
+
+    setWishNotice("");
+    setWishBlueprint(null);
+    setStage("interpreting");
+
+    const result = await interpretWish(customIdea, {
+      starPointId: point.id,
+      locationId: point.locationId,
+      allowedTier: point.tier
+    });
+
+    setWishBlueprint(result.blueprint);
+    setWishSource(result.source);
+    setWishNotice(result.source === "offline" ? result.reason : "");
     setStage("review");
   };
 
@@ -180,7 +206,7 @@ export function StarPointFlow({
             <button
               type="button"
               disabled={!customIdea.trim()}
-              onClick={() => setStage("review")}
+              onClick={() => void interpretCustomWish()}
             >
               Louis zeigen
             </button>
@@ -195,11 +221,36 @@ export function StarPointFlow({
         </>
       )}
 
+      {stage === "interpreting" && (
+        <div className="starpoint-review">
+          <span>Louis übersetzt den Wunsch</span>
+          <strong>✦ Sternenformer arbeitet …</strong>
+          <p>Der Wunsch wird nur interpretiert. Die Spielregeln entscheiden anschließend, was hier wirklich gebaut werden darf.</p>
+        </div>
+      )}
+
       {stage === "review" && (
         <>
           <div className="starpoint-review">
             <span>Louis baut daraus</span>
-            <strong>{ideaText}</strong>
+            <strong>{wishBlueprint?.title ?? ideaText}</strong>
+            <p>{wishBlueprint?.description ?? ideaText}</p>
+            {wishBlueprint && wishBlueprint.requestedTraits.length > 0 && (
+              <p>Merkmale: {wishBlueprint.requestedTraits.join(", ")}</p>
+            )}
+            {wishSource && (
+              <p>
+                {wishSource === "ai"
+                  ? "Wunsch wurde von Louis' KI interpretiert."
+                  : "Offline-Entwurf: Der Wunsch wurde ohne KI-Verbindung übernommen."}
+              </p>
+            )}
+            {wishNotice && <p className="creator-error">{wishNotice}</p>}
+            {wishBlueprint?.needsClarification && wishBlueprint.clarificationQuestion && (
+              <p className="creator-error">
+                Louis fragt noch: {wishBlueprint.clarificationQuestion}
+              </p>
+            )}
             <p>
               Die Formung gilt nur für diesen Sternenpunkt. Bestehende Story und andere Orte bleiben unverändert.
             </p>
@@ -211,7 +262,12 @@ export function StarPointFlow({
             <button
               type="button"
               className="secondary-button"
-              onClick={() => setStage(selectedOption ? "choose" : "custom")}
+              onClick={() => {
+                setWishBlueprint(null);
+                setWishSource(null);
+                setWishNotice("");
+                setStage(selectedOption ? "choose" : "custom");
+              }}
             >
               Ändern
             </button>

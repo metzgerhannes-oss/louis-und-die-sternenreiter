@@ -11,6 +11,7 @@ Eine kostenlose bzw. im kleinen privaten Betrieb kostenfreie Web-/PWA-Architektu
 - **Babylon.js**: nur dort, wo echtes 3D Mehrwert bringt
 - **Supabase / PostgreSQL**: Auth, persistenter Zustand, Canon, Ideen, Storage
 - **Supabase Edge Functions**: serverseitige Aktionen, insbesondere GitHub-Integration
+- **Cloudflare Workers AI**: kostenfreie KI-Interpretation von Kinderwünschen; liefert ausschließlich validierte WishBlueprint-Daten
 - **PWA**: installierbare Web-App und Offline-App-Shell
 - **Phaser/Web Audio**: Sound und Musik
 
@@ -83,3 +84,16 @@ Keine Kinderidee verändert direkt den Canon.
 ## Sicherheitsregel
 
 GitHub-Tokens, Service-Role-Keys und andere privilegierte Secrets dürfen niemals im Client ausgeliefert werden. GitHub-Erstellung erfolgt ausschließlich serverseitig.
+
+
+## Wunsch-KI
+
+Die Wunschfunktion folgt der Architektur in `docs/WISH_AI.md`.
+
+Wichtigste Grenze:
+
+```
+Wunsch -> Workers AI -> WishBlueprint -> Regelengine -> erlaubte Weltänderung
+```
+
+Workers AI hat keinen direkten Schreibzugriff auf Canon, Player State oder Game Engine. Die Anwendung validiert und begrenzt jede KI-Ausgabe vor der Verwendung.

@@ -31,3 +31,18 @@ Das Spiel besitzt eine abgeschlossene Hauptgeschichte mit sechs Kapiteln und ein
 - Spracheingabe ist eine gleichwertige Alternative zur Texteingabe
 
 Weitere verbindliche Entscheidungen liegen unter `docs/`.
+
+
+## Kostenlose Wunsch-KI
+
+Freie Wünsche an Sternenpunkten können über Cloudflare Workers AI interpretiert werden. Die KI liefert nur einen strukturierten Bauplan; die Spielregeln bleiben die einzige Instanz, die Weltzustand verändern darf.
+
+Deployment des Workers:
+
+```bash
+npx wrangler deploy
+```
+
+Anschließend die öffentliche Worker-URL als `VITE_WISH_API_URL` beim Web-Build setzen. Ohne diese Variable bleibt die App funktionsfähig und speichert/übernimmt freie Wünsche als Offline-Entwurf statt auf einen kostenpflichtigen KI-Anbieter auszuweichen.
+
+Der Worker nutzt die Workers-AI-Bindung `AI` aus `wrangler.toml`. Optional kann `ALLOWED_ORIGIN` auf die produktive GitHub-Pages-Origin begrenzt werden.

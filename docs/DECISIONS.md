@@ -86,3 +86,10 @@ Sternenstaub ist eine reine In-Game-Formungsressource ohne Echtgeldbezug und wir
 
 ## D-20261001-029 – Gemeinsamer Storyfortschritt
 Weil Philipp, Charly, Olli und Louis immer gemeinsam reisen, ist der Hauptstory-Fortschritt crewweit geteilt. Profilbezogen bleiben aktive Steuerung, persönliches XP/Level, Reisejournal und kosmetische Entwicklung. Ein abgeschlossenes Kapitel wird nicht pro Kind separat erneut gespielt.
+
+
+## D-20261001-030 – Kostenfreie KI für Wünsche
+Die freie Wunschinterpretation wird in V1 über Cloudflare Workers AI umgesetzt. Es gibt keinen automatischen kostenpflichtigen KI-Fallback. Wird ein kostenloses Kontingent oder ein technisches Limit erreicht, bleibt der Wunsch als Entwurf erhalten.
+
+## D-20261001-031 – KI ist keine Spielautorität
+Die KI darf ausschließlich ein validiertes `WishBlueprint` erzeugen. Canon, Ressourcen, Inventar, Freischaltungen, Formungsstufe und tatsächliche Weltänderungen werden ausschließlich durch deterministische Spielregeln entschieden.
