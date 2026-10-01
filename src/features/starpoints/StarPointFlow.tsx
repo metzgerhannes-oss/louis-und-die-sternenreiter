@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { crewSpeakerColor } from "../../domain/chapter1";
 import type { PlayerProfile } from "../../domain/profiles";
 import type {
   StarPointDefinition,
@@ -90,6 +91,19 @@ export function StarPointFlow({
       <h2 id="starpoint-title">
         {stage === "done" ? "Es funktioniert!" : point.title}
       </h2>
+
+      <div className="story-crew-strip" aria-label="Die ganze Crew ist anwesend">
+        {(["Philipp", "Charly", "Olli", "Louis"] as const).map((speaker) => (
+          <span
+            key={speaker}
+            className={speaker === "Louis" ? "story-crew active" : "story-crew"}
+            style={{ "--speaker-color": crewSpeakerColor[speaker] } as React.CSSProperties}
+          >
+            {speaker}
+            {speaker.toLowerCase() === profile.id ? " · aktiv" : speaker === "Louis" ? " · formt" : ""}
+          </span>
+        ))}
+      </div>
 
       <div className="starpoint-context">
         <span className="starpoint-symbol" aria-hidden="true">✦</span>
