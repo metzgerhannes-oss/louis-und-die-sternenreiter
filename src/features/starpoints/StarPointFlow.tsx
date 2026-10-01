@@ -36,7 +36,6 @@ export function StarPointFlow({
     if (selectedOption) {
       return `${selectedOption.title}: ${selectedOption.description}`;
     }
-
     return customIdea.trim();
   }, [customIdea, selectedOption]);
 
@@ -44,7 +43,7 @@ export function StarPointFlow({
     stage === "choose"
       ? point.louisPrompt
       : stage === "custom"
-        ? "Erzähl mir genau, wie du die Energie zur Werkbank bringen würdest."
+        ? point.customPrompt ?? "Erzähl mir deine Lösung so genau wie möglich."
         : stage === "review"
           ? `Ich habe verstanden: ${ideaText}. Soll ich das so bauen?`
           : point.resultSummary;
@@ -53,7 +52,6 @@ export function StarPointFlow({
     if (autoRead) {
       browserSpeech.speak(spokenText, { rate: speechRate });
     }
-
     return () => browserSpeech.stop();
   }, [autoRead, spokenText, speechRate]);
 
@@ -64,9 +62,7 @@ export function StarPointFlow({
   };
 
   const build = () => {
-    if (!ideaText) {
-      return;
-    }
+    if (!ideaText) return;
 
     completeStarPoint(point, profile, {
       ideaText,
@@ -149,7 +145,7 @@ export function StarPointFlow({
                 setCustomIdea(event.target.value);
                 setCustomInputMethod("text");
               }}
-              placeholder="Zum Beispiel: Wir bauen eine leuchtende Energieröhre an der Decke …"
+              placeholder="Erzähl Louis deine Lösung …"
               rows={4}
               autoFocus
             />
@@ -191,8 +187,7 @@ export function StarPointFlow({
             <span>Louis baut daraus</span>
             <strong>{ideaText}</strong>
             <p>
-              Diese erste Formung verändert nur diesen Sternenpunkt im Hangar.
-              Die restliche Welt bleibt unverändert.
+              Die Formung gilt nur für diesen Sternenpunkt. Bestehende Story und andere Orte bleiben unverändert.
             </p>
           </div>
           <div className="dialog-actions">
@@ -215,7 +210,7 @@ export function StarPointFlow({
           <div className="starpoint-complete">
             <span aria-hidden="true">✦</span>
             <div>
-              <strong>Werkbank aktiviert</strong>
+              <strong>{point.resultTitle}</strong>
               <p>{point.resultSummary}</p>
             </div>
           </div>
