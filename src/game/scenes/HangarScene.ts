@@ -1,5 +1,10 @@
 import Phaser from "phaser";
-import { playerProfiles, type PlayerProfile } from "../../domain/profiles";
+import {
+  getCrewMates,
+  playerProfiles,
+  type PlayerProfile
+} from "../../domain/profiles";
+import { CrewMate } from "../entities/CrewMate";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
 import { LouisCompanion } from "../entities/LouisCompanion";
 import { gameEventBus, type MoveDirection } from "../EventBus";
@@ -17,6 +22,7 @@ type RuntimeHotspot = {
 
 export class HangarScene extends Phaser.Scene {
   private player?: PlayerAvatar;
+  private crewMates: CrewMate[] = [];
   private louis?: LouisCompanion;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: Record<"W" | "A" | "S" | "D", Phaser.Input.Keyboard.Key>;
@@ -84,6 +90,7 @@ export class HangarScene extends Phaser.Scene {
       offInteract();
       offPing();
       this.scale.off("resize", onResize);
+      this.crewMates = [];
       for (const direction of Object.keys(this.moveState) as MoveDirection[]) {
         this.moveState[direction] = false;
       }
@@ -102,8 +109,12 @@ export class HangarScene extends Phaser.Scene {
     const keyboardUp = Boolean(this.cursors?.up.isDown || this.wasd?.W.isDown);
     const keyboardDown = Boolean(this.cursors?.down.isDown || this.wasd?.S.isDown);
 
-    let dx = Number(keyboardRight || this.moveState.right) - Number(keyboardLeft || this.moveState.left);
-    let dy = Number(keyboardDown || this.moveState.down) - Number(keyboardUp || this.moveState.up);
+    let dx =
+      Number(keyboardRight || this.moveState.right) -
+      Number(keyboardLeft || this.moveState.left);
+    let dy =
+      Number(keyboardDown || this.moveState.down) -
+      Number(keyboardUp || this.moveState.up);
 
     if (dx !== 0 || dy !== 0) {
       const length = Math.hypot(dx, dy);
@@ -125,6 +136,10 @@ export class HangarScene extends Phaser.Scene {
       );
 
       this.player.setPosition(nextX, nextY);
+    }
+
+    for (const crewMate of this.crewMates) {
+      crewMate.updateFollow(this.player.x, this.player.y, delta);
     }
 
     this.louis.updateFollow(this.player.x, this.player.y, delta);
@@ -160,7 +175,14 @@ export class HangarScene extends Phaser.Scene {
 
     const floor = this.add.graphics();
     floor.fillStyle(0x343238, 1);
-    floor.fillTriangle(width * 0.04, height * 0.43, width * 0.96, height * 0.43, width, height);
+    floor.fillTriangle(
+      width * 0.04,
+      height * 0.43,
+      width * 0.96,
+      height * 0.43,
+      width,
+      height
+    );
     floor.fillTriangle(width * 0.04, height * 0.43, width, height, 0, height);
     floor.lineStyle(2, 0x675c51, 0.75);
     for (let i = 1; i <= 5; i += 1) {
@@ -178,17 +200,22 @@ export class HangarScene extends Phaser.Scene {
       .setDepth(2);
 
     this.add
-      .text(width * 0.055, height * 0.145, `${profile.displayName} · Sternenreiter Level 1`, {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: "16px",
-        color: profile.accentCss
-      })
+      .text(
+        width * 0.055,
+        height * 0.145,
+        `Aktiv: ${profile.displayName} · Crew vollständig`,
+        {
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "16px",
+          color: profile.accentCss
+        }
+      )
       .setDepth(2);
 
     const doorX = width * 0.52;
     const doorY = height * 0.29;
     const door = this.add
-      .rectangle(doorX, doorY, width * 0.32, height * 0.30, 0x171c24)
+      .rectangle(doorX, doorY, width * 0.32, height * 0.3, 0x171c24)
       .setStrokeStyle(5, 0x59646a)
       .setInteractive({ useHandCursor: true })
       .setDepth(1);
@@ -208,17 +235,26 @@ export class HangarScene extends Phaser.Scene {
     const shipX = width * 0.72;
     const shipY = height * 0.58;
     const ship = this.add
-      .ellipse(shipX, shipY, Math.min(390, width * 0.34), Math.min(150, height * 0.2), 0x765b48)
+      .ellipse(
+        shipX,
+        shipY,
+        Math.min(390, width * 0.34),
+        Math.min(150, height * 0.2),
+        0x765b48
+      )
       .setStrokeStyle(4, 0xb98761)
       .setInteractive({ useHandCursor: true })
       .setDepth(shipY - 20);
+
     this.add
       .triangle(shipX + width * 0.12, shipY, 0, -35, 74, 0, 0, 35, 0x584c46)
       .setDepth(shipY - 19);
+
     this.add
       .circle(shipX - 25, shipY - 14, 22, 0x274f59)
       .setStrokeStyle(3, 0x73afb6)
       .setDepth(shipY - 18);
+
     this.add
       .text(shipX, shipY + 52, "altes Sternenschiff", {
         fontFamily: "system-ui, sans-serif",
@@ -227,6 +263,7 @@ export class HangarScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
       .setDepth(shipY + 53);
+
     ship.on("pointerdown", () => this.openHotspot("ship"));
 
     const benchX = width * 0.18;
@@ -236,8 +273,15 @@ export class HangarScene extends Phaser.Scene {
       .setStrokeStyle(3, 0x9a7656)
       .setInteractive({ useHandCursor: true })
       .setDepth(benchY);
-    this.add.rectangle(benchX - 60, benchY + 43, 18, 72, 0x44372e).setDepth(benchY - 1);
-    this.add.rectangle(benchX + 60, benchY + 43, 18, 72, 0x44372e).setDepth(benchY - 1);
+
+    this.add
+      .rectangle(benchX - 60, benchY + 43, 18, 72, 0x44372e)
+      .setDepth(benchY - 1);
+
+    this.add
+      .rectangle(benchX + 60, benchY + 43, 18, 72, 0x44372e)
+      .setDepth(benchY - 1);
+
     this.add
       .text(benchX, benchY - 44, "WERKBANK", {
         fontFamily: "system-ui, sans-serif",
@@ -247,6 +291,7 @@ export class HangarScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
       .setDepth(benchY + 1);
+
     bench.on("pointerdown", () => this.openHotspot("workbench"));
 
     this.hotspots = [
@@ -256,11 +301,30 @@ export class HangarScene extends Phaser.Scene {
     ];
 
     const startX = width * 0.48;
-    const startY = height * 0.76;
+    const startY = height * 0.72;
+
     this.player = new PlayerAvatar(this, profile, startX, startY);
     this.player.setPosition(startX, startY);
 
-    this.louis = new LouisCompanion(this, startX - 68, startY + 20, () => {
+    const crewProfiles = getCrewMates(profile.id);
+    const formation = [
+      { x: -105, y: 72 },
+      { x: 95, y: 64 }
+    ];
+
+    this.crewMates = crewProfiles.map((crewProfile, index) => {
+      const offset = formation[index];
+      return new CrewMate(
+        this,
+        crewProfile,
+        startX + offset.x,
+        startY + offset.y,
+        offset.x,
+        offset.y
+      );
+    });
+
+    this.louis = new LouisCompanion(this, startX - 62, startY + 20, () => {
       gameEventBus.emit("interaction:louis", undefined);
     });
 
@@ -327,7 +391,8 @@ export class HangarScene extends Phaser.Scene {
       return;
     }
 
-    const label = nearest.kind === "louis" ? "Mit Louis sprechen" : nearest.hotspot.data.title;
+    const label =
+      nearest.kind === "louis" ? "Mit Louis sprechen" : nearest.hotspot.data.title;
     this.hint.setText(`${label} · E / Aktion`).setVisible(true);
   }
 
