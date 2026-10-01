@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import type { PlayerProfile } from "../domain/profiles";
-import { ProfileSelect } from "../features/profiles/ProfileSelect";
+import { LouisDialog } from "../features/companion/LouisDialog";
 import { TouchControls } from "../features/game/TouchControls";
+import { ProfileSelect } from "../features/profiles/ProfileSelect";
+import { ReadAloudButton } from "../features/speech/ReadAloudButton";
 import { PhaserGame } from "../game/PhaserGame";
 import { gameEventBus, type HotspotInteraction } from "../game/EventBus";
 import {
@@ -9,12 +11,13 @@ import {
   loadActiveProfile,
   saveActiveProfile
 } from "../services/profileStorage";
+import { browserSpeech } from "../services/speech/browserSpeech";
+import { loadSpeechSettings } from "../services/speech/speechSettings";
 import { PwaStatus } from "./PwaStatus";
 
 type DialogState =
   | { kind: "louis" }
   | { kind: "hotspot"; interaction: HotspotInteraction }
-  | { kind: "creator-teaser" }
   | null;
 
 export function App() {
@@ -42,6 +45,22 @@ export function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!activeProfile || dialog?.kind !== "hotspot") {
+      return;
+    }
+
+    const settings = loadSpeechSettings(activeProfile.id);
+    if (settings.autoRead) {
+      browserSpeech.speak(
+        `${dialog.interaction.title}. ${dialog.interaction.text}`,
+        { rate: settings.rate }
+      );
+    }
+
+    return () => browserSpeech.stop();
+  }, [activeProfile, dialog]);
+
   const selectProfile = (profile: PlayerProfile) => {
     saveActiveProfile(profile);
     setActiveProfile(profile);
@@ -49,8 +68,14 @@ export function App() {
   };
 
   const switchProfile = () => {
+    browserSpeech.stop();
     clearActiveProfile();
     setActiveProfile(null);
+    setDialog(null);
+  };
+
+  const closeDialog = () => {
+    browserSpeech.stop();
     setDialog(null);
   };
 
@@ -62,20 +87,6 @@ export function App() {
       </>
     );
   }
-
-  const dialogTitle =
-    dialog?.kind === "hotspot"
-      ? dialog.interaction.title
-      : dialog?.kind === "creator-teaser"
-        ? "Ideenwerkstatt"
-        : "Louis";
-
-  const dialogText =
-    dialog?.kind === "hotspot"
-      ? dialog.interaction.text
-      : dialog?.kind === "creator-teaser"
-        ? "Hier kannst du Louis im nächsten Ausbau deine eigenen Planeten, Reisen, Figuren und Missionen erzählen."
-        : `Hey ${activeProfile.displayName}! Ich komme mit. Wenn du etwas Spannendes entdeckst, erzähl es mir.`;
 
   return (
     <main className="app-shell">
@@ -113,30 +124,31 @@ export function App() {
       <PwaStatus />
 
       {dialog && (
-        <div className="dialog-backdrop" role="presentation" onClick={() => setDialog(null)}>
-          <section
-            className="dialog-card"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="game-dialog-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <p className="eyebrow">
-              {dialog.kind === "hotspot" ? "Hangar 3" : "Louis"}
-            </p>
-            <h2 id="game-dialog-title">{dialogTitle}</h2>
-            <p>{dialogText}</p>
-            <div className="dialog-actions">
-              {dialog.kind === "louis" && (
-                <button type="button" onClick={() => setDialog({ kind: "creator-teaser" })}>
-                  Ich habe eine Idee
+        <div className="dialog-backdrop" role="presentation" onClick={closeDialog}>
+          {dialog.kind === "louis" ? (
+            <LouisDialog profile={activeProfile} onClose={closeDialog} />
+          ) : (
+            <section
+              className="dialog-card"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="game-dialog-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <p className="eyebrow">Hangar 3</p>
+              <h2 id="game-dialog-title">{dialog.interaction.title}</h2>
+              <p>{dialog.interaction.text}</p>
+              <div className="dialog-actions">
+                <ReadAloudButton
+                  text={`${dialog.interaction.title}. ${dialog.interaction.text}`}
+                  rate={loadSpeechSettings(activeProfile.id).rate}
+                />
+                <button type="button" className="secondary-button" onClick={closeDialog}>
+                  Weiter
                 </button>
-              )}
-              <button type="button" className="secondary-button" onClick={() => setDialog(null)}>
-                Weiter
-              </button>
-            </div>
-          </section>
+              </div>
+            </section>
+          )}
         </div>
       )}
     </main>
