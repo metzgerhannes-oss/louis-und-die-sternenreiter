@@ -1,4 +1,9 @@
 import { useEffect, useState } from "react";
+import {
+  adventureWorlds,
+  type AdventureBeat,
+  type AdventureWorldId
+} from "../domain/adventure";
 import type { Chapter1StoryBeat } from "../domain/chapter1";
 import type { CinderStoryBeat } from "../domain/chapter2";
 import type { PlayerProfile } from "../domain/profiles";
@@ -11,11 +16,23 @@ import { TouchControls } from "../features/game/TouchControls";
 import { ProfileSelect } from "../features/profiles/ProfileSelect";
 import { ReadAloudButton } from "../features/speech/ReadAloudButton";
 import { StarPointFlow } from "../features/starpoints/StarPointFlow";
+import { AdventureStoryDialog } from "../features/story/AdventureStoryDialog";
 import { Chapter1StoryDialog } from "../features/story/Chapter1StoryDialog";
 import { CinderStoryDialog } from "../features/story/CinderStoryDialog";
+import { FinaleSequence } from "../features/story/FinaleSequence";
 import { LaunchSequence } from "../features/story/LaunchSequence";
 import { PhaserGame } from "../game/PhaserGame";
 import { gameEventBus, type HotspotInteraction } from "../game/EventBus";
+import {
+  advanceAdventureStep,
+  finishMainStory,
+  getAdventureLocationLabel,
+  getAdventureObjective,
+  getAdventureStep,
+  loadAdventureState,
+  travelAdventureWorld,
+  visitAdventureWorld
+} from "../services/adventureState";
 import {
   getChapter1BeatForHotspot,
   getChapter1Objective,
@@ -45,9 +62,11 @@ type DialogState =
   | { kind: "starpoint"; point: StarPointDefinition }
   | { kind: "chapter1-story"; beat: Chapter1StoryBeat }
   | { kind: "cinder-story"; beat: CinderStoryBeat }
+  | { kind: "adventure-story"; beat: AdventureBeat; worldId: AdventureWorldId }
   | null;
 
 type HangarHotspotId = "ship" | "workbench" | "hangar-door";
+type FreeTravelTarget = "hangar" | "cinder" | AdventureWorldId;
 
 function isHangarHotspotId(id: string): id is HangarHotspotId {
   return id === "ship" || id === "workbench" || id === "hangar-door";
@@ -62,6 +81,9 @@ export function App() {
   const [storyRevision, setStoryRevision] = useState(0);
   const [resourceRevision, setResourceRevision] = useState(0);
   const [launching, setLaunching] = useState(false);
+  const [finale, setFinale] = useState(false);
+  const [freeTravelTarget, setFreeTravelTarget] =
+    useState<FreeTravelTarget>("hangar");
 
   const refreshStory = () => {
     setStoryRevision((revision) => revision + 1);
@@ -70,6 +92,11 @@ export function App() {
   const refreshChapter1 = () => {
     refreshStory();
     gameEventBus.emit("chapter1:state-changed", undefined);
+  };
+
+  const refreshAdventure = () => {
+    refreshStory();
+    gameEventBus.emit("adventure:state-changed", undefined);
   };
 
   useEffect(() => {
@@ -83,6 +110,28 @@ export function App() {
     });
 
     const offHotspot = gameEventBus.on("interaction:hotspot", (interaction) => {
+      if (interaction.area === "adventure" && interaction.worldId) {
+        const adventure = loadAdventureState();
+        const step = getAdventureStep(adventure, interaction.worldId);
+
+        if (
+          !adventure.mainStoryFinished &&
+          interaction.worldId === adventure.currentWorld &&
+          step.kind === "story" &&
+          step.hotspotId === interaction.id
+        ) {
+          setDialog({
+            kind: "adventure-story",
+            beat: step.beat,
+            worldId: interaction.worldId
+          });
+          return;
+        }
+
+        setDialog({ kind: "hotspot", interaction });
+        return;
+      }
+
       if (interaction.area === "cinder") {
         const beat = getCinderBeatForHotspot(interaction.id, loadCinderState());
         if (beat) {
@@ -123,11 +172,28 @@ export function App() {
       setDialog({ kind: "starpoint", point });
     });
 
-    const offStarPointCompleted = gameEventBus.on("starpoint:completed", () => {
+    const offStarPointCompleted = gameEventBus.on(
+      "starpoint:completed",
+      ({ id }) => {
+        if (scene === "AdventureScene") {
+          const adventure = loadAdventureState();
+          const step = getAdventureStep(adventure);
+
+          if (step.kind === "starpoint" && step.point.id === id) {
+            advanceAdventureStep(adventure.currentWorld);
+            gameEventBus.emit("adventure:state-changed", undefined);
+          }
+        }
+
+        refreshStory();
+      }
+    );
+
+    const offChapter2 = gameEventBus.on("chapter2:state-changed", () => {
       refreshStory();
     });
 
-    const offChapter2 = gameEventBus.on("chapter2:state-changed", () => {
+    const offAdventure = gameEventBus.on("adventure:state-changed", () => {
       refreshStory();
     });
 
@@ -142,12 +208,26 @@ export function App() {
       offStarPoint();
       offStarPointCompleted();
       offChapter2();
+      offAdventure();
       offResources();
     };
-  }, []);
+  }, [scene]);
 
   useEffect(() => {
-    if (!activeProfile || dialog || launching) {
+    if (!activeProfile || dialog || launching || finale) return;
+
+    if (scene === "AdventureScene") {
+      const adventure = loadAdventureState();
+      if (adventure.mainStoryFinished) return;
+
+      const step = getAdventureStep(adventure);
+      if (step.kind === "story" && !step.hotspotId) {
+        setDialog({
+          kind: "adventure-story",
+          beat: step.beat,
+          worldId: adventure.currentWorld
+        });
+      }
       return;
     }
 
@@ -165,12 +245,10 @@ export function App() {
         setDialog({ kind: "chapter1-story", beat: getStoryBeat("intro") });
       }
     }
-  }, [activeProfile, dialog, launching, scene, storyRevision]);
+  }, [activeProfile, dialog, finale, launching, scene, storyRevision]);
 
   useEffect(() => {
-    if (!activeProfile || dialog?.kind !== "hotspot") {
-      return;
-    }
+    if (!activeProfile || dialog?.kind !== "hotspot") return;
 
     const settings = loadSpeechSettings(activeProfile.id);
     if (settings.autoRead) {
@@ -188,6 +266,7 @@ export function App() {
     setActiveProfile(profile);
     setDialog(null);
     setLaunching(false);
+    setFinale(false);
   };
 
   const switchProfile = () => {
@@ -196,11 +275,40 @@ export function App() {
     setActiveProfile(null);
     setDialog(null);
     setLaunching(false);
+    setFinale(false);
   };
 
   const closeDialog = () => {
     browserSpeech.stop();
     setDialog(null);
+  };
+
+  const continueAdventure = (nextWorld: AdventureWorldId) => {
+    travelAdventureWorld(nextWorld);
+    refreshStory();
+    gameEventBus.emit("world:goto", { worldId: nextWorld });
+  };
+
+  const startMoss = () => {
+    visitAdventureWorld("moss");
+    refreshStory();
+    gameEventBus.emit("world:goto", { worldId: "moss" });
+  };
+
+  const freeTravel = () => {
+    if (freeTravelTarget === "hangar") {
+      gameEventBus.emit("scene:goto", { sceneKey: "HangarScene" });
+      return;
+    }
+
+    if (freeTravelTarget === "cinder") {
+      gameEventBus.emit("scene:goto", { sceneKey: "CinderScene" });
+      return;
+    }
+
+    visitAdventureWorld(freeTravelTarget);
+    refreshStory();
+    gameEventBus.emit("world:goto", { worldId: freeTravelTarget });
   };
 
   if (!activeProfile) {
@@ -216,19 +324,31 @@ export function App() {
 
   const speechSettings = loadSpeechSettings(activeProfile.id);
   const cinderState = loadCinderState();
+  const adventureState = loadAdventureState();
   const resources = loadCrewResources();
   const onCinder = scene === "CinderScene";
-  const objective = onCinder
-    ? getCinderObjective(cinderState)
-    : cinderState.complete
-      ? "Cinder versorgt · Neuer Sternenpfad entdeckt: Moss"
-      : getChapter1Objective(loadChapter1State());
+  const onAdventure = scene === "AdventureScene";
+  const adventureStep = getAdventureStep(adventureState);
 
-  const locationLabel = onCinder
-    ? "Kapitel 2 · Cinder"
-    : cinderState.complete
-      ? "Hangar 3 · Zwischenstopp"
-      : "Kapitel 1 · Hangar 3";
+  const objective = adventureState.mainStoryFinished
+    ? "Hüter der Wege · Freie Reisen sind freigeschaltet."
+    : onAdventure
+      ? getAdventureObjective(adventureState)
+      : onCinder
+        ? getCinderObjective(cinderState)
+        : cinderState.complete
+          ? "Der Hangar bleibt eure Basis. Der nächste Weg führt nach Moss."
+          : getChapter1Objective(loadChapter1State());
+
+  const locationLabel = onAdventure
+    ? getAdventureLocationLabel(adventureState)
+    : onCinder
+      ? "Kapitel 2 · Cinder"
+      : adventureState.mainStoryFinished
+        ? "Freie Reisen · Hangar 3"
+        : cinderState.complete
+          ? "Hangar 3 · Heimatbasis"
+          : "Kapitel 1 · Hangar 3";
 
   return (
     <main className="app-shell">
@@ -245,7 +365,7 @@ export function App() {
           />
           <strong>Aktiv: {activeProfile.displayName}</strong>
           <span className="status-pill">Crew 4/4</span>
-          {(onCinder || resources.stardust > 0) && (
+          {(cinderState.complete || onCinder || onAdventure) && (
             <span className="status-pill stardust-pill">
               ✦ {resources.stardust}
             </span>
@@ -254,8 +374,22 @@ export function App() {
       </header>
 
       <section className="game-stage" aria-label="Spielbereich">
-        {launching ? (
-          <LaunchSequence onReturn={() => setLaunching(false)} />
+        {finale ? (
+          <FinaleSequence
+            onFinish={() => {
+              finishMainStory();
+              setFinale(false);
+              refreshStory();
+              gameEventBus.emit("scene:goto", { sceneKey: "HangarScene" });
+            }}
+          />
+        ) : launching ? (
+          <LaunchSequence
+            onReturn={() => {
+              setLaunching(false);
+              gameEventBus.emit("scene:goto", { sceneKey: "CinderScene" });
+            }}
+          />
         ) : (
           <>
             <PhaserGame key={activeProfile.id} profile={activeProfile} />
@@ -269,7 +403,7 @@ export function App() {
       </section>
 
       <footer className="control-bar">
-        {!launching && (
+        {!launching && !finale && (
           <>
             <button
               type="button"
@@ -277,44 +411,110 @@ export function App() {
             >
               Louis rufen
             </button>
+
             <span className="desktop-hint">{objective}</span>
 
-            {onCinder && cinderState.complete && (
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() =>
-                  gameEventBus.emit("scene:goto", { sceneKey: "HangarScene" })
-                }
-              >
-                Zurück zu Hangar 3
-              </button>
+            {onCinder &&
+              cinderState.complete &&
+              !adventureState.mainStoryFinished && (
+                <button
+                  type="button"
+                  className="journey-button"
+                  onClick={startMoss}
+                >
+                  Weiter nach Moss
+                </button>
+              )}
+
+            {onAdventure &&
+              !adventureState.mainStoryFinished &&
+              adventureStep.kind === "travel" &&
+              adventureStep.nextWorld && (
+                <button
+                  type="button"
+                  className="journey-button"
+                  onClick={() => continueAdventure(adventureStep.nextWorld!)}
+                >
+                  Weiter nach {adventureWorlds[adventureStep.nextWorld].title}
+                </button>
+              )}
+
+            {onAdventure &&
+              !adventureState.mainStoryFinished &&
+              adventureStep.kind === "travel" &&
+              adventureStep.ending && (
+                <button
+                  type="button"
+                  className="journey-button finale-button"
+                  onClick={() => setFinale(true)}
+                >
+                  Herz der Wege aktivieren
+                </button>
+              )}
+
+            {!onAdventure &&
+              !onCinder &&
+              cinderState.complete &&
+              !adventureState.mainStoryFinished && (
+                <button
+                  type="button"
+                  className="journey-button"
+                  onClick={() =>
+                    gameEventBus.emit("world:goto", {
+                      worldId: adventureState.currentWorld
+                    })
+                  }
+                >
+                  Reise fortsetzen
+                </button>
+              )}
+
+            {adventureState.freeTravelUnlocked && (
+              <div className="free-travel-controls">
+                <label>
+                  Freie Reisen
+                  <select
+                    value={freeTravelTarget}
+                    onChange={(event) =>
+                      setFreeTravelTarget(event.target.value as FreeTravelTarget)
+                    }
+                  >
+                    <option value="hangar">Hangar 3</option>
+                    <option value="cinder">Cinder</option>
+                    {Object.values(adventureWorlds).map((world) => (
+                      <option key={world.id} value={world.id}>
+                        {world.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <button type="button" onClick={freeTravel}>
+                  Reisen
+                </button>
+              </div>
             )}
 
-            {!onCinder && cinderState.complete && (
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() =>
-                  gameEventBus.emit("scene:goto", { sceneKey: "CinderScene" })
-                }
-              >
-                Cinder besuchen
-              </button>
-            )}
-
-            <button type="button" className="secondary-button" onClick={switchProfile}>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={switchProfile}
+            >
               Aktive Figur wechseln
             </button>
           </>
         )}
 
-        {launching && <span>Philipp · Charly · Olli · Louis · Kurs Cinder</span>}
+        {launching && (
+          <span>Philipp · Charly · Olli · Louis · Kurs Cinder</span>
+        )}
+        {finale && (
+          <span>Philipp · Charly · Olli · Louis · Das Herz der Wege</span>
+        )}
       </footer>
 
       <PwaStatus />
 
-      {dialog && !launching && (
+      {dialog && !launching && !finale && (
         <div className="dialog-backdrop" role="presentation" onClick={closeDialog}>
           {dialog.kind === "louis" ? (
             <LouisDialog profile={activeProfile} onClose={closeDialog} />
@@ -349,6 +549,18 @@ export function App() {
               onStateChange={refreshStory}
               onClose={closeDialog}
             />
+          ) : dialog.kind === "adventure-story" ? (
+            <AdventureStoryDialog
+              beat={dialog.beat}
+              profile={activeProfile}
+              autoRead={speechSettings.autoRead}
+              speechRate={speechSettings.rate}
+              onComplete={() => {
+                advanceAdventureStep(dialog.worldId);
+                refreshAdventure();
+              }}
+              onClose={closeDialog}
+            />
           ) : (
             <section
               className="dialog-card"
@@ -360,7 +572,11 @@ export function App() {
               <p className="eyebrow">
                 {dialog.interaction.area === "cinder"
                   ? "Cinder · ganze Crew"
-                  : "Hangar 3 · ganze Crew"}
+                  : dialog.interaction.area === "adventure"
+                    ? `${dialog.interaction.worldId
+                        ? adventureWorlds[dialog.interaction.worldId].title
+                        : "Sternenpfad"} · ganze Crew`
+                    : "Hangar 3 · ganze Crew"}
               </p>
               <h2 id="game-dialog-title">{dialog.interaction.title}</h2>
               <p>{dialog.interaction.text}</p>
