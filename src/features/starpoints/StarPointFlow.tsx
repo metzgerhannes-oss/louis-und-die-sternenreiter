@@ -37,7 +37,7 @@ export function StarPointFlow({
   const [selectedOption, setSelectedOption] = useState<StarPointOption | null>(null);
   const [customIdea, setCustomIdea] = useState("");
   const [customInputMethod, setCustomInputMethod] = useState<"text" | "voice">("text");
-  const [resourceRevision, setResourceRevision] = useState(0);
+  const [, setResourceRevision] = useState(0);
 
   const stardustCost = point.stardustCost ?? 0;
   const resources = loadCrewResources();
