@@ -100,7 +100,8 @@ export class PlayerAvatar {
     this.container.setScale(perspectiveScale * this.profile.scaleFactor);
 
     const dx = x - previousX;
-    this.movementLean = Phaser.Math.Clamp(dx * 0.13, -2.4, 2.4);
+    this.movementLean =
+      Math.abs(dx) > 0.2 ? Phaser.Math.Clamp(dx * 0.13, -2.4, 2.4) : 0;
 
     if (Math.abs(dx) > 0.2) {
       const facingLeft = dx < 0;
