@@ -12,6 +12,7 @@ import {
   type StarPointDefinition
 } from "../domain/starPoints";
 import { LouisDialog } from "../features/companion/LouisDialog";
+import { GameHud } from "../features/game/GameHud";
 import { TouchControls } from "../features/game/TouchControls";
 import { ProfileSelect } from "../features/profiles/ProfileSelect";
 import { ReadAloudButton } from "../features/speech/ReadAloudButton";
@@ -352,26 +353,6 @@ export function App() {
 
   return (
     <main className="app-shell">
-      <header className="topbar">
-        <div>
-          <p className="eyebrow">{locationLabel}</p>
-          <h1>Louis &amp; die Sternenreiter</h1>
-        </div>
-        <div className="profile-chip">
-          <span
-            className="profile-chip-dot"
-            style={{ background: activeProfile.accentCss }}
-            aria-hidden="true"
-          />
-          <strong>Aktiv: {activeProfile.displayName}</strong>
-          <span className="status-pill">Crew 4/4</span>
-          {(cinderState.complete || onCinder || onAdventure) && (
-            <span className="status-pill stardust-pill">
-              ✦ {resources.stardust}
-            </span>
-          )}
-        </div>
-      </header>
 
       <section className="game-stage" aria-label="Spielbereich">
         {finale ? (
@@ -395,10 +376,12 @@ export function App() {
         ) : (
           <>
             <PhaserGame key={activeProfile.id} profile={activeProfile} />
-            <div className="chapter-objective">
-              <span>Aktuelles Ziel</span>
-              <strong>{objective}</strong>
-            </div>
+            <GameHud
+              activeProfile={activeProfile}
+              mission={objective}
+              location={locationLabel}
+              stardust={resources.stardust}
+            />
             <TouchControls />
           </>
         )}
@@ -407,15 +390,6 @@ export function App() {
       <footer className="control-bar">
         {!launching && !finale && (
           <>
-            <button
-              type="button"
-              onClick={() => gameEventBus.emit("ui:louis:ping", undefined)}
-            >
-              Louis rufen
-            </button>
-
-            <span className="desktop-hint">{objective}</span>
-
             {onCinder &&
               cinderState.complete &&
               !adventureState.mainStoryFinished && (
