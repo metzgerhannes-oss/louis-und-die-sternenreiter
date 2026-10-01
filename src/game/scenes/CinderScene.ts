@@ -174,10 +174,11 @@ export class CinderScene extends Phaser.Scene {
         width * 0.06,
         width * 0.94
       );
+      const compact = width <= 860 && height > width;
       const nextY = Phaser.Math.Clamp(
         this.player.y + dy * speed * 0.74 * seconds,
-        height * 0.46,
-        height * 0.9
+        height * (compact ? 0.37 : 0.46),
+        height * (compact ? 0.78 : 0.9)
       );
 
       this.player.setPosition(nextX, nextY);
@@ -218,6 +219,7 @@ export class CinderScene extends Phaser.Scene {
     const state = loadCinderState();
     const moistureRestored = isStarPointCompleted(cinderMoistureStarPoint.id);
     const distributionBuilt = isStarPointCompleted(cinderDistributionStarPoint.id);
+    const compact = width <= 860 && height > width;
 
     this.cameras.main.setBackgroundColor("#391e1a");
 
@@ -337,7 +339,8 @@ export class CinderScene extends Phaser.Scene {
         fontStyle: "900",
         color: "#ffe0a6"
       })
-      .setDepth(3);
+      .setDepth(3)
+      .setVisible(!compact);
 
     this.add
       .text(width * 0.047, height * 0.135, "Staubhafen · roter Außenposten", {
@@ -345,12 +348,22 @@ export class CinderScene extends Phaser.Scene {
         fontSize: "15px",
         color: "#f0b18e"
       })
-      .setDepth(3);
+      .setDepth(3)
+      .setVisible(!compact);
 
-    this.drawShip(width * 0.16, height * 0.7, state.complete);
-    this.drawSettlement(width * 0.74, height * 0.56, distributionBuilt);
-    this.drawCondensers(width * 0.28, height * 0.54, moistureRestored);
-    this.drawWorkshop(width * 0.84, height * 0.72, state.waterCelebrated);
+    const shipX = width * (compact ? 0.17 : 0.16);
+    const shipY = height * (compact ? 0.48 : 0.7);
+    const settlementX = width * (compact ? 0.74 : 0.74);
+    const settlementY = height * (compact ? 0.49 : 0.56);
+    const condenserX = width * (compact ? 0.3 : 0.28);
+    const condenserY = height * (compact ? 0.5 : 0.54);
+    const workshopX = width * (compact ? 0.82 : 0.84);
+    const workshopY = height * (compact ? 0.64 : 0.72);
+
+    this.drawShip(shipX, shipY, state.complete);
+    this.drawSettlement(settlementX, settlementY, distributionBuilt);
+    this.drawCondensers(condenserX, condenserY, moistureRestored);
+    this.drawWorkshop(workshopX, workshopY, state.waterCelebrated);
 
     if (distributionBuilt) {
       const pipe = this.add.graphics().setDepth(4);
@@ -371,23 +384,23 @@ export class CinderScene extends Phaser.Scene {
     this.hotspots = [
       {
         data: cinderHotspots.ship,
-        x: width * 0.16,
-        y: height * 0.74
+        x: shipX,
+        y: shipY + (compact ? 26 : 40)
       },
       {
         data: cinderHotspots.settlement,
-        x: width * 0.74,
-        y: height * 0.63
+        x: settlementX,
+        y: settlementY + (compact ? 42 : 70)
       },
       {
         data: cinderHotspots.condensers,
-        x: width * 0.28,
-        y: height * 0.61
+        x: condenserX,
+        y: condenserY + (compact ? 42 : 70)
       },
       {
         data: cinderHotspots.workshop,
-        x: width * 0.84,
-        y: height * 0.77
+        x: workshopX,
+        y: workshopY + (compact ? 38 : 66)
       }
     ];
 
@@ -441,16 +454,21 @@ export class CinderScene extends Phaser.Scene {
       );
     }
 
-    const startX = width * 0.47;
-    const startY = height * 0.78;
+    const startX = width * (compact ? 0.5 : 0.47);
+    const startY = height * (compact ? 0.68 : 0.78);
 
     this.player = new PlayerAvatar(this, profile, startX, startY);
     this.player.setPosition(startX, startY);
 
-    const formation = [
-      { x: -108, y: 70 },
-      { x: 98, y: 65 }
-    ];
+    const formation = compact
+      ? [
+          { x: -72, y: 48 },
+          { x: 70, y: 44 }
+        ]
+      : [
+          { x: -108, y: 70 },
+          { x: 98, y: 65 }
+        ];
 
     this.crewMates = getCrewMates(profile.id).map((crewProfile, index) => {
       const offset = formation[index];
@@ -464,18 +482,23 @@ export class CinderScene extends Phaser.Scene {
       );
     });
 
-    this.louis = new LouisCompanion(this, startX - 62, startY + 20, () => {
-      gameEventBus.emit("interaction:louis", undefined);
-    });
+    this.louis = new LouisCompanion(
+      this,
+      startX - (compact ? 46 : 62),
+      startY + (compact ? 12 : 20),
+      () => {
+        gameEventBus.emit("interaction:louis", undefined);
+      }
+    );
 
     this.hint = this.add
-      .text(width / 2, height * 0.43, "", {
+      .text(width / 2, compact ? height * 0.19 : height * 0.43, "", {
         fontFamily: "system-ui, sans-serif",
-        fontSize: "15px",
+        fontSize: compact ? "12px" : "15px",
         fontStyle: "700",
         color: "#fff7e7",
         backgroundColor: "#4e2b24dd",
-        padding: { x: 11, y: 7 }
+        padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
       })
       .setOrigin(0.5)
       .setDepth(4000)
@@ -483,7 +506,10 @@ export class CinderScene extends Phaser.Scene {
   }
 
   private drawShip(x: number, y: number, upgraded: boolean): void {
-    const scale = Phaser.Math.Clamp(this.scale.width / 1180, 0.66, 0.92);
+    const compact = this.scale.width <= 860 && this.scale.height > this.scale.width;
+    const scale = compact
+      ? Phaser.Math.Clamp(this.scale.width / 1500, 0.46, 0.56)
+      : Phaser.Math.Clamp(this.scale.width / 1180, 0.66, 0.92);
 
     const shadow = this.add.ellipse(0, 42, 235, 37, 0x000000, 0.3);
 
@@ -676,7 +702,8 @@ export class CinderScene extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-      .setDepth(y + 7);
+      .setDepth(y + 7)
+      .setVisible(!(this.scale.width <= 860 && this.scale.height > this.scale.width));
 
     for (const block of hitObjects) {
       block.setInteractive({ useHandCursor: true }).on("pointerdown", () => {
@@ -782,7 +809,8 @@ export class CinderScene extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-      .setDepth(y + 6);
+      .setDepth(y + 6)
+      .setVisible(!(this.scale.width <= 860 && this.scale.height > this.scale.width));
   }
 
   private drawWorkshop(x: number, y: number, available: boolean): void {
@@ -846,7 +874,8 @@ export class CinderScene extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-      .setDepth(y + 5);
+      .setDepth(y + 5)
+      .setVisible(!(this.scale.width <= 860 && this.scale.height > this.scale.width));
 
     workshop.on("pointerdown", () => {
       gameEventBus.emit("interaction:hotspot", cinderHotspots.workshop);
