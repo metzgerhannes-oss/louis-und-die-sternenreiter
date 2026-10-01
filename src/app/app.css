@@ -138,6 +138,11 @@ button:focus-visible {
   cursor: pointer;
 }
 
+.dialog-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .secondary-button {
   background: #292c33 !important;
 }
@@ -154,6 +159,8 @@ button:focus-visible {
 
 .dialog-card {
   width: min(34rem, 100%);
+  max-height: min(90vh, 52rem);
+  overflow: auto;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 1.1rem;
   padding: 1.3rem;
@@ -327,6 +334,156 @@ button:focus-visible {
   display: none;
 }
 
+.louis-dialog {
+  width: min(40rem, 100%);
+}
+
+.louis-prompt {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(156, 199, 200, 0.22);
+  border-radius: 1rem;
+  background: rgba(29, 70, 74, 0.22);
+}
+
+.louis-prompt p {
+  margin: 0 0 0.75rem;
+}
+
+.speech-button {
+  border: 1px solid rgba(155, 216, 220, 0.28);
+  border-radius: 0.7rem;
+  padding: 0.58rem 0.75rem;
+  color: #eefcfc;
+  background: rgba(37, 86, 93, 0.65);
+  cursor: pointer;
+}
+
+.speech-button.listening {
+  box-shadow: 0 0 0 4px rgba(91, 198, 201, 0.15);
+}
+
+.speech-settings {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.8rem 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.speech-settings label {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  color: #d6d1c7;
+  font-size: 0.9rem;
+}
+
+.speech-settings select {
+  margin-left: auto;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.55rem;
+  padding: 0.45rem 0.6rem;
+  color: #f7f0e4;
+  background: #171b22;
+}
+
+.creator-flow h2 {
+  margin-bottom: 0.6rem;
+}
+
+.creator-field {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+}
+
+.creator-field > span,
+.idea-review span {
+  color: #9cc7c8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.creator-field textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 7rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.85rem;
+  padding: 0.9rem;
+  color: #fff8eb;
+  background: #131820;
+  line-height: 1.45;
+  font: inherit;
+}
+
+.creator-field textarea:focus {
+  outline: 3px solid rgba(155, 216, 220, 0.25);
+  border-color: #78b8ba;
+}
+
+.creator-input-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 0.7rem;
+}
+
+.creator-confirm-note,
+.question-progress,
+.voice-fallback,
+.voice-error,
+.speech-privacy,
+.creator-status {
+  color: #99978f;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.voice-input {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.voice-error,
+.creator-error {
+  color: #efb5a9;
+}
+
+.idea-review {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.idea-review > div {
+  display: grid;
+  gap: 0.22rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.idea-review strong {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.speech-privacy {
+  margin: 1rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
 @media (max-width: 900px), (pointer: coarse) {
   .touch-controls {
     position: absolute;
@@ -442,5 +599,14 @@ button:focus-visible {
   .profile-avatar::before {
     width: 4.2rem;
     height: 4.8rem;
+  }
+
+  .speech-settings {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-card {
+    max-height: 94vh;
+    padding: 1rem;
   }
 }
