@@ -35,3 +35,58 @@ values
 on conflict (rule_key) do update
 set rule_text = excluded.rule_text,
     severity = excluded.severity;
+
+
+-- Sternenformer / Chapter 1
+insert into public.world_locations (id, slug, name, kind, chapter_min, canon_data)
+values (
+  '00000000-0000-0000-0000-000000001001',
+  'hangar-3',
+  'Hangar 3',
+  'hangar',
+  1,
+  '{"home_base":true,"crew":["philipp","charly","olli","louis"]}'::jsonb
+)
+on conflict (id) do update
+set canon_data = excluded.canon_data;
+
+insert into public.star_points (
+  id,
+  location_id,
+  key,
+  title,
+  context_text,
+  creation_tier_max,
+  allowed_categories,
+  blocked_categories,
+  material_requirements,
+  stardust_cost,
+  canon_constraints,
+  prepared_options,
+  state
+)
+values (
+  '00000000-0000-0000-0000-000000002001',
+  '00000000-0000-0000-0000-000000001001',
+  'hangar-energy-distributor',
+  'Der tote Energieverteiler',
+  'Die Werkbank bekommt keinen Strom. Ein alter Anschluss ist vorhanden, aber die Verbindung fehlt.',
+  'B',
+  array['energy','repair','utility'],
+  array['story_skip','hangar_destruction'],
+  '{"scrap_parts":1}'::jsonb,
+  0,
+  '{"preserve_hangar":true,"must_power_workbench":true}'::jsonb,
+  '[
+    {"id":"cable-bridge","title":"Kabelbrücke"},
+    {"id":"distributor-bot","title":"Verteilerroboter"},
+    {"id":"wall-conduit","title":"Wandleitung"}
+  ]'::jsonb,
+  'active'
+)
+on conflict (key) do update
+set
+  title = excluded.title,
+  context_text = excluded.context_text,
+  prepared_options = excluded.prepared_options,
+  canon_constraints = excluded.canon_constraints;
