@@ -24,6 +24,7 @@ type GameEventMap = {
   "adventure:state-changed": undefined;
   "resources:changed": undefined;
   "ui:louis:ping": undefined;
+  "ui:scanner:pulse": undefined;
   "input:move": { direction: MoveDirection; active: boolean };
   "input:interact": undefined;
 };
