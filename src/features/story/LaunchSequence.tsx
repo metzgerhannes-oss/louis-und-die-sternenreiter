@@ -25,6 +25,13 @@ export function LaunchSequence({ onReturn }: LaunchSequenceProps) {
         <span className="launch-cockpit" />
       </div>
 
+      <div className="launch-crew-badges" aria-label="Die gesamte Crew startet gemeinsam">
+        <span>Philipp</span>
+        <span>Charly</span>
+        <span>Olli</span>
+        <span>Louis</span>
+      </div>
+
       <div className={complete ? "launch-copy complete" : "launch-copy"}>
         <p className="eyebrow">
           {complete ? "Kapitel 1 abgeschlossen" : "Erster Start"}
