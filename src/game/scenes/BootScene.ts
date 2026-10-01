@@ -1,4 +1,8 @@
 import Phaser from "phaser";
+import {
+  createCircularCrewTextures,
+  preloadCrewTextures
+} from "../assets/crewTextures";
 import { loadAdventureState } from "../../services/adventureState";
 import { loadChapter1State } from "../../services/chapter1State";
 import { loadCinderState } from "../../services/cinderState";
@@ -8,7 +12,12 @@ export class BootScene extends Phaser.Scene {
     super("BootScene");
   }
 
+  preload(): void {
+    preloadCrewTextures(this);
+  }
+
   create(): void {
+    createCircularCrewTextures(this);
     const chapter1 = loadChapter1State();
     const cinder = loadCinderState();
     const adventure = loadAdventureState();
