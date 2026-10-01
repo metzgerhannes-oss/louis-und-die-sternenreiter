@@ -174,10 +174,11 @@ export class HangarScene extends Phaser.Scene {
         width * 0.08,
         width * 0.92
       );
+      const compact = width <= 860 && height > width;
       const nextY = Phaser.Math.Clamp(
         this.player.y + dy * speed * 0.72 * seconds,
-        height * 0.48,
-        height * 0.86
+        height * (compact ? 0.37 : 0.48),
+        height * (compact ? 0.78 : 0.86)
       );
 
       this.player.setPosition(nextX, nextY);
@@ -220,6 +221,7 @@ export class HangarScene extends Phaser.Scene {
     const chapterState = loadChapter1State();
     const energyRestored = isStarPointCompleted(hangarEnergyStarPoint.id);
     const gateOpen = isStarPointCompleted(hangarGateStarPoint.id);
+    const compact = width <= 860 && height > width;
 
     this.cameras.main.setBackgroundColor("#070c12");
 
@@ -442,13 +444,16 @@ export class HangarScene extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-      .setDepth(4);
+      .setDepth(4)
+      .setVisible(!compact);
 
     doorHit.on("pointerdown", () => this.openHotspot("hangar-door"));
 
-    const shipX = width * 0.72;
-    const shipY = height * 0.59;
-    const shipScale = Phaser.Math.Clamp(width / 1180, 0.68, 1.03);
+    const shipX = width * (compact ? 0.73 : 0.72);
+    const shipY = height * (compact ? 0.47 : 0.59);
+    const shipScale = compact
+      ? Phaser.Math.Clamp(width / 1450, 0.48, 0.58)
+      : Phaser.Math.Clamp(width / 1180, 0.68, 1.03);
 
     const shipShadow = this.add.ellipse(0, 57, 360, 58, 0x000000, 0.34);
 
@@ -646,12 +651,13 @@ export class HangarScene extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-      .setDepth(shipY + 80);
+      .setDepth(shipY + 80)
+      .setVisible(!compact);
 
     shipContainer.on("pointerdown", () => this.openHotspot("ship"));
 
-    const benchX = width * 0.18;
-    const benchY = height * 0.56;
+    const benchX = width * (compact ? 0.17 : 0.18);
+    const benchY = height * (compact ? 0.49 : 0.56);
     const benchColor = energyRestored ? 0x6b5540 : 0x463c34;
     const benchStroke = energyRestored ? 0xd2a35f : 0x735b49;
 
@@ -677,12 +683,13 @@ export class HangarScene extends Phaser.Scene {
         color: energyRestored ? "#f1c975" : "#a58d76"
       })
       .setOrigin(0.5)
-      .setDepth(benchY + 1);
+      .setDepth(benchY + 1)
+      .setVisible(!compact);
 
     bench.on("pointerdown", () => this.openHotspot("workbench"));
 
-    const energyX = width * 0.34;
-    const energyY = height * 0.55;
+    const energyX = width * (compact ? 0.35 : 0.34);
+    const energyY = height * (compact ? 0.49 : 0.55);
 
     const energyNode = this.add
       .rectangle(
@@ -713,7 +720,8 @@ export class HangarScene extends Phaser.Scene {
         color: energyRestored ? "#9ce6dc" : "#e7a37c"
       })
       .setOrigin(0.5)
-      .setDepth(energyY + 2);
+      .setDepth(energyY + 2)
+      .setVisible(!compact);
 
     if (energyRestored) {
       const cable = this.add.graphics().setDepth(benchY - 2);
@@ -757,17 +765,22 @@ export class HangarScene extends Phaser.Scene {
       { data: hangarHotspots.workbench, x: benchX, y: benchY + 55 }
     ];
 
-    const startX = width * 0.48;
-    const startY = height * 0.72;
+    const startX = width * (compact ? 0.5 : 0.48);
+    const startY = height * (compact ? 0.66 : 0.72);
 
     this.player = new PlayerAvatar(this, profile, startX, startY);
     this.player.setPosition(startX, startY);
 
     const crewProfiles = getCrewMates(profile.id);
-    const formation = [
-      { x: -105, y: 72 },
-      { x: 95, y: 64 }
-    ];
+    const formation = compact
+      ? [
+          { x: -72, y: 48 },
+          { x: 70, y: 44 }
+        ]
+      : [
+          { x: -105, y: 72 },
+          { x: 95, y: 64 }
+        ];
 
     this.crewMates = crewProfiles.map((crewProfile, index) => {
       const offset = formation[index];
@@ -781,18 +794,23 @@ export class HangarScene extends Phaser.Scene {
       );
     });
 
-    this.louis = new LouisCompanion(this, startX - 62, startY + 20, () => {
-      gameEventBus.emit("interaction:louis", undefined);
-    });
+    this.louis = new LouisCompanion(
+      this,
+      startX - (compact ? 46 : 62),
+      startY + (compact ? 12 : 20),
+      () => {
+        gameEventBus.emit("interaction:louis", undefined);
+      }
+    );
 
     this.hint = this.add
-      .text(width / 2, height * 0.43, "", {
+      .text(width / 2, compact ? height * 0.19 : height * 0.43, "", {
         fontFamily: "system-ui, sans-serif",
-        fontSize: "15px",
+        fontSize: compact ? "12px" : "15px",
         fontStyle: "700",
         color: "#fff7e7",
         backgroundColor: "#10151ddd",
-        padding: { x: 11, y: 7 }
+        padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
       })
       .setOrigin(0.5)
       .setDepth(4000)
