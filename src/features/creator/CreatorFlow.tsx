@@ -55,7 +55,7 @@ export function CreatorFlow({
 
   useEffect(() => {
     if (autoRead) {
-      browserSpeech.speak(prompt, { rate: speechRate });
+      browserSpeech.speak(prompt, { rate: speechRate, speaker: "Louis" });
     }
 
     return () => browserSpeech.stop();
@@ -134,7 +134,7 @@ export function CreatorFlow({
 
       <div className="louis-prompt">
         <p>{prompt}</p>
-        <ReadAloudButton text={prompt} rate={speechRate} />
+        <ReadAloudButton text={prompt} rate={speechRate} speaker="Louis" />
       </div>
 
       {stage === "idea" && (
