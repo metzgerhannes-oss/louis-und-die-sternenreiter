@@ -5,7 +5,7 @@ export type CrewTextureId = ProfileId | "louis";
 
 const base = import.meta.env.BASE_URL;
 
-const crewTextureSources: Record<CrewTextureId, { key: string; url: string }> = {
+const crewPortraitSources: Record<CrewTextureId, { key: string; url: string }> = {
   philipp: {
     key: "crew-portrait-philipp",
     url: `${base}assets/crew/philipp-portrait-v4.webp`
@@ -24,8 +24,33 @@ const crewTextureSources: Record<CrewTextureId, { key: string; url: string }> = 
   }
 };
 
+const crewSpriteSources: Record<CrewTextureId, { key: string; url: string }> = {
+  philipp: {
+    key: "crew-sprite-philipp-front-v1",
+    url: `${base}assets/sprites/philipp-front-v1.webp`
+  },
+  charly: {
+    key: "crew-sprite-charly-front-v1",
+    url: `${base}assets/sprites/charly-front-v1.webp`
+  },
+  olli: {
+    key: "crew-sprite-olli-front-v1",
+    url: `${base}assets/sprites/olli-front-v1.webp`
+  },
+  louis: {
+    key: "crew-sprite-louis-front-v1",
+    url: `${base}assets/sprites/louis-front-v1.webp`
+  }
+};
+
 export function preloadCrewTextures(scene: Phaser.Scene): void {
-  for (const source of Object.values(crewTextureSources)) {
+  for (const source of Object.values(crewPortraitSources)) {
+    if (!scene.textures.exists(source.key)) {
+      scene.load.image(source.key, source.url);
+    }
+  }
+
+  for (const source of Object.values(crewSpriteSources)) {
     if (!scene.textures.exists(source.key)) {
       scene.load.image(source.key, source.url);
     }
@@ -33,7 +58,7 @@ export function preloadCrewTextures(scene: Phaser.Scene): void {
 }
 
 export function createCircularCrewTextures(scene: Phaser.Scene): void {
-  for (const source of Object.values(crewTextureSources)) {
+  for (const source of Object.values(crewPortraitSources)) {
     const circleKey = `${source.key}-circle`;
     if (scene.textures.exists(circleKey) || !scene.textures.exists(source.key)) {
       continue;
@@ -64,5 +89,9 @@ export function createCircularCrewTextures(scene: Phaser.Scene): void {
 }
 
 export function getCrewPortraitTexture(id: CrewTextureId): string {
-  return `${crewTextureSources[id].key}-circle`;
+  return `${crewPortraitSources[id].key}-circle`;
+}
+
+export function getCrewSpriteTexture(id: CrewTextureId): string {
+  return crewSpriteSources[id].key;
 }
