@@ -61,7 +61,7 @@ export function StarPointFlow({
 
   useEffect(() => {
     if (autoRead) {
-      browserSpeech.speak(spokenText, { rate: speechRate });
+      browserSpeech.speak(spokenText, { rate: speechRate, speaker: "Louis" });
     }
     return () => browserSpeech.stop();
   }, [autoRead, spokenText, speechRate]);
@@ -141,7 +141,7 @@ export function StarPointFlow({
 
       <div className="louis-prompt">
         <p>{spokenText}</p>
-        <ReadAloudButton text={spokenText} rate={speechRate} />
+        <ReadAloudButton text={spokenText} rate={speechRate} speaker="Louis" />
       </div>
 
       {stage === "choose" && (

@@ -2078,3 +2078,84 @@ button:focus-visible {
     overflow-x: auto;
   }
 }
+
+
+/* === Audio & voice settings ============================================= */
+
+.audio-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.7rem 0.9rem;
+  align-items: center;
+  margin-top: 0.8rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(99, 182, 196, 0.18);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, rgba(62, 126, 140, 0.08), transparent 60%),
+    rgba(8, 17, 27, 0.42);
+}
+
+.audio-settings label {
+  color: #d5d8d4;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.audio-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.audio-toggle input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: #65bcc8;
+}
+
+.audio-volume {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.audio-volume input[type="range"] {
+  width: 100%;
+  accent-color: #d2a35f;
+}
+
+.voice-preview-button {
+  min-height: var(--touch-min);
+  border: 1px solid rgba(210, 163, 95, 0.42);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
+  color: #fff0cd;
+  background:
+    linear-gradient(180deg, rgba(210,163,95,.14), rgba(24,35,45,.82));
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.voice-preview-button:hover,
+.voice-preview-button:focus-visible {
+  border-color: #e1bd75;
+  background:
+    linear-gradient(180deg, rgba(210,163,95,.24), rgba(30,48,58,.9));
+}
+
+.voice-note {
+  margin: 0.65rem 0 0;
+  color: #8fa3aa;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 680px) {
+  .audio-settings {
+    grid-template-columns: 1fr;
+  }
+
+  .voice-preview-button {
+    width: 100%;
+  }
+}

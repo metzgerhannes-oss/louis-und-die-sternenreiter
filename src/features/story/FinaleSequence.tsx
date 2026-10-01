@@ -54,7 +54,7 @@ export function FinaleSequence({
 
   useEffect(() => {
     if (autoRead) {
-      browserSpeech.speak(spokenText, { rate: speechRate });
+      browserSpeech.speak(spokenText, { rate: speechRate, speaker: "Narrator" });
     }
 
     return () => browserSpeech.stop();
@@ -88,7 +88,7 @@ export function FinaleSequence({
         )}
 
         <div className="dialog-actions finale-actions">
-          <ReadAloudButton text={spokenText} rate={speechRate} />
+          <ReadAloudButton text={spokenText} rate={speechRate} speaker="Narrator" />
           <button
             type="button"
             onClick={() => {

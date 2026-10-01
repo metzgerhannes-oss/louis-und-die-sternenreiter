@@ -39,14 +39,11 @@ export function CinderStoryDialog({
   const line = beat.lines[lineIndex];
   const isLast = lineIndex === beat.lines.length - 1;
 
-  const spokenText = useMemo(
-    () => `${line.speaker}: ${line.text}`,
-    [line.speaker, line.text]
-  );
+  const spokenText = useMemo(() => line.text, [line.text]);
 
   useEffect(() => {
     if (autoRead) {
-      browserSpeech.speak(spokenText, { rate: speechRate });
+      browserSpeech.speak(spokenText, { rate: speechRate, speaker: line.speaker });
     }
     return () => browserSpeech.stop();
   }, [autoRead, speechRate, spokenText]);
@@ -115,7 +112,7 @@ export function CinderStoryDialog({
       </div>
 
       <div className="dialog-actions">
-        <ReadAloudButton text={spokenText} rate={speechRate} />
+        <ReadAloudButton text={spokenText} rate={speechRate} speaker={line.speaker} />
         <button type="button" onClick={advance}>
           {isLast ? beat.actionLabel : "Weiter"}
         </button>
