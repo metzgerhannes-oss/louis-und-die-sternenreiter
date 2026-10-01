@@ -612,3 +612,128 @@ button:focus-visible {
     padding: 1rem;
   }
 }
+
+
+.starpoint-dialog {
+  width: min(44rem, 100%);
+}
+
+.starpoint-context,
+.starpoint-complete {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(210, 163, 95, 0.26);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(145deg, rgba(210, 163, 95, 0.08), transparent 65%),
+    rgba(255, 255, 255, 0.025);
+}
+
+.starpoint-context p,
+.starpoint-complete p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text-muted);
+}
+
+.starpoint-symbol,
+.starpoint-complete > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  color: #231b12;
+  background: var(--color-amber);
+  box-shadow: 0 0 1.4rem rgba(210, 163, 95, 0.32);
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.starpoint-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.starpoint-option,
+.starpoint-own-idea {
+  min-height: var(--touch-min);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-panel);
+  cursor: pointer;
+}
+
+.starpoint-option {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  padding: 0.9rem;
+  text-align: left;
+}
+
+.starpoint-option:hover,
+.starpoint-option:focus-visible,
+.starpoint-own-idea:hover,
+.starpoint-own-idea:focus-visible {
+  border-color: var(--color-amber);
+  background: var(--color-panel-raised);
+}
+
+.starpoint-option strong {
+  color: #f2cc88;
+}
+
+.starpoint-option span {
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.starpoint-own-idea {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-style: dashed;
+  color: #f2cc88;
+}
+
+.starpoint-review {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.starpoint-review > span {
+  color: var(--color-signal-soft);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.starpoint-review > strong {
+  line-height: 1.45;
+}
+
+.starpoint-review > p {
+  margin: 0.2rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .starpoint-options {
+    grid-template-columns: 1fr;
+  }
+}
