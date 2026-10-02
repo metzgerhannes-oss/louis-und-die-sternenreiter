@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="660" viewBox="0 0 120 220"><defs>
+<linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eee4d4"/><stop offset=".58" stop-color="#c9c0b4"/><stop offset="1" stop-color="#8e8984"/></linearGradient>
+<linearGradient id="dark" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3b4652"/><stop offset="1" stop-color="#302b2a"/></linearGradient>
+<linearGradient id="accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffbd62"/><stop offset=".55" stop-color="#f28c28"/><stop offset="1" stop-color="#7d3a28"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#ffd18a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd18a" stop-opacity="0"/></radialGradient>
+<filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#081018" flood-opacity=".8"/></filter>
+</defs>
+<g filter="url(#shadow)">
+<path d="M39 122 Q48 117 57 122 L51 160 L48 198 Q46 207 38 211 L26 211 Q21 204 27 196 L35 158Z" fill="url(#dark)" stroke="#10161d" stroke-width="3"/>
+<path d="M42 127 L54 127 L48 153 L37 153Z" fill="url(#base)" stroke="#626970" stroke-width="1"/>
+<path d="M35 151 Q43 145 51 151 L52 169 Q43 176 34 169Z" fill="#373f48" stroke="#f28c28" stroke-width="2"/>
+<path d="M28 181 L48 181 L50 199 L24 199Z" fill="url(#accent)" opacity=".9"/>
+<path d="M23 199 Q38 194 51 201 L50 211 H23 Q18 205 23 199Z" fill="#1a222a" stroke="#8c969d" stroke-width="1.6"/>
+<rect x="30" y="188" width="16" height="4" rx="2" fill="#ffbd62" opacity=".8"/>
+</g></svg>
