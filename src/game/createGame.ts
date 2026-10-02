@@ -11,6 +11,10 @@ export function createGame(parent: HTMLElement, profile: PlayerProfile): Phaser.
     type: Phaser.AUTO,
     parent,
     backgroundColor: "#131720",
+    render: {
+      antialias: true,
+      roundPixels: false
+    },
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH
