@@ -166,28 +166,30 @@ function createHeadTexture(scene: Phaser.Scene, id: ProfileId): void {
 }
 
 export function createCircularCrewTextures(scene: Phaser.Scene): void {
-  if (!scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
-    scene.anims.create({
-      key: OLLI_V6_IDLE_ANIM,
-      frames: [
-        { key: OLLI_V6_TEXTURE, frame: 0 },
-        { key: OLLI_V6_TEXTURE, frame: 11 }
-      ],
-      frameRate: 1.6,
-      repeat: -1,
-      yoyo: true
-    });
-  }
+  if (scene.textures.exists(OLLI_V6_TEXTURE)) {
+    if (!scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
+      scene.anims.create({
+        key: OLLI_V6_IDLE_ANIM,
+        frames: [
+          { key: OLLI_V6_TEXTURE, frame: 0 },
+          { key: OLLI_V6_TEXTURE, frame: 11 }
+        ],
+        frameRate: 1.6,
+        repeat: -1,
+        yoyo: true
+      });
+    }
 
-  if (!scene.anims.exists(OLLI_V6_WALK_ANIM)) {
-    scene.anims.create({
-      key: OLLI_V6_WALK_ANIM,
-      frames: scene.anims.generateFrameNumbers(OLLI_V6_TEXTURE, {
-        frames: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-      }),
-      frameRate: 9,
-      repeat: -1
-    });
+    if (!scene.anims.exists(OLLI_V6_WALK_ANIM)) {
+      scene.anims.create({
+        key: OLLI_V6_WALK_ANIM,
+        frames: scene.anims.generateFrameNumbers(OLLI_V6_TEXTURE, {
+          frames: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        }),
+        frameRate: 9,
+        repeat: -1
+      });
+    }
   }
 
   for (const source of Object.values(crewPortraitSources)) {
@@ -244,4 +246,13 @@ export function getConceptCrewPartTexture(
     throw new Error(`Missing concept crew part: ${id}:${part}`);
   }
   return source.key;
+}
+
+
+export function isOlliV6Ready(scene: Phaser.Scene): boolean {
+  return (
+    scene.textures.exists(OLLI_V6_TEXTURE) &&
+    scene.anims.exists(OLLI_V6_IDLE_ANIM) &&
+    scene.anims.exists(OLLI_V6_WALK_ANIM)
+  );
 }
