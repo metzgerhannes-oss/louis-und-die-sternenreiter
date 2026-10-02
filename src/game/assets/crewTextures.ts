@@ -107,7 +107,7 @@ export function preloadCrewTextures(scene: Phaser.Scene): void {
     scene.load.spritesheet(OLLI_V6_TEXTURE, OLLI_V6_SPRITESHEET_DATA_URI, {
       frameWidth: OLLI_V6_FRAME_WIDTH,
       frameHeight: OLLI_V6_FRAME_HEIGHT,
-      endFrame: 11
+      endFrame: 5
     });
   }
 
@@ -172,7 +172,7 @@ export function createCircularCrewTextures(scene: Phaser.Scene): void {
         key: OLLI_V6_IDLE_ANIM,
         frames: [
           { key: OLLI_V6_TEXTURE, frame: 0 },
-          { key: OLLI_V6_TEXTURE, frame: 11 }
+          { key: OLLI_V6_TEXTURE, frame: 5 }
         ],
         frameRate: 1.6,
         repeat: -1,
@@ -184,9 +184,9 @@ export function createCircularCrewTextures(scene: Phaser.Scene): void {
       scene.anims.create({
         key: OLLI_V6_WALK_ANIM,
         frames: scene.anims.generateFrameNumbers(OLLI_V6_TEXTURE, {
-          frames: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          frames: [1, 2, 3, 4]
         }),
-        frameRate: 9,
+        frameRate: 7,
         repeat: -1
       });
     }
