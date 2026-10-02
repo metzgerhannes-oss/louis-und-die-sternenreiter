@@ -89,31 +89,6 @@ export function createCircularCrewTextures(scene: Phaser.Scene): void {
       }
     }
 
-    const headKey = `${source.key}-head`;
-    if (!scene.textures.exists(headKey)) {
-      const headTexture = scene.textures.createCanvas(headKey, 72, 84);
-      if (headTexture) {
-        const context = headTexture.context;
-
-        context.clearRect(0, 0, 72, 84);
-        context.save();
-        context.beginPath();
-        context.ellipse(36, 41, 31, 38, 0, 0, Math.PI * 2);
-        context.clip();
-
-        // The portrait is intentionally cropped aggressively: at gameplay size,
-        // recognizable face / hair beats preserving shoulder detail.
-        context.drawImage(image, -8, -4, 88, 88);
-        context.restore();
-
-        context.beginPath();
-        context.ellipse(36, 41, 31, 38, 0, 0, Math.PI * 2);
-        context.lineWidth = 2;
-        context.strokeStyle = "rgba(245,239,225,0.72)";
-        context.stroke();
-
-        headTexture.refresh();
-      }
     }
   }
 }
@@ -122,9 +97,6 @@ export function getCrewPortraitTexture(id: CrewTextureId): string {
   return `${crewPortraitSources[id].key}-circle`;
 }
 
-export function getCrewHeadTexture(id: CrewTextureId): string {
-  return `${crewPortraitSources[id].key}-head`;
-}
 
 export function getCrewSpriteTexture(id: CrewTextureId): string {
   return crewSpriteSources[id].key;
