@@ -2621,3 +2621,32 @@ button:focus-visible {
     font-size: 0.9rem;
   }
 }
+
+
+/* === Build marker ======================================================== */
+.hud-build-id {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  z-index: 30;
+  transform: translateX(-50%);
+  padding: 0.18rem 0.42rem;
+  border: 1px solid rgba(210, 163, 95, 0.48);
+  border-radius: 999px;
+  color: rgba(255, 237, 199, 0.88);
+  background: rgba(6, 12, 20, 0.72);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  pointer-events: none;
+  backdrop-filter: blur(5px);
+}
+
+@media (max-width: 860px), (pointer: coarse) {
+  .hud-build-id {
+    top: calc(env(safe-area-inset-top, 0px) + 0.42rem);
+    font-size: 0.52rem;
+    opacity: 0.9;
+  }
+}
