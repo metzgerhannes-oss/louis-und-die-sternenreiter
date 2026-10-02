@@ -316,3 +316,8 @@ export function getCrewHeadTexture(id: ProfileId): string {
 export function getCrewPartTexture(id: CrewTextureId, part: CrewPart): string {
   return `${crewSpriteSources[id].key}-part-${part}`;
 }
+
+
+export function getCrewSpriteTexture(id: CrewTextureId): string {
+  return crewSpriteSources[id].key;
+}
