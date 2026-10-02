@@ -11,9 +11,10 @@ export class CrewMate {
     x: number,
     y: number,
     private readonly offsetX: number,
-    private readonly offsetY: number
+    private readonly offsetY: number,
+    displayScale = 1
   ) {
-    this.avatar = new PlayerAvatar(scene, profile, x, y);
+    this.avatar = new PlayerAvatar(scene, profile, x, y, displayScale);
     this.avatar.container.setAlpha(0.98);
   }
 
