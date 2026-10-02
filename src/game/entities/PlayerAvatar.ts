@@ -35,7 +35,13 @@ export class PlayerAvatar {
   private animationPhase: number;
   private movementLean = 0;
 
-  constructor(scene: Phaser.Scene, profile: PlayerProfile, x: number, y: number) {
+  constructor(
+    scene: Phaser.Scene,
+    profile: PlayerProfile,
+    x: number,
+    y: number,
+    private readonly displayScale = 1
+  ) {
     this.profile = profile;
     this.animationPhase = phaseOffset(profile);
 
@@ -97,7 +103,9 @@ export class PlayerAvatar {
       Phaser.Math.Clamp((y - 300) / 380, 0, 1)
     );
 
-    this.container.setScale(perspectiveScale * this.profile.scaleFactor);
+    this.container.setScale(
+      perspectiveScale * this.profile.scaleFactor * this.displayScale
+    );
 
     const dx = x - previousX;
     this.movementLean =
