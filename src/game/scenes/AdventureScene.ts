@@ -566,6 +566,7 @@ export class AdventureScene extends Phaser.Scene {
         padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
       })
       .setOrigin(0.5)
+      .setScrollFactor(0)
       .setDepth(5000)
       .setVisible(false);
   }
@@ -1020,7 +1021,6 @@ export class AdventureScene extends Phaser.Scene {
         padding: { x: 10, y: 4 }
       })
       .setOrigin(0.5)
-      .setScrollFactor(0)
       .setDepth(12);
 
     for (let i = 0; i < 5; i += 1) {
