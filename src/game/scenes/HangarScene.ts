@@ -11,9 +11,9 @@ import {
 } from "../../domain/starPoints";
 import { loadChapter1State } from "../../services/chapter1State";
 import { isStarPointCompleted } from "../../services/starPointState";
-import { RiggedCrewMate } from "../entities/RiggedCrewMate";
-import { RiggedCrewAvatar } from "../entities/RiggedCrewAvatar";
-import { LouisCompanion } from "../entities/LouisCompanion";
+import { IllustratedCrewMate } from "../entities/IllustratedCrewMate";
+import { IllustratedCrewAvatar } from "../entities/IllustratedCrewAvatar";
+import { IllustratedLouisCompanion } from "../entities/IllustratedLouisCompanion";
 import { AmbientMotionLayer } from "../effects/AmbientMotionLayer";
 import { WorldCameraController } from "../effects/WorldCameraController";
 import { InteractionFocus } from "../effects/InteractionFocus";
@@ -42,9 +42,9 @@ type NearestInteraction =
   | { kind: "starpoint"; starPoint: RuntimeStarPoint; distance: number };
 
 export class HangarScene extends Phaser.Scene {
-  private player?: RiggedCrewAvatar;
-  private crewMates: RiggedCrewMate[] = [];
-  private louis?: LouisCompanion;
+  private player?: IllustratedCrewAvatar;
+  private crewMates: IllustratedCrewMate[] = [];
+  private louis?: IllustratedLouisCompanion;
   private interactionFocus?: InteractionFocus;
   private atmosphere?: AmbientMotionLayer;
   private cameraController?: WorldCameraController;
@@ -949,9 +949,10 @@ export class HangarScene extends Phaser.Scene {
     const startX = width * 0.415;
     const startY = height * (compact ? 0.72 : 0.72);
 
-    this.player = new RiggedCrewAvatar(this, profile, startX, startY, {
-      displayScale: compact ? 0.92 : 0.88,
-      primary: true
+    this.player = new IllustratedCrewAvatar(this, profile, startX, startY, {
+      displayScale: compact ? 1.18 : 1.06,
+      primary: true,
+      showName: true
     });
     this.player.setPosition(startX, startY);
 
@@ -968,27 +969,27 @@ export class HangarScene extends Phaser.Scene {
 
     this.crewMates = crewProfiles.map((crewProfile, index) => {
       const offset = formation[index];
-      return new RiggedCrewMate(
+      return new IllustratedCrewMate(
         this,
         crewProfile,
         startX + offset.x,
         startY + offset.y,
         offset.x,
         offset.y,
-        compact ? 0.86 : 0.82
+        compact ? 1.08 : 1
       );
     });
 
-    this.louis = new LouisCompanion(
+    this.louis = new IllustratedLouisCompanion(
       this,
-      startX - (compact ? 168 : 142),
-      startY + (compact ? 118 : 104),
+      startX - (compact ? 24 : 30),
+      startY + (compact ? 170 : 150),
       () => {
         gameEventBus.emit("interaction:louis", undefined);
       },
-      compact ? 1.12 : 1.08,
-      compact ? -168 : -142,
-      compact ? 118 : 104
+      compact ? 1.02 : 0.96,
+      compact ? -24 : -30,
+      compact ? 170 : 150
     );
 
     this.hint = this.add
@@ -1085,7 +1086,7 @@ export class HangarScene extends Phaser.Scene {
           : nearest.hotspot.x;
     const focusY =
       nearest.kind === "louis"
-        ? (this.louis?.y ?? 0) + 8
+        ? (this.louis?.y ?? 0) + 12
         : nearest.kind === "starpoint"
           ? nearest.starPoint.y
           : nearest.hotspot.y;

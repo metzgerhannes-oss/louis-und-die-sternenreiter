@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 import type { PlayerProfile } from "../../domain/profiles";
-import { RiggedCrewAvatar } from "./RiggedCrewAvatar";
+import { IllustratedCrewAvatar } from "./IllustratedCrewAvatar";
 
-export class RiggedCrewMate {
-  readonly avatar: RiggedCrewAvatar;
+export class IllustratedCrewMate {
+  readonly avatar: IllustratedCrewAvatar;
 
   constructor(
     scene: Phaser.Scene,
@@ -14,11 +14,11 @@ export class RiggedCrewMate {
     private readonly offsetY: number,
     displayScale = 1
   ) {
-    this.avatar = new RiggedCrewAvatar(scene, profile, x, y, {
+    this.avatar = new IllustratedCrewAvatar(scene, profile, x, y, {
       displayScale,
-      primary: false
+      primary: false,
+      showName: true
     });
-    this.avatar.container.setAlpha(0.99);
   }
 
   updateFollow(playerX: number, playerY: number, delta: number): void {
@@ -30,8 +30,8 @@ export class RiggedCrewMate {
       targetX,
       targetY
     );
-    const factor = 1 - Math.pow(0.012, delta / 1000);
 
+    const factor = 1 - Math.pow(0.012, delta / 1000);
     const nextX = Phaser.Math.Linear(this.avatar.x, targetX, factor);
     const nextY = Phaser.Math.Linear(this.avatar.y, targetY, factor);
 
