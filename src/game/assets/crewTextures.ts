@@ -247,9 +247,7 @@ export function getConceptCrewPartTexture(
 
 
 export function isOlliV6Ready(scene: Phaser.Scene): boolean {
-  return (
-    scene.textures.exists(OLLI_V6_TEXTURE) &&
-    scene.anims.exists(OLLI_V6_IDLE_ANIM) &&
-    scene.anims.exists(OLLI_V6_WALK_ANIM)
-  );
+  // The HD texture alone is enough to use V6. Missing animations must never
+  // push the character back to V5; OlliV6Avatar can display a static frame.
+  return scene.textures.exists(OLLI_V6_TEXTURE);
 }

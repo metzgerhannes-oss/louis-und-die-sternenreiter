@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 type PwaStatusProps = {
@@ -11,23 +12,20 @@ export function PwaStatus({ suppressed = false }: PwaStatusProps) {
     updateServiceWorker
   } = useRegisterSW();
 
-  if (suppressed || (!offlineReady && !needRefresh)) {
+  useEffect(() => {
+    if (needRefresh) {
+      void updateServiceWorker(true);
+    }
+  }, [needRefresh, updateServiceWorker]);
+
+  if (suppressed || !offlineReady || needRefresh) {
     return null;
   }
 
   return (
     <aside className="pwa-toast" aria-live="polite">
-      <p>
-        {offlineReady
-          ? "Louis & die Sternenreiter ist jetzt auch ohne Verbindung startbereit."
-          : "Eine neue Version ist verfügbar."}
-      </p>
+      <p>Louis & die Sternenreiter ist jetzt auch ohne Verbindung startbereit.</p>
       <div className="pwa-actions">
-        {needRefresh && (
-          <button type="button" onClick={() => void updateServiceWorker(true)}>
-            Aktualisieren
-          </button>
-        )}
         <button
           type="button"
           onClick={() => {
