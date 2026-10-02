@@ -515,6 +515,7 @@ export class CinderScene extends Phaser.Scene {
         padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
       })
       .setOrigin(0.5)
+      .setScrollFactor(0)
       .setDepth(4000)
       .setVisible(false);
   }
@@ -888,7 +889,6 @@ export class CinderScene extends Phaser.Scene {
         }
       )
       .setOrigin(0.5)
-      .setScrollFactor(0)
       .setDepth(y + 5)
       .setVisible(!(this.scale.width <= 860 && this.scale.height > this.scale.width));
 
