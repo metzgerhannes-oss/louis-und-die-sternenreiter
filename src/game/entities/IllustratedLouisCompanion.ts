@@ -1,8 +1,15 @@
 import Phaser from "phaser";
-import { getCrewPartTexture } from "../assets/crewTextures";
+import { getConceptCrewPartTexture } from "../assets/crewTextures";
 
-const SOURCE_WIDTH = 66;
-const SOURCE_HEIGHT = 160;
+const DESIGN_WIDTH = 120;
+const DESIGN_HEIGHT = 220;
+
+function localFromSvg(x: number, y: number): Phaser.Math.Vector2 {
+  return new Phaser.Math.Vector2(
+    x - DESIGN_WIDTH / 2,
+    y - DESIGN_HEIGHT
+  );
+}
 
 export class IllustratedLouisCompanion {
   readonly container: Phaser.GameObjects.Container;
@@ -29,45 +36,55 @@ export class IllustratedLouisCompanion {
     private readonly followOffsetX = -34,
     private readonly followOffsetY = 146
   ) {
-    const centerY = -SOURCE_HEIGHT / 2;
-
     this.shadow = scene.add
-      .ellipse(0, 7, 78, 20, 0x000000, 0.62)
-      .setScale(1.05, 1);
+      .ellipse(0, 7, 84, 21, 0x000000, 0.64)
+      .setScale(1.06, 1);
 
     this.floorFocus = scene.add
-      .ellipse(0, 6, 88, 21, 0xe4a04a, 0.025)
+      .ellipse(0, 6, 94, 23, 0xe4a04a, 0.024)
       .setStrokeStyle(1.2, 0xe4a04a, 0.2)
       .setBlendMode(Phaser.BlendModes.ADD);
 
     this.body = scene.add
-      .image(0, centerY, getCrewPartTexture("louis", "dogBody"))
-      .setDisplaySize(SOURCE_WIDTH, SOURCE_HEIGHT);
+      .image(
+        0,
+        -DESIGN_HEIGHT / 2,
+        getConceptCrewPartTexture("louis", "body")
+      )
+      .setDisplaySize(DESIGN_WIDTH, DESIGN_HEIGHT);
 
-    const headJointY = -SOURCE_HEIGHT + SOURCE_HEIGHT * 0.39;
+    const headJoint = localFromSvg(60, 88);
     const head = scene.add
-      .image(0, centerY - headJointY, getCrewPartTexture("louis", "dogHead"))
-      .setDisplaySize(SOURCE_WIDTH, SOURCE_HEIGHT);
-    this.headPivot = scene.add.container(0, headJointY, [head]);
+      .image(
+        -headJoint.x,
+        -DESIGN_HEIGHT / 2 - headJoint.y,
+        getConceptCrewPartTexture("louis", "head")
+      )
+      .setDisplaySize(DESIGN_WIDTH, DESIGN_HEIGHT);
+    this.headPivot = scene.add.container(headJoint.x, headJoint.y, [head]);
 
     const createLeg = (
-      part: "dogLeftLeg" | "dogRightLeg",
-      jointXNorm: number
+      part: "leftLeg" | "rightLeg",
+      jointX: number
     ): Phaser.GameObjects.Container => {
-      const jointX = -SOURCE_WIDTH / 2 + SOURCE_WIDTH * jointXNorm;
-      const jointY = -SOURCE_HEIGHT + SOURCE_HEIGHT * 0.63;
+      const joint = localFromSvg(jointX, 150);
       const image = scene.add
-        .image(-jointX, centerY - jointY, getCrewPartTexture("louis", part))
-        .setDisplaySize(SOURCE_WIDTH, SOURCE_HEIGHT);
-      return scene.add.container(jointX, jointY, [image]);
+        .image(
+          -joint.x,
+          -DESIGN_HEIGHT / 2 - joint.y,
+          getConceptCrewPartTexture("louis", part)
+        )
+        .setDisplaySize(DESIGN_WIDTH, DESIGN_HEIGHT);
+      return scene.add.container(joint.x, joint.y, [image]);
     };
 
-    this.leftLeg = createLeg("dogLeftLeg", 0.34);
-    this.rightLeg = createLeg("dogRightLeg", 0.66);
+    this.leftLeg = createLeg("leftLeg", 43);
+    this.rightLeg = createLeg("rightLeg", 77);
 
     this.beacon = scene.add
-      .circle(22, -101, 4.5, 0x74e0e4, 1)
-      .setStrokeStyle(1.5, 0xd8ffff, 0.88);
+      .circle(26, -91, 5, 0x74e0e4, 1)
+      .setStrokeStyle(1.7, 0xd8ffff, 0.9)
+      .setBlendMode(Phaser.BlendModes.ADD);
 
     this.visualRoot = scene.add.container(0, 0, [
       this.leftLeg,
@@ -84,13 +101,13 @@ export class IllustratedLouisCompanion {
     ]);
 
     this.container
-      .setSize(96, 154)
+      .setSize(104, 178)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", onInteract);
 
     scene.tweens.add({
       targets: [this.floorFocus, this.beacon],
-      alpha: { from: 0.06, to: 0.26 },
+      alpha: { from: 0.06, to: 0.3 },
       duration: 900,
       yoyo: true,
       repeat: -1,
@@ -106,7 +123,7 @@ export class IllustratedLouisCompanion {
 
     const perspectiveScale = Phaser.Math.Linear(
       0.9,
-      1.02,
+      1.03,
       Phaser.Math.Clamp((y - 420) / 620, 0, 1)
     );
 
@@ -140,30 +157,31 @@ export class IllustratedLouisCompanion {
 
   private updateAnimation(delta: number, moving: boolean): void {
     this.animationPhase += delta * (moving ? 0.016 : 0.0034);
+
     const wave = Math.sin(this.animationPhase);
     const counterWave = Math.sin(this.animationPhase + Math.PI);
     const step = Math.abs(wave);
 
     if (moving) {
-      this.visualRoot.y = -step * 3.5;
+      this.visualRoot.y = -step * 3.8;
       this.visualRoot.angle = Phaser.Math.Linear(
         this.visualRoot.angle,
         this.movementLean * this.facing,
         0.3
       );
-      this.leftLeg.angle = counterWave * 9;
-      this.rightLeg.angle = wave * 9;
-      this.headPivot.angle = wave * 2;
-      this.shadow.setScale(1.05 - step * 0.09, 1 - step * 0.08);
+      this.leftLeg.angle = counterWave * 10;
+      this.rightLeg.angle = wave * 10;
+      this.headPivot.angle = wave * 2.2;
+      this.shadow.setScale(1.06 - step * 0.1, 1 - step * 0.08);
       return;
     }
 
-    this.visualRoot.y = wave * 0.7;
+    this.visualRoot.y = wave * 0.8;
     this.visualRoot.angle = Phaser.Math.Linear(this.visualRoot.angle, 0, 0.18);
     this.leftLeg.angle = Phaser.Math.Linear(this.leftLeg.angle, -0.6, 0.14);
     this.rightLeg.angle = Phaser.Math.Linear(this.rightLeg.angle, 0.6, 0.14);
-    this.headPivot.angle = wave * 0.75;
-    this.shadow.setScale(1.05 + wave * 0.01, 1 - wave * 0.01);
+    this.headPivot.angle = wave * 0.8;
+    this.shadow.setScale(1.06 + wave * 0.01, 1 - wave * 0.01);
   }
 
   get x(): number {
