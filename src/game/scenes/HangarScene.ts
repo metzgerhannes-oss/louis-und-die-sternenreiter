@@ -11,8 +11,8 @@ import {
 } from "../../domain/starPoints";
 import { loadChapter1State } from "../../services/chapter1State";
 import { isStarPointCompleted } from "../../services/starPointState";
-import { CrewMate } from "../entities/CrewMate";
-import { PlayerAvatar } from "../entities/PlayerAvatar";
+import { RiggedCrewMate } from "../entities/RiggedCrewMate";
+import { RiggedCrewAvatar } from "../entities/RiggedCrewAvatar";
 import { LouisCompanion } from "../entities/LouisCompanion";
 import { AmbientMotionLayer } from "../effects/AmbientMotionLayer";
 import { WorldCameraController } from "../effects/WorldCameraController";
@@ -42,8 +42,8 @@ type NearestInteraction =
   | { kind: "starpoint"; starPoint: RuntimeStarPoint; distance: number };
 
 export class HangarScene extends Phaser.Scene {
-  private player?: PlayerAvatar;
-  private crewMates: CrewMate[] = [];
+  private player?: RiggedCrewAvatar;
+  private crewMates: RiggedCrewMate[] = [];
   private louis?: LouisCompanion;
   private interactionFocus?: InteractionFocus;
   private atmosphere?: AmbientMotionLayer;
@@ -949,14 +949,10 @@ export class HangarScene extends Phaser.Scene {
     const startX = width * 0.415;
     const startY = height * (compact ? 0.72 : 0.72);
 
-    this.player = new PlayerAvatar(
-      this,
-      profile,
-      startX,
-      startY,
-      compact ? 1.52 : 1.38,
-      true
-    );
+    this.player = new RiggedCrewAvatar(this, profile, startX, startY, {
+      displayScale: compact ? 0.92 : 0.88,
+      primary: true
+    });
     this.player.setPosition(startX, startY);
 
     const crewProfiles = getCrewMates(profile.id);
@@ -972,14 +968,14 @@ export class HangarScene extends Phaser.Scene {
 
     this.crewMates = crewProfiles.map((crewProfile, index) => {
       const offset = formation[index];
-      return new CrewMate(
+      return new RiggedCrewMate(
         this,
         crewProfile,
         startX + offset.x,
         startY + offset.y,
         offset.x,
         offset.y,
-        compact ? 1.4 : 1.3
+        compact ? 0.86 : 0.82
       );
     });
 
