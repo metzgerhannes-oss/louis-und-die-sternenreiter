@@ -5,6 +5,7 @@ export class LouisCompanion {
   readonly container: Phaser.GameObjects.Container;
 
   private readonly sprite: Phaser.GameObjects.Image;
+  private readonly outline: Phaser.GameObjects.Image;
   private readonly glow: Phaser.GameObjects.Image;
   private readonly shadow: Phaser.GameObjects.Ellipse;
   private readonly harnessHalo: Phaser.GameObjects.Arc;
@@ -19,9 +20,17 @@ export class LouisCompanion {
     x: number,
     y: number,
     onInteract: () => void,
-    private readonly displayScale = 1
+    private readonly displayScale = 1,
+    private readonly followOffsetX = -62,
+    private readonly followOffsetY = 22
   ) {
-    this.shadow = scene.add.ellipse(0, 4, 46, 13, 0x000000, 0.32);
+    this.shadow = scene.add.ellipse(0, 5, 54, 16, 0x000000, 0.56);
+
+    this.outline = scene.add
+      .image(0, this.baseSpriteY, getCrewSpriteTexture("louis"))
+      .setDisplaySize(49, 113)
+      .setTint(0x06090d)
+      .setAlpha(0.9);
 
     this.glow = scene.add
       .image(0, this.baseSpriteY, getCrewSpriteTexture("louis"))
@@ -45,6 +54,7 @@ export class LouisCompanion {
       this.shadow,
       this.harnessHalo,
       this.glow,
+      this.outline,
       this.sprite,
       this.beaconLight
     ]);
@@ -73,8 +83,8 @@ export class LouisCompanion {
   }
 
   updateFollow(playerX: number, playerY: number, delta: number): void {
-    const targetX = playerX - 62;
-    const targetY = playerY + 22;
+    const targetX = playerX + this.followOffsetX;
+    const targetY = playerY + this.followOffsetY;
     const factor = 1 - Math.pow(0.004, delta / 1000);
     const previousX = this.container.x;
     const previousY = this.container.y;
@@ -99,6 +109,7 @@ export class LouisCompanion {
     if (Math.abs(dx) > 0.18) {
       const facingLeft = dx < 0;
       this.sprite.setFlipX(facingLeft);
+      this.outline.setFlipX(facingLeft);
       this.glow.setFlipX(facingLeft);
     }
 
@@ -115,8 +126,10 @@ export class LouisCompanion {
       const hop = step * 2.8;
 
       this.sprite.y = this.baseSpriteY - hop;
+      this.outline.y = this.baseSpriteY - hop * 0.96;
       this.glow.y = this.baseSpriteY - hop * 0.9;
       this.sprite.setAngle(wave * 1.1);
+      this.outline.setAngle(wave * 1.1);
       this.glow.setAngle(wave * 1.1);
       this.shadow.setScale(1 - step * 0.1, 1 - step * 0.08);
       this.harnessHalo.setScale(1 + step * 0.06);
@@ -128,8 +141,10 @@ export class LouisCompanion {
 
     const breathing = wave * 0.7;
     this.sprite.y = this.baseSpriteY + breathing;
+    this.outline.y = this.baseSpriteY + breathing * 0.92;
     this.glow.y = this.baseSpriteY + breathing * 0.85;
     this.sprite.setAngle(wave * 0.26);
+    this.outline.setAngle(wave * 0.26);
     this.glow.setAngle(wave * 0.26);
     this.shadow.setScale(1 + wave * 0.012, 1 - wave * 0.012);
     this.harnessHalo.setScale(1 + wave * 0.025);

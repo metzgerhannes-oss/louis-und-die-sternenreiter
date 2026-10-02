@@ -25,8 +25,10 @@ export class PlayerAvatar {
   readonly profile: PlayerProfile;
 
   private readonly sprite: Phaser.GameObjects.Image;
+  private readonly outline: Phaser.GameObjects.Image;
   private readonly glow: Phaser.GameObjects.Image;
   private readonly shadow: Phaser.GameObjects.Ellipse;
+  private readonly focusPlate: Phaser.GameObjects.Ellipse;
   private readonly bootLight: Phaser.GameObjects.Ellipse;
   private readonly badge: Phaser.GameObjects.Arc;
   private readonly baseSpriteY: number;
@@ -40,7 +42,8 @@ export class PlayerAvatar {
     profile: PlayerProfile,
     x: number,
     y: number,
-    private readonly displayScale = 1
+    private readonly displayScale = 1,
+    private readonly primary = false
   ) {
     this.profile = profile;
     this.animationPhase = phaseOffset(profile);
@@ -50,14 +53,36 @@ export class PlayerAvatar {
     this.baseBadgeY = -size.height * 0.64;
 
     this.shadow = scene.add
-      .ellipse(0, 3, size.width * 0.78, 13, 0x000000, 0.34)
-      .setScale(1.08, 1);
+      .ellipse(0, 5, size.width * 1.02, 17, 0x000000, 0.58)
+      .setScale(1.14, 1);
+
+    this.focusPlate = scene.add
+      .ellipse(
+        0,
+        3,
+        size.width * 1.22,
+        18,
+        profile.accent,
+        this.primary ? 0.12 : 0.045
+      )
+      .setStrokeStyle(
+        this.primary ? 2.2 : 1.2,
+        profile.accent,
+        this.primary ? 0.78 : 0.3
+      )
+      .setBlendMode(Phaser.BlendModes.ADD);
+
+    this.outline = scene.add
+      .image(0, this.baseSpriteY, getCrewSpriteTexture(profile.id))
+      .setDisplaySize(size.width * 1.075, size.height * 1.055)
+      .setTint(0x06090d)
+      .setAlpha(0.92);
 
     this.glow = scene.add
       .image(0, this.baseSpriteY, getCrewSpriteTexture(profile.id))
-      .setDisplaySize(size.width * 1.09, size.height * 1.07)
+      .setDisplaySize(size.width * 1.13, size.height * 1.1)
       .setTint(profile.accent)
-      .setAlpha(0.18);
+      .setAlpha(this.primary ? 0.34 : 0.24);
 
     this.sprite = scene.add
       .image(0, this.baseSpriteY, getCrewSpriteTexture(profile.id))
@@ -73,8 +98,10 @@ export class PlayerAvatar {
 
     this.container = scene.add.container(x, y, [
       this.shadow,
+      this.focusPlate,
       this.bootLight,
       this.glow,
+      this.outline,
       this.sprite,
       this.badge
     ]);
@@ -82,8 +109,11 @@ export class PlayerAvatar {
     this.container.setDepth(y);
 
     scene.tweens.add({
-      targets: this.glow,
-      alpha: { from: 0.1, to: 0.22 },
+      targets: [this.glow, this.focusPlate],
+      alpha: {
+        from: this.primary ? 0.2 : 0.1,
+        to: this.primary ? 0.42 : 0.26
+      },
       duration: 1250 + profile.id.length * 80,
       yoyo: true,
       repeat: -1,
@@ -114,6 +144,7 @@ export class PlayerAvatar {
     if (Math.abs(dx) > 0.2) {
       const facingLeft = dx < 0;
       this.sprite.setFlipX(facingLeft);
+      this.outline.setFlipX(facingLeft);
       this.glow.setFlipX(facingLeft);
     }
   }
@@ -130,12 +161,15 @@ export class PlayerAvatar {
       const sway = wave * 1.45;
 
       this.sprite.y = this.baseSpriteY - bob;
+      this.outline.y = this.baseSpriteY - bob * 0.96;
       this.glow.y = this.baseSpriteY - bob * 0.92;
       this.sprite.setAngle(sway);
+      this.outline.setAngle(sway);
       this.glow.setAngle(sway);
       this.badge.y = this.baseBadgeY - bob * 0.55;
-      this.shadow.setScale(1.08 - step * 0.08, 1 - step * 0.1);
-      this.bootLight.setAlpha(0.2 + step * 0.2);
+      this.shadow.setScale(1.14 - step * 0.08, 1 - step * 0.1);
+      this.focusPlate.setScale(1 + step * 0.025, 1 - step * 0.03);
+      this.bootLight.setAlpha(0.24 + step * 0.22);
       this.container.setAngle(
         Phaser.Math.Linear(this.container.angle, this.movementLean, 0.34)
       );
@@ -144,12 +178,15 @@ export class PlayerAvatar {
 
     const breathing = wave * 0.62;
     this.sprite.y = this.baseSpriteY + breathing;
+    this.outline.y = this.baseSpriteY + breathing * 0.9;
     this.glow.y = this.baseSpriteY + breathing * 0.82;
     this.sprite.setAngle(wave * 0.22);
+    this.outline.setAngle(wave * 0.22);
     this.glow.setAngle(wave * 0.22);
     this.badge.y = this.baseBadgeY + breathing * 0.42;
-    this.shadow.setScale(1.08 + wave * 0.012, 1 - wave * 0.012);
-    this.bootLight.setAlpha(0.16 + (wave + 1) * 0.025);
+    this.shadow.setScale(1.14 + wave * 0.012, 1 - wave * 0.012);
+    this.focusPlate.setScale(1 + wave * 0.012, 1 - wave * 0.012);
+    this.bootLight.setAlpha(0.2 + (wave + 1) * 0.03);
     this.container.setAngle(Phaser.Math.Linear(this.container.angle, 0, 0.16));
   }
 

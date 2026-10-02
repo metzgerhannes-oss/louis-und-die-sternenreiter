@@ -949,18 +949,25 @@ export class HangarScene extends Phaser.Scene {
     const startX = width * 0.415;
     const startY = height * (compact ? 0.72 : 0.72);
 
-    this.player = new PlayerAvatar(this, profile, startX, startY, 1.18);
+    this.player = new PlayerAvatar(
+      this,
+      profile,
+      startX,
+      startY,
+      compact ? 1.52 : 1.38,
+      true
+    );
     this.player.setPosition(startX, startY);
 
     const crewProfiles = getCrewMates(profile.id);
     const formation = compact
       ? [
-          { x: -92, y: 58 },
-          { x: 92, y: 54 }
+          { x: -168, y: 92 },
+          { x: 172, y: 84 }
         ]
       : [
-          { x: -122, y: 78 },
-          { x: 112, y: 70 }
+          { x: -154, y: 92 },
+          { x: 158, y: 84 }
         ];
 
     this.crewMates = crewProfiles.map((crewProfile, index) => {
@@ -972,18 +979,20 @@ export class HangarScene extends Phaser.Scene {
         startY + offset.y,
         offset.x,
         offset.y,
-        1.15
+        compact ? 1.4 : 1.3
       );
     });
 
     this.louis = new LouisCompanion(
       this,
-      startX - (compact ? 46 : 62),
-      startY + (compact ? 12 : 20),
+      startX - (compact ? 168 : 142),
+      startY + (compact ? 118 : 104),
       () => {
         gameEventBus.emit("interaction:louis", undefined);
       },
-      1.12
+      compact ? 1.12 : 1.08,
+      compact ? -168 : -142,
+      compact ? 118 : 104
     );
 
     this.hint = this.add
@@ -1080,7 +1089,7 @@ export class HangarScene extends Phaser.Scene {
           : nearest.hotspot.x;
     const focusY =
       nearest.kind === "louis"
-        ? (this.louis?.y ?? 0) - 46
+        ? (this.louis?.y ?? 0) + 8
         : nearest.kind === "starpoint"
           ? nearest.starPoint.y
           : nearest.hotspot.y;
