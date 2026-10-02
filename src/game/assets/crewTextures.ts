@@ -2,8 +2,7 @@ import Phaser from "phaser";
 import type { ProfileId } from "../../domain/profiles";
 
 export type CrewTextureId = ProfileId | "louis";
-
-export type CrewRigFrame =
+export type CrewPart =
   | "torso"
   | "leftArm"
   | "rightArm"
@@ -55,36 +54,83 @@ const crewSpriteSources: Record<CrewTextureId, { key: string; url: string }> = {
   }
 };
 
-type CropSpec = {
-  frame: CrewRigFrame;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+type Point = readonly [number, number];
+
+const childMasks: Record<Exclude<CrewPart, "dogHead" | "dogBody" | "dogLeftLeg" | "dogRightLeg">, Point[]> = {
+  torso: [
+    [0.22, 0.2],
+    [0.78, 0.2],
+    [0.74, 0.62],
+    [0.62, 0.68],
+    [0.38, 0.68],
+    [0.26, 0.62]
+  ],
+  leftArm: [
+    [0.05, 0.27],
+    [0.29, 0.23],
+    [0.31, 0.41],
+    [0.24, 0.63],
+    [0.08, 0.67],
+    [0.02, 0.52]
+  ],
+  rightArm: [
+    [0.71, 0.23],
+    [0.95, 0.27],
+    [0.98, 0.52],
+    [0.92, 0.67],
+    [0.76, 0.63],
+    [0.69, 0.41]
+  ],
+  leftLeg: [
+    [0.19, 0.57],
+    [0.51, 0.57],
+    [0.49, 0.99],
+    [0.12, 0.99],
+    [0.13, 0.77]
+  ],
+  rightLeg: [
+    [0.49, 0.57],
+    [0.81, 0.57],
+    [0.87, 0.99],
+    [0.51, 0.99]
+  ]
 };
 
-const childRigSpecs: CropSpec[] = [
-  { frame: "torso", x: 0.2, y: 0.25, width: 0.6, height: 0.48 },
-  { frame: "leftArm", x: 0, y: 0.27, width: 0.44, height: 0.49 },
-  { frame: "rightArm", x: 0.56, y: 0.27, width: 0.44, height: 0.49 },
-  { frame: "leftLeg", x: 0.12, y: 0.6, width: 0.5, height: 0.4 },
-  { frame: "rightLeg", x: 0.38, y: 0.6, width: 0.5, height: 0.4 }
-];
-
-const louisRigSpecs: CropSpec[] = [
-  { frame: "dogHead", x: 0.06, y: 0.02, width: 0.88, height: 0.52 },
-  { frame: "dogBody", x: 0.08, y: 0.32, width: 0.84, height: 0.45 },
-  { frame: "dogLeftLeg", x: 0.08, y: 0.58, width: 0.48, height: 0.42 },
-  { frame: "dogRightLeg", x: 0.44, y: 0.58, width: 0.48, height: 0.42 }
-];
+const dogMasks: Record<"dogHead" | "dogBody" | "dogLeftLeg" | "dogRightLeg", Point[]> = {
+  dogHead: [
+    [0.03, 0.02],
+    [0.97, 0.02],
+    [0.9, 0.49],
+    [0.68, 0.53],
+    [0.32, 0.53],
+    [0.1, 0.49]
+  ],
+  dogBody: [
+    [0.14, 0.34],
+    [0.86, 0.34],
+    [0.86, 0.78],
+    [0.14, 0.78]
+  ],
+  dogLeftLeg: [
+    [0.08, 0.58],
+    [0.52, 0.58],
+    [0.49, 0.99],
+    [0.05, 0.99]
+  ],
+  dogRightLeg: [
+    [0.48, 0.58],
+    [0.92, 0.58],
+    [0.95, 0.99],
+    [0.51, 0.99]
+  ]
+};
 
 function sharpenCanvas(context: CanvasRenderingContext2D, width: number, height: number): void {
   const image = context.getImageData(0, 0, width, height);
   const source = new Uint8ClampedArray(image.data);
   const target = image.data;
-
-  const centerWeight = 1.48;
-  const neighborWeight = -0.12;
+  const centerWeight = 1.28;
+  const neighborWeight = -0.07;
 
   for (let y = 1; y < height - 1; y += 1) {
     for (let x = 1; x < width - 1; x += 1) {
@@ -102,7 +148,6 @@ function sharpenCanvas(context: CanvasRenderingContext2D, width: number, height:
             source[up + channel] +
             source[down + channel]) *
             neighborWeight;
-
         target[index + channel] = Phaser.Math.Clamp(Math.round(value), 0, 255);
       }
 
@@ -113,61 +158,71 @@ function sharpenCanvas(context: CanvasRenderingContext2D, width: number, height:
   context.putImageData(image, 0, 0);
 }
 
-function createHdSpriteTexture(scene: Phaser.Scene, id: CrewTextureId): void {
-  const source = crewSpriteSources[id];
-  const hdKey = `${source.key}-hd`;
+function drawMask(
+  context: CanvasRenderingContext2D,
+  points: Point[],
+  width: number,
+  height: number
+): void {
+  context.beginPath();
+  points.forEach(([x, y], index) => {
+    const px = x * width;
+    const py = y * height;
+    if (index === 0) context.moveTo(px, py);
+    else context.lineTo(px, py);
+  });
+  context.closePath();
+  context.clip();
+}
 
-  if (scene.textures.exists(hdKey) || !scene.textures.exists(source.key)) {
+function createPartTexture(
+  scene: Phaser.Scene,
+  id: CrewTextureId,
+  part: CrewPart,
+  points: Point[]
+): void {
+  const source = crewSpriteSources[id];
+  const partKey = `${source.key}-part-${part}`;
+  if (scene.textures.exists(partKey) || !scene.textures.exists(source.key)) {
     return;
   }
 
   const image = scene.textures.get(source.key).getSourceImage() as
     | HTMLImageElement
     | HTMLCanvasElement;
-  const width = image.width;
-  const height = image.height;
-  const canvasTexture = scene.textures.createCanvas(
-    hdKey,
-    width * HD_SCALE,
-    height * HD_SCALE
-  );
-
+  const width = image.width * HD_SCALE;
+  const height = image.height * HD_SCALE;
+  const canvasTexture = scene.textures.createCanvas(partKey, width, height);
   if (!canvasTexture) return;
 
   const context = canvasTexture.context;
-  context.clearRect(0, 0, canvasTexture.width, canvasTexture.height);
+  context.clearRect(0, 0, width, height);
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
-  context.drawImage(
-    image,
-    0,
-    0,
-    width * HD_SCALE,
-    height * HD_SCALE
-  );
 
-  sharpenCanvas(context, width * HD_SCALE, height * HD_SCALE);
+  context.save();
+  drawMask(context, points, width, height);
+  context.drawImage(image, 0, 0, width, height);
+  context.restore();
+
+  sharpenCanvas(context, width, height);
   canvasTexture.refresh();
-
-  const texture = scene.textures.get(hdKey);
-  const specs = id === "louis" ? louisRigSpecs : childRigSpecs;
-
-  for (const spec of specs) {
-    const frameName = `rig-${spec.frame}`;
-    if (texture.has(frameName)) continue;
-
-    texture.add(
-      frameName,
-      0,
-      Math.round(width * HD_SCALE * spec.x),
-      Math.round(height * HD_SCALE * spec.y),
-      Math.max(1, Math.round(width * HD_SCALE * spec.width)),
-      Math.max(1, Math.round(height * HD_SCALE * spec.height))
-    );
-  }
 }
 
-function createHeadTexture(scene: Phaser.Scene, id: Exclude<CrewTextureId, "louis">): void {
+function createRigTextures(scene: Phaser.Scene, id: CrewTextureId): void {
+  if (id === "louis") {
+    (Object.entries(dogMasks) as Array<[keyof typeof dogMasks, Point[]]>).forEach(
+      ([part, points]) => createPartTexture(scene, id, part, points)
+    );
+    return;
+  }
+
+  (Object.entries(childMasks) as Array<[keyof typeof childMasks, Point[]]>).forEach(
+    ([part, points]) => createPartTexture(scene, id, part, points)
+  );
+}
+
+function createHeadTexture(scene: Phaser.Scene, id: ProfileId): void {
   const source = crewPortraitSources[id];
   const headKey = `${source.key}-head-hd`;
 
@@ -184,15 +239,17 @@ function createHeadTexture(scene: Phaser.Scene, id: Exclude<CrewTextureId, "loui
   context.clearRect(0, 0, size, size);
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
+  context.drawImage(image, -18, -18, 180, 180);
 
-  context.save();
-  context.beginPath();
-  context.ellipse(72, 71, 57, 64, 0, 0, Math.PI * 2);
-  context.clip();
-
-  // Zoom the existing 256px portrait so face + hair stay readable in gameplay.
-  context.drawImage(image, -18, -20, 180, 180);
-  context.restore();
+  // Feather the portrait crop so there is no visible circular portrait badge in-world.
+  context.globalCompositeOperation = "destination-in";
+  const gradient = context.createRadialGradient(72, 67, 38, 72, 67, 69);
+  gradient.addColorStop(0, "rgba(255,255,255,1)");
+  gradient.addColorStop(0.72, "rgba(255,255,255,0.98)");
+  gradient.addColorStop(1, "rgba(255,255,255,0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, size, size);
+  context.globalCompositeOperation = "source-over";
 
   canvasTexture.refresh();
 }
@@ -214,36 +271,35 @@ export function preloadCrewTextures(scene: Phaser.Scene): void {
 export function createCircularCrewTextures(scene: Phaser.Scene): void {
   for (const source of Object.values(crewPortraitSources)) {
     const circleKey = `${source.key}-circle`;
-    if (!scene.textures.exists(circleKey) && scene.textures.exists(source.key)) {
-      const canvasTexture = scene.textures.createCanvas(circleKey, 96, 96);
-      if (canvasTexture) {
-        const context = canvasTexture.context;
-        const image = scene.textures.get(source.key).getSourceImage() as CanvasImageSource;
-
-        context.clearRect(0, 0, 96, 96);
-        context.save();
-        context.beginPath();
-        context.arc(48, 48, 46, 0, Math.PI * 2);
-        context.clip();
-        context.drawImage(image, 0, 0, 96, 96);
-        context.restore();
-
-        context.beginPath();
-        context.arc(48, 48, 45, 0, Math.PI * 2);
-        context.lineWidth = 4;
-        context.strokeStyle = "rgba(255,255,255,0.55)";
-        context.stroke();
-
-        canvasTexture.refresh();
-      }
+    if (scene.textures.exists(circleKey) || !scene.textures.exists(source.key)) {
+      continue;
     }
+
+    const canvasTexture = scene.textures.createCanvas(circleKey, 96, 96);
+    if (!canvasTexture) continue;
+
+    const context = canvasTexture.context;
+    const image = scene.textures.get(source.key).getSourceImage() as CanvasImageSource;
+    context.clearRect(0, 0, 96, 96);
+    context.save();
+    context.beginPath();
+    context.arc(48, 48, 46, 0, Math.PI * 2);
+    context.clip();
+    context.drawImage(image, 0, 0, 96, 96);
+    context.restore();
+
+    context.beginPath();
+    context.arc(48, 48, 45, 0, Math.PI * 2);
+    context.lineWidth = 4;
+    context.strokeStyle = "rgba(255,255,255,0.55)";
+    context.stroke();
+    canvasTexture.refresh();
   }
 
-  createHdSpriteTexture(scene, "charly");
-  createHdSpriteTexture(scene, "philipp");
-  createHdSpriteTexture(scene, "olli");
-  createHdSpriteTexture(scene, "louis");
-
+  createRigTextures(scene, "charly");
+  createRigTextures(scene, "philipp");
+  createRigTextures(scene, "olli");
+  createRigTextures(scene, "louis");
   createHeadTexture(scene, "charly");
   createHeadTexture(scene, "philipp");
   createHeadTexture(scene, "olli");
@@ -257,14 +313,6 @@ export function getCrewHeadTexture(id: ProfileId): string {
   return `${crewPortraitSources[id].key}-head-hd`;
 }
 
-export function getCrewSpriteTexture(id: CrewTextureId): string {
-  return `${crewSpriteSources[id].key}-hd`;
-}
-
-export function getCrewRigFrame(part: CrewRigFrame): string {
-  return `rig-${part}`;
-}
-
-export function getCrewHdScale(): number {
-  return HD_SCALE;
+export function getCrewPartTexture(id: CrewTextureId, part: CrewPart): string {
+  return `${crewSpriteSources[id].key}-part-${part}`;
 }
