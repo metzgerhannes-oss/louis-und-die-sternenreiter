@@ -59,44 +59,38 @@ export function preloadCrewTextures(scene: Phaser.Scene): void {
 
 export function createCircularCrewTextures(scene: Phaser.Scene): void {
   for (const source of Object.values(crewPortraitSources)) {
-    if (!scene.textures.exists(source.key)) {
+    const circleKey = `${source.key}-circle`;
+    if (scene.textures.exists(circleKey) || !scene.textures.exists(source.key)) {
       continue;
     }
 
+    const canvasTexture = scene.textures.createCanvas(circleKey, 96, 96);
+    if (!canvasTexture) continue;
+
+    const context = canvasTexture.context;
     const image = scene.textures.get(source.key).getSourceImage() as CanvasImageSource;
 
-    const circleKey = `${source.key}-circle`;
-    if (!scene.textures.exists(circleKey)) {
-      const canvasTexture = scene.textures.createCanvas(circleKey, 96, 96);
-      if (canvasTexture) {
-        const context = canvasTexture.context;
+    context.clearRect(0, 0, 96, 96);
+    context.save();
+    context.beginPath();
+    context.arc(48, 48, 46, 0, Math.PI * 2);
+    context.clip();
+    context.drawImage(image, 0, 0, 96, 96);
+    context.restore();
 
-        context.clearRect(0, 0, 96, 96);
-        context.save();
-        context.beginPath();
-        context.arc(48, 48, 46, 0, Math.PI * 2);
-        context.clip();
-        context.drawImage(image, 0, 0, 96, 96);
-        context.restore();
+    context.beginPath();
+    context.arc(48, 48, 45, 0, Math.PI * 2);
+    context.lineWidth = 4;
+    context.strokeStyle = "rgba(255,255,255,0.55)";
+    context.stroke();
 
-        context.beginPath();
-        context.arc(48, 48, 45, 0, Math.PI * 2);
-        context.lineWidth = 4;
-        context.strokeStyle = "rgba(255,255,255,0.55)";
-        context.stroke();
-
-        canvasTexture.refresh();
-      }
-    }
-
-    }
+    canvasTexture.refresh();
   }
 }
 
 export function getCrewPortraitTexture(id: CrewTextureId): string {
   return `${crewPortraitSources[id].key}-circle`;
 }
-
 
 export function getCrewSpriteTexture(id: CrewTextureId): string {
   return crewSpriteSources[id].key;
