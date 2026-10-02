@@ -1,5 +1,10 @@
 import Phaser from "phaser";
 import type { ProfileId } from "../../domain/profiles";
+import {
+  OLLI_V6_FRAME_HEIGHT,
+  OLLI_V6_FRAME_WIDTH,
+  OLLI_V6_SPRITESHEET_DATA_URI
+} from "./olliV6Sheet";
 
 export type CrewTextureId = ProfileId | "louis";
 export type ConceptCrewPart =
@@ -12,6 +17,10 @@ export type ConceptCrewPart =
   | "head";
 
 const base = import.meta.env.BASE_URL;
+
+export const OLLI_V6_TEXTURE = "crew-olli-v6";
+export const OLLI_V6_IDLE_ANIM = "crew-olli-v6-idle";
+export const OLLI_V6_WALK_ANIM = "crew-olli-v6-walk";
 
 const crewPortraitSources: Record<CrewTextureId, { key: string; url: string }> = {
   philipp: {
@@ -94,6 +103,14 @@ conceptPartSources["louis:rightLeg"] = {
 };
 
 export function preloadCrewTextures(scene: Phaser.Scene): void {
+  if (!scene.textures.exists(OLLI_V6_TEXTURE)) {
+    scene.load.spritesheet(OLLI_V6_TEXTURE, OLLI_V6_SPRITESHEET_DATA_URI, {
+      frameWidth: OLLI_V6_FRAME_WIDTH,
+      frameHeight: OLLI_V6_FRAME_HEIGHT,
+      endFrame: 11
+    });
+  }
+
   for (const source of Object.values(crewPortraitSources)) {
     if (!scene.textures.exists(source.key)) {
       scene.load.image(source.key, source.url);
@@ -149,6 +166,30 @@ function createHeadTexture(scene: Phaser.Scene, id: ProfileId): void {
 }
 
 export function createCircularCrewTextures(scene: Phaser.Scene): void {
+  if (!scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
+    scene.anims.create({
+      key: OLLI_V6_IDLE_ANIM,
+      frames: [
+        { key: OLLI_V6_TEXTURE, frame: 0 },
+        { key: OLLI_V6_TEXTURE, frame: 11 }
+      ],
+      frameRate: 1.6,
+      repeat: -1,
+      yoyo: true
+    });
+  }
+
+  if (!scene.anims.exists(OLLI_V6_WALK_ANIM)) {
+    scene.anims.create({
+      key: OLLI_V6_WALK_ANIM,
+      frames: scene.anims.generateFrameNumbers(OLLI_V6_TEXTURE, {
+        frames: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      }),
+      frameRate: 9,
+      repeat: -1
+    });
+  }
+
   for (const source of Object.values(crewPortraitSources)) {
     const circleKey = `${source.key}-circle`;
     if (scene.textures.exists(circleKey) || !scene.textures.exists(source.key)) {
