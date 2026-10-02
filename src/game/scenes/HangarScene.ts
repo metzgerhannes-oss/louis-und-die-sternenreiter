@@ -55,6 +55,10 @@ export class HangarScene extends Phaser.Scene {
   private hint?: Phaser.GameObjects.Text;
   private hotspots: RuntimeHotspot[] = [];
   private starPoints: RuntimeStarPoint[] = [];
+  private worldWidth = 0;
+  private worldHeight = 0;
+  private playTop = 0;
+  private playBottom = 0;
   private readonly moveState: Record<MoveDirection, boolean> = {
     up: false,
     down: false,
@@ -73,7 +77,10 @@ export class HangarScene extends Phaser.Scene {
     this.drawHangar(profile);
     this.atmosphere = new AmbientMotionLayer(this, "hangar");
     if (this.player) {
-      this.cameraController = new WorldCameraController(this, this.player.container);
+      this.cameraController = new WorldCameraController(this, this.player.container, {
+        worldWidth: this.worldWidth,
+        worldHeight: this.worldHeight
+      });
     }
     this.interactionFocus = new InteractionFocus(this, 0xf0b45e);
     this.setupKeyboard();
@@ -178,19 +185,17 @@ export class HangarScene extends Phaser.Scene {
       dx /= length;
       dy /= length;
 
-      const speed = 235;
+      const speed = 285;
       const seconds = delta / 1000;
-      const { width, height } = this.scale;
       const nextX = Phaser.Math.Clamp(
         this.player.x + dx * speed * seconds,
-        width * 0.08,
-        width * 0.92
+        90,
+        Math.max(90, this.worldWidth - 90)
       );
-      const compact = width <= 860 && height > width;
       const nextY = Phaser.Math.Clamp(
         this.player.y + dy * speed * 0.72 * seconds,
-        height * (compact ? 0.37 : 0.48),
-        height * (compact ? 0.78 : 0.86)
+        this.playTop,
+        this.playBottom
       );
 
       this.player.setPosition(nextX, nextY);
@@ -231,11 +236,24 @@ export class HangarScene extends Phaser.Scene {
   }
 
   private drawHangar(profile: PlayerProfile): void {
-    const { width, height } = this.scale;
+    const viewportWidth = this.scale.width;
+    const viewportHeight = this.scale.height;
+    const compact = viewportWidth <= 860 && viewportHeight > viewportWidth;
+    const width = compact
+      ? Math.max(1480, viewportWidth * 2.45)
+      : Math.max(1680, viewportWidth * 1.55);
+    const height = compact
+      ? Math.max(1500, viewportHeight * 1.1)
+      : Math.max(1050, viewportHeight * 1.08);
+
+    this.worldWidth = width;
+    this.worldHeight = height;
+    this.playTop = height * 0.43;
+    this.playBottom = height * 0.91;
+
     const chapterState = loadChapter1State();
     const energyRestored = isStarPointCompleted(hangarEnergyStarPoint.id);
     const gateOpen = isStarPointCompleted(hangarGateStarPoint.id);
-    const compact = width <= 860 && height > width;
 
     this.cameras.main.setBackgroundColor("#070c12");
 
@@ -249,8 +267,8 @@ export class HangarScene extends Phaser.Scene {
       .setStrokeStyle(4, 0x465463)
       .setDepth(-12);
 
-    for (let i = 0; i < 8; i += 1) {
-      const x = width * (0.06 + i * 0.125);
+    for (let i = 0; i < 15; i += 1) {
+      const x = width * (0.035 + i * 0.067);
       this.add
         .rectangle(x, height * 0.27, Math.max(7, width * 0.009), height * 0.43, 0x303c48)
         .setStrokeStyle(1, 0x66727a, 0.55)
@@ -301,7 +319,7 @@ export class HangarScene extends Phaser.Scene {
     }
 
     // Warm practical lights: the hangar should feel repaired and lived in.
-    const lampXs = [0.12, 0.31, 0.49, 0.66, 0.89];
+    const lampXs = [0.06, 0.16, 0.27, 0.38, 0.49, 0.6, 0.71, 0.82, 0.93];
     for (const ratio of lampXs) {
       const lx = width * ratio;
       this.add
@@ -340,16 +358,16 @@ export class HangarScene extends Phaser.Scene {
     floor.fillTriangle(width * 0.02, height * 0.43, width, height, 0, height);
     floor.lineStyle(2, 0x665d53, 0.72);
 
-    for (let i = 1; i <= 7; i += 1) {
-      const y = Phaser.Math.Linear(height * 0.46, height * 0.96, i / 7);
+    for (let i = 1; i <= 14; i += 1) {
+      const y = Phaser.Math.Linear(height * 0.46, height * 0.96, i / 14);
       floor.lineBetween(width * 0.02, y, width * 0.98, y);
     }
 
-    for (let i = -4; i <= 4; i += 1) {
+    for (let i = -9; i <= 9; i += 1) {
       floor.lineBetween(
-        width * 0.5 + i * width * 0.06,
+        width * 0.5 + i * width * 0.032,
         height * 0.43,
-        width * 0.5 + i * width * 0.145,
+        width * 0.5 + i * width * 0.072,
         height
       );
     }
@@ -377,6 +395,51 @@ export class HangarScene extends Phaser.Scene {
         .setDepth(-1);
     }
 
+    // Clear readable zones make the larger room feel intentional rather than empty.
+    const zoneLayer = this.add.graphics().setDepth(-3);
+    zoneLayer.fillStyle(0x16232b, 0.7);
+    zoneLayer.fillRoundedRect(width * 0.13, height * 0.48, width * 0.29, height * 0.31, 28);
+    zoneLayer.lineStyle(3, 0x4d7c84, 0.32);
+    zoneLayer.strokeRoundedRect(width * 0.13, height * 0.48, width * 0.29, height * 0.31, 28);
+
+    zoneLayer.fillStyle(0x171d24, 0.72);
+    zoneLayer.fillRoundedRect(width * 0.53, height * 0.47, width * 0.31, height * 0.33, 34);
+    zoneLayer.lineStyle(4, 0xa76b32, 0.28);
+    zoneLayer.strokeRoundedRect(width * 0.53, height * 0.47, width * 0.31, height * 0.33, 34);
+
+    this.add
+      .text(width * 0.18, height * 0.505, "WERKSTATT", {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "22px",
+        fontStyle: "900",
+        color: "#6f98a0"
+      })
+      .setAlpha(0.52)
+      .setDepth(-1);
+
+    this.add
+      .text(width * 0.58, height * 0.505, "FLUGDECK 03", {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: "22px",
+        fontStyle: "900",
+        color: "#b17a45"
+      })
+      .setAlpha(0.5)
+      .setDepth(-1);
+
+    for (let i = 0; i < 5; i += 1) {
+      const crateX = width * 0.075 + (i % 2) * 74;
+      const crateY = height * 0.7 + Math.floor(i / 2) * 58;
+      this.add
+        .rectangle(crateX, crateY, 62, 48, i % 2 === 0 ? 0x3b4650 : 0x4c4035)
+        .setStrokeStyle(2, i % 2 === 0 ? 0x66808c : 0x9b7651, 0.65)
+        .setDepth(crateY - 4);
+      this.add
+        .line(crateX, crateY, -22, -12, 22, 12, 0xc4935f, 0.3)
+        .setLineWidth(2)
+        .setDepth(crateY - 3);
+    }
+
     this.add
       .text(width * 0.055, height * 0.075, "HANGAR 3", {
         fontFamily: "system-ui, sans-serif",
@@ -399,9 +462,9 @@ export class HangarScene extends Phaser.Scene {
       )
       .setDepth(2);
 
-    const doorX = width * 0.52;
+    const doorX = width * 0.86;
     const doorY = height * 0.29;
-    const doorWidth = width * 0.32;
+    const doorWidth = width * 0.2;
     const doorHeight = height * 0.3;
 
     if (gateOpen) {
@@ -463,11 +526,32 @@ export class HangarScene extends Phaser.Scene {
 
     doorHit.on("pointerdown", () => this.openHotspot("hangar-door"));
 
-    const shipX = width * (compact ? 0.73 : 0.72);
-    const shipY = height * (compact ? 0.47 : 0.59);
-    const shipScale = compact
-      ? Phaser.Math.Clamp(width / 1450, 0.48, 0.58)
-      : Phaser.Math.Clamp(width / 1180, 0.68, 1.03);
+    const shipX = width * 0.68;
+    const shipY = height * (compact ? 0.61 : 0.62);
+    const shipScale = compact ? 0.86 : 1.08;
+
+    const landingPad = this.add
+      .ellipse(shipX, shipY + 72 * shipScale, 510 * shipScale, 176 * shipScale, 0x101820, 0.88)
+      .setStrokeStyle(5, chapterState.shipTested ? 0xc68438 : 0x52616b, 0.7)
+      .setDepth(shipY - 55);
+    this.add
+      .ellipse(shipX, shipY + 72 * shipScale, 430 * shipScale, 136 * shipScale, 0x17232d, 0.22)
+      .setStrokeStyle(3, 0x6a7a82, 0.38)
+      .setDepth(shipY - 54);
+    this.add
+      .line(
+        shipX,
+        shipY + 72 * shipScale,
+        -190 * shipScale,
+        0,
+        190 * shipScale,
+        0,
+        chapterState.shipTested ? 0xd88e38 : 0x65717a,
+        0.42
+      )
+      .setLineWidth(5)
+      .setDepth(shipY - 53);
+    landingPad.setAlpha(0.96);
 
     const shipShadow = this.add.ellipse(0, 57, 360, 58, 0x000000, 0.34);
 
@@ -500,8 +584,18 @@ export class HangarScene extends Phaser.Scene {
       .setStrokeStyle(3, 0xb49d7e);
 
     const hull = this.add
-      .ellipse(20, 0, 305, 100, 0xd4c8b0)
-      .setStrokeStyle(4, 0x72685c);
+      .ellipse(20, 0, 320, 106, 0xcfc3ac)
+      .setStrokeStyle(5, 0x6f665c);
+
+    const hullShadow = this.add
+      .ellipse(4, 18, 270, 62, 0x4d4c4a, 0.18);
+
+    const hullHighlight = this.add
+      .ellipse(32, -17, 214, 34, 0xf3ead9, 0.22);
+
+    const centerSpine = this.add
+      .rectangle(12, 0, 198, 9, 0x8a8173, 0.7)
+      .setStrokeStyle(1, 0xd8cab3, 0.42);
 
     const nose = this.add
       .triangle(164, 0, -28, -43, 52, 0, -28, 43, 0xb9aa92)
@@ -511,8 +605,16 @@ export class HangarScene extends Phaser.Scene {
       .ellipse(76, -12, 112, 56, chapterState.navigationRestored ? 0x376c7b : 0x2d4852, 0.96)
       .setStrokeStyle(4, chapterState.navigationRestored ? 0x8bdde4 : 0x587a83);
     const cockpitGlass = this.add
-      .ellipse(87, -18, 82, 37, 0x7ec5d6, chapterState.navigationRestored ? 0.26 : 0.1)
-      .setStrokeStyle(2, 0xcbeff1, 0.38);
+      .ellipse(87, -18, 82, 37, 0x7ec5d6, chapterState.navigationRestored ? 0.34 : 0.12)
+      .setStrokeStyle(2, 0xcbeff1, 0.48);
+
+    const cockpitFrame = this.add
+      .line(87, -18, -35, 0, 35, 0, 0xd8eff1, 0.48)
+      .setLineWidth(2);
+
+    const noseLight = this.add
+      .circle(164, 0, 5, chapterState.shipTested ? 0xffc76b : 0x7d6a55, 0.92)
+      .setStrokeStyle(2, 0xffe2a6, 0.42);
 
     const dorsal = this.add
       .rectangle(-5, -48, 98, 23, 0x7d7567)
@@ -598,6 +700,9 @@ export class HangarScene extends Phaser.Scene {
       leftWing,
       rightWing,
       hull,
+      hullShadow,
+      hullHighlight,
+      centerSpine,
       nose,
       blueStripe,
       berryStripe,
@@ -610,6 +715,8 @@ export class HangarScene extends Phaser.Scene {
       dorsal,
       cockpit,
       cockpitGlass,
+      cockpitFrame,
+      noseLight,
       turretBase,
       turret,
       turretMuzzle,
@@ -670,47 +777,107 @@ export class HangarScene extends Phaser.Scene {
 
     shipContainer.on("pointerdown", () => this.openHotspot("ship"));
 
-    const benchX = width * (compact ? 0.17 : 0.18);
-    const benchY = height * (compact ? 0.49 : 0.56);
+    const benchX = width * 0.32;
+    const benchY = height * (compact ? 0.6 : 0.61);
     const benchColor = energyRestored ? 0x6b5540 : 0x463c34;
-    const benchStroke = energyRestored ? 0xd2a35f : 0x735b49;
+    const benchStroke = energyRestored ? 0xd2a35f : 0x8a6549;
+
+    const benchBack = this.add
+      .rectangle(benchX, benchY - 92, 300, 132, 0x202a31, 0.98)
+      .setStrokeStyle(4, 0x52636d, 0.82)
+      .setDepth(benchY - 95);
+
+    for (let i = 0; i < 5; i += 1) {
+      this.add
+        .circle(
+          benchX - 102 + i * 50,
+          benchY - 110 + (i % 2) * 25,
+          8,
+          i % 2 === 0 ? 0xb77a42 : 0x587987,
+          0.86
+        )
+        .setStrokeStyle(2, 0xcbb99c, 0.38)
+        .setDepth(benchY - 90);
+    }
+
+    const monitor = this.add
+      .rectangle(benchX + 70, benchY - 92, 86, 54, energyRestored ? 0x214d55 : 0x161b20)
+      .setStrokeStyle(3, energyRestored ? 0x7ed8d9 : 0x555f63, 0.86)
+      .setDepth(benchY - 88);
+
+    this.add
+      .line(benchX + 70, benchY - 92, -28, 12, 28, -12, energyRestored ? 0x8fe8e6 : 0x48565b, 0.72)
+      .setLineWidth(2)
+      .setDepth(benchY - 87);
 
     const bench = this.add
-      .rectangle(benchX, benchY, Math.min(190, width * 0.21), 56, benchColor)
-      .setStrokeStyle(3, benchStroke)
+      .rectangle(benchX, benchY, 310, 72, benchColor)
+      .setStrokeStyle(4, benchStroke)
       .setInteractive({ useHandCursor: true })
       .setDepth(benchY);
 
     this.add
-      .rectangle(benchX - 60, benchY + 43, 18, 72, 0x44372e)
+      .rectangle(benchX, benchY - 30, 330, 16, 0x8b755d, 0.9)
+      .setStrokeStyle(2, 0xc5a979, 0.55)
+      .setDepth(benchY + 1);
+
+    this.add
+      .rectangle(benchX - 105, benchY + 55, 30, 96, 0x34383a)
+      .setStrokeStyle(2, 0x695845, 0.75)
       .setDepth(benchY - 1);
 
     this.add
-      .rectangle(benchX + 60, benchY + 43, 18, 72, 0x44372e)
+      .rectangle(benchX + 105, benchY + 55, 30, 96, 0x34383a)
+      .setStrokeStyle(2, 0x695845, 0.75)
       .setDepth(benchY - 1);
 
+    for (let i = 0; i < 3; i += 1) {
+      this.add
+        .rectangle(benchX - 62 + i * 62, benchY + 18, 48, 22, 0x3c454a)
+        .setStrokeStyle(1, 0x76634f, 0.72)
+        .setDepth(benchY + 2);
+    }
+
+    const taskLight = this.add
+      .ellipse(benchX - 115, benchY - 60, 78, 42, energyRestored ? 0xffc873 : 0x7e5d45, energyRestored ? 0.13 : 0.04)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setDepth(benchY - 86);
+
+    if (energyRestored) {
+      this.tweens.add({
+        targets: [monitor, taskLight],
+        alpha: { from: 0.68, to: 1 },
+        duration: 1050,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut"
+      });
+    }
+
     this.add
-      .text(benchX, benchY - 44, energyRestored ? "WERKBANK · ONLINE" : "WERKBANK · OHNE STROM", {
+      .text(benchX, benchY - 176, energyRestored ? "WERKBANK · ONLINE" : "WERKBANK · OHNE STROM", {
         fontFamily: "system-ui, sans-serif",
-        fontSize: "14px",
-        fontStyle: "700",
-        color: energyRestored ? "#f1c975" : "#a58d76"
+        fontSize: "16px",
+        fontStyle: "800",
+        color: energyRestored ? "#f1c975" : "#c39b74",
+        backgroundColor: "#10151dcc",
+        padding: { x: 9, y: 5 }
       })
       .setOrigin(0.5)
-      .setDepth(benchY + 1)
-      .setVisible(!compact);
+      .setDepth(benchY + 4);
 
     bench.on("pointerdown", () => this.openHotspot("workbench"));
+    benchBack.setInteractive({ useHandCursor: true }).on("pointerdown", () => this.openHotspot("workbench"));
 
-    const energyX = width * (compact ? 0.35 : 0.34);
-    const energyY = height * (compact ? 0.49 : 0.55);
+    const energyX = width * 0.215;
+    const energyY = height * (compact ? 0.6 : 0.6);
 
     const energyNode = this.add
       .rectangle(
         energyX,
         energyY,
-        Math.min(88, width * 0.085),
-        72,
+        112,
+        104,
         energyRestored ? 0x254e4f : 0x482d2b
       )
       .setStrokeStyle(3, energyRestored ? 0x74d1c9 : 0xc0715d)
@@ -720,14 +887,14 @@ export class HangarScene extends Phaser.Scene {
       .circle(
         energyX,
         energyY,
-        12,
+        17,
         energyRestored ? 0x7de0d0 : 0xd66f5c,
         energyRestored ? 0.95 : 0.7
       )
       .setDepth(energyY + 1);
 
     this.add
-      .text(energyX, energyY - 54, energyRestored ? "ENERGIE STABIL" : "✦ STERNENPUNKT", {
+      .text(energyX, energyY - 78, energyRestored ? "ENERGIE STABIL" : "✦ STERNENPUNKT", {
         fontFamily: "system-ui, sans-serif",
         fontSize: "12px",
         fontStyle: "700",
@@ -779,21 +946,21 @@ export class HangarScene extends Phaser.Scene {
       { data: hangarHotspots.workbench, x: benchX, y: benchY + 55 }
     ];
 
-    const startX = width * (compact ? 0.5 : 0.48);
-    const startY = height * (compact ? 0.66 : 0.72);
+    const startX = width * 0.415;
+    const startY = height * (compact ? 0.72 : 0.72);
 
-    this.player = new PlayerAvatar(this, profile, startX, startY);
+    this.player = new PlayerAvatar(this, profile, startX, startY, 1.18);
     this.player.setPosition(startX, startY);
 
     const crewProfiles = getCrewMates(profile.id);
     const formation = compact
       ? [
-          { x: -72, y: 48 },
-          { x: 70, y: 44 }
+          { x: -92, y: 58 },
+          { x: 92, y: 54 }
         ]
       : [
-          { x: -105, y: 72 },
-          { x: 95, y: 64 }
+          { x: -122, y: 78 },
+          { x: 112, y: 70 }
         ];
 
     this.crewMates = crewProfiles.map((crewProfile, index) => {
@@ -804,7 +971,8 @@ export class HangarScene extends Phaser.Scene {
         startX + offset.x,
         startY + offset.y,
         offset.x,
-        offset.y
+        offset.y,
+        1.15
       );
     });
 
@@ -814,18 +982,24 @@ export class HangarScene extends Phaser.Scene {
       startY + (compact ? 12 : 20),
       () => {
         gameEventBus.emit("interaction:louis", undefined);
-      }
+      },
+      1.12
     );
 
     this.hint = this.add
-      .text(width / 2, compact ? height * 0.19 : height * 0.43, "", {
+      .text(
+        viewportWidth / 2,
+        compact ? viewportHeight * 0.19 : viewportHeight * 0.43,
+        "",
+        {
         fontFamily: "system-ui, sans-serif",
         fontSize: compact ? "12px" : "15px",
         fontStyle: "700",
         color: "#fff7e7",
         backgroundColor: "#10151ddd",
-        padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
-      })
+          padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
+        }
+      )
       .setOrigin(0.5)
       .setScrollFactor(0)
       .setDepth(4000)
@@ -875,7 +1049,7 @@ export class HangarScene extends Phaser.Scene {
       }
     }
 
-    return nearest.distance <= 130 ? nearest : null;
+    return nearest.distance <= 165 ? nearest : null;
   }
 
   private updateInteractionHint(): void {
@@ -957,7 +1131,7 @@ export class HangarScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: pulse,
-      scale: Math.max(width, height) / 32,
+      scale: Math.max(this.worldWidth || width, this.worldHeight || height) / 32,
       alpha: { from: 0.8, to: 0 },
       duration: 760,
       ease: "Sine.easeOut",
