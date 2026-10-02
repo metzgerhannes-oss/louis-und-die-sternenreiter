@@ -9,7 +9,7 @@ export default defineConfig(({ command }) => ({
   plugins: [
     react(),
     VitePWA({
-      registerType: "prompt",
+      registerType: "autoUpdate",
       includeAssets: ["icon.svg"],
       manifest: {
         name: "Louis & die Sternenreiter",
@@ -30,7 +30,7 @@ export default defineConfig(({ command }) => ({
         ]
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg}"],
+        globPatterns: ["**/*.{js,css,html,svg,webp,png}"],
         cleanupOutdatedCaches: true
       }
     })
