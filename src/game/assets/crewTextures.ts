@@ -1,11 +1,5 @@
 import Phaser from "phaser";
 import type { ProfileId } from "../../domain/profiles";
-import {
-  OLLI_V6_FRAME_HEIGHT,
-  OLLI_V6_FRAME_WIDTH,
-  OLLI_V6_SPRITESHEET_DATA_URI
-} from "./olliV6Sheet";
-
 export type CrewTextureId = ProfileId | "louis";
 export type ConceptCrewPart =
   | "torso"
@@ -21,6 +15,9 @@ const base = import.meta.env.BASE_URL;
 export const OLLI_V6_TEXTURE = "crew-olli-v6";
 export const OLLI_V6_IDLE_ANIM = "crew-olli-v6-idle";
 export const OLLI_V6_WALK_ANIM = "crew-olli-v6-walk";
+const OLLI_V6_FRAME_WIDTH = 150;
+const OLLI_V6_FRAME_HEIGHT = 216;
+const OLLI_V6_SPRITESHEET_URL = `${base}assets/sprites/olli-v6-pilot-80.webp`;
 
 const crewPortraitSources: Record<CrewTextureId, { key: string; url: string }> = {
   philipp: {
@@ -104,7 +101,7 @@ conceptPartSources["louis:rightLeg"] = {
 
 export function preloadCrewTextures(scene: Phaser.Scene): void {
   if (!scene.textures.exists(OLLI_V6_TEXTURE)) {
-    scene.load.spritesheet(OLLI_V6_TEXTURE, OLLI_V6_SPRITESHEET_DATA_URI, {
+    scene.load.spritesheet(OLLI_V6_TEXTURE, OLLI_V6_SPRITESHEET_URL, {
       frameWidth: OLLI_V6_FRAME_WIDTH,
       frameHeight: OLLI_V6_FRAME_HEIGHT,
       endFrame: 5
