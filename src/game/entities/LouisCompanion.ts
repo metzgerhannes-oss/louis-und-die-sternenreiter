@@ -14,7 +14,13 @@ export class LouisCompanion {
   private animationPhase = Math.PI * 0.4;
   private movementLean = 0;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, onInteract: () => void) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    onInteract: () => void,
+    private readonly displayScale = 1
+  ) {
     this.shadow = scene.add.ellipse(0, 4, 46, 13, 0x000000, 0.32);
 
     this.glow = scene.add
@@ -82,7 +88,7 @@ export class LouisCompanion {
       0.94,
       Phaser.Math.Clamp((this.container.y - 280) / 420, 0, 1)
     );
-    this.container.setScale(perspectiveScale);
+    this.container.setScale(perspectiveScale * this.displayScale);
 
     const dx = this.container.x - previousX;
     const dy = this.container.y - previousY;
