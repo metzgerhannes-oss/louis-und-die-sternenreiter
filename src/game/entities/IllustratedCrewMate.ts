@@ -17,7 +17,7 @@ export class IllustratedCrewMate {
     this.avatar = new IllustratedCrewAvatar(scene, profile, x, y, {
       displayScale,
       primary: false,
-      showName: true
+      showName: false
     });
   }
 
