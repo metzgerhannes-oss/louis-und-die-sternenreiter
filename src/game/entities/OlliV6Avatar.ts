@@ -63,7 +63,11 @@ export class OlliV6Avatar {
     ]);
     this.container.setDepth(y);
 
-    this.sprite.play(OLLI_V6_IDLE_ANIM);
+    if (scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
+      this.sprite.play(OLLI_V6_IDLE_ANIM);
+    } else {
+      this.sprite.setFrame(0);
+    }
 
     scene.tweens.add({
       targets: this.floorFocus,
@@ -104,6 +108,11 @@ export class OlliV6Avatar {
 
   updateAnimation(_delta: number, moving: boolean): void {
     const targetAnimation = moving ? OLLI_V6_WALK_ANIM : OLLI_V6_IDLE_ANIM;
+
+    if (!this.sprite.scene.anims.exists(targetAnimation)) {
+      this.sprite.setFrame(0);
+      return;
+    }
 
     if (this.sprite.anims.currentAnim?.key !== targetAnimation) {
       this.sprite.play(targetAnimation);
