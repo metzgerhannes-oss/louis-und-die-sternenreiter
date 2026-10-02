@@ -15,6 +15,7 @@ import { CrewMate } from "../entities/CrewMate";
 import { PlayerAvatar } from "../entities/PlayerAvatar";
 import { LouisCompanion } from "../entities/LouisCompanion";
 import { AmbientMotionLayer } from "../effects/AmbientMotionLayer";
+import { WorldCameraController } from "../effects/WorldCameraController";
 import { InteractionFocus } from "../effects/InteractionFocus";
 import { gameEventBus, type MoveDirection } from "../EventBus";
 import {
@@ -46,6 +47,7 @@ export class HangarScene extends Phaser.Scene {
   private louis?: LouisCompanion;
   private interactionFocus?: InteractionFocus;
   private atmosphere?: AmbientMotionLayer;
+  private cameraController?: WorldCameraController;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd?: Record<"W" | "A" | "S" | "D", Phaser.Input.Keyboard.Key>;
   private interactKey?: Phaser.Input.Keyboard.Key;
@@ -70,6 +72,9 @@ export class HangarScene extends Phaser.Scene {
 
     this.drawHangar(profile);
     this.atmosphere = new AmbientMotionLayer(this, "hangar");
+    if (this.player) {
+      this.cameraController = new WorldCameraController(this, this.player.container);
+    }
     this.interactionFocus = new InteractionFocus(this, 0xf0b45e);
     this.setupKeyboard();
     this.cameras.main.fadeIn(320, 7, 12, 18);
@@ -138,6 +143,8 @@ export class HangarScene extends Phaser.Scene {
       this.starPoints = [];
       this.interactionFocus = undefined;
       this.atmosphere = undefined;
+      this.cameraController?.destroy();
+      this.cameraController = undefined;
 
       for (const direction of Object.keys(this.moveState) as MoveDirection[]) {
         this.moveState[direction] = false;
@@ -197,6 +204,7 @@ export class HangarScene extends Phaser.Scene {
 
     this.louis.updateFollow(this.player.x, this.player.y, delta);
     this.atmosphere?.update(this.player.x, this.player.y, delta);
+    this.cameraController?.update(delta);
     this.updateInteractionHint();
 
     if (this.scannerKey && Phaser.Input.Keyboard.JustDown(this.scannerKey)) {
@@ -819,6 +827,7 @@ export class HangarScene extends Phaser.Scene {
         padding: compact ? { x: 7, y: 4 } : { x: 11, y: 7 }
       })
       .setOrigin(0.5)
+      .setScrollFactor(0)
       .setDepth(4000)
       .setVisible(false);
   }

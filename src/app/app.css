@@ -2556,3 +2556,70 @@ button:focus-visible {
     height: 6.15rem;
   }
 }
+
+
+/* === World camera zoom =================================================== */
+
+.hud-zoom-controls {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 7.25rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.32rem;
+  pointer-events: auto;
+}
+
+.hud-zoom-button {
+  width: 2.45rem;
+  height: 2.45rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(91, 155, 182, 0.56);
+  border-radius: 0.58rem;
+  padding: 0;
+  color: #eef8fa;
+  background:
+    linear-gradient(180deg, rgba(23, 43, 62, 0.94), rgba(6, 17, 29, 0.92));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.035),
+    0 0.45rem 1rem rgba(0,0,0,.22);
+  backdrop-filter: blur(7px);
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.hud-zoom-button.reset {
+  color: #f1c778;
+  border-color: rgba(208, 142, 57, 0.62);
+  font-size: 1rem;
+}
+
+.hud-zoom-button:hover,
+.hud-zoom-button:focus-visible {
+  border-color: #8ad5e2;
+  background:
+    linear-gradient(180deg, rgba(30, 70, 91, 0.98), rgba(9, 26, 40, 0.97));
+}
+
+@media (max-width: 860px), (pointer: coarse) {
+  .hud-zoom-controls {
+    right: 0.55rem;
+    bottom: 5.95rem;
+    gap: 0.25rem;
+  }
+
+  .hud-zoom-button {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  .hud-zoom-button.reset {
+    font-size: 0.9rem;
+  }
+}

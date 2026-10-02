@@ -25,6 +25,8 @@ type GameEventMap = {
   "resources:changed": undefined;
   "ui:louis:ping": undefined;
   "ui:scanner:pulse": undefined;
+  "camera:zoom": { direction: "in" | "out" };
+  "camera:reset": undefined;
   "input:move": { direction: MoveDirection; active: boolean };
   "input:interact": undefined;
 };
