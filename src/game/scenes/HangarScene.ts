@@ -952,7 +952,7 @@ export class HangarScene extends Phaser.Scene {
     this.player = new IllustratedCrewAvatar(this, profile, startX, startY, {
       displayScale: compact ? 1.18 : 1.06,
       primary: true,
-      showName: true
+      showName: false
     });
     this.player.setPosition(startX, startY);
 
