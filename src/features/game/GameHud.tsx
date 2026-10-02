@@ -140,6 +140,36 @@ export function GameHud({
         </div>
       </section>
 
+      <div className="hud-zoom-controls" aria-label="Kamera-Zoom">
+        <button
+          type="button"
+          className="hud-zoom-button"
+          aria-label="Herauszoomen"
+          title="Herauszoomen"
+          onClick={() => gameEventBus.emit("camera:zoom", { direction: "out" })}
+        >
+          −
+        </button>
+        <button
+          type="button"
+          className="hud-zoom-button reset"
+          aria-label="Kamera zurücksetzen"
+          title="Kamera zurücksetzen"
+          onClick={() => gameEventBus.emit("camera:reset", undefined)}
+        >
+          ◎
+        </button>
+        <button
+          type="button"
+          className="hud-zoom-button"
+          aria-label="Heranzoomen"
+          title="Heranzoomen"
+          onClick={() => gameEventBus.emit("camera:zoom", { direction: "in" })}
+        >
+          +
+        </button>
+      </div>
+
       <div className="hud-actions" aria-label="Spielaktionen">
         <button
           type="button"
