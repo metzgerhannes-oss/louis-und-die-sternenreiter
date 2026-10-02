@@ -14,7 +14,7 @@ type WorldCameraOptions = {
 
 function defaultZoomForViewport(width: number, height: number): number {
   if (width <= 860 && height > width) {
-    return 1.28;
+    return 1.32;
   }
 
   if (width <= 1100) {
@@ -63,7 +63,7 @@ export class WorldCameraController {
     const worldHeight = Math.max(options.worldHeight ?? height, height);
 
     this.camera.setBounds(0, 0, worldWidth, worldHeight, true);
-    this.camera.roundPixels = true;
+    this.camera.roundPixels = false;
     this.camera.setZoom(this.targetZoom);
     this.camera.startFollow(target, true, 0.09, 0.09);
 
