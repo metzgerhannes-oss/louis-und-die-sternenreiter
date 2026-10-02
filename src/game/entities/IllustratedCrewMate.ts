@@ -1,9 +1,12 @@
 import Phaser from "phaser";
 import type { PlayerProfile } from "../../domain/profiles";
 import { IllustratedCrewAvatar } from "./IllustratedCrewAvatar";
+import { OlliV6Avatar } from "./OlliV6Avatar";
+
+type CrewAvatar = IllustratedCrewAvatar | OlliV6Avatar;
 
 export class IllustratedCrewMate {
-  readonly avatar: IllustratedCrewAvatar;
+  readonly avatar: CrewAvatar;
 
   constructor(
     scene: Phaser.Scene,
@@ -14,11 +17,17 @@ export class IllustratedCrewMate {
     private readonly offsetY: number,
     displayScale = 1
   ) {
-    this.avatar = new IllustratedCrewAvatar(scene, profile, x, y, {
-      displayScale,
-      primary: false,
-      showName: false
-    });
+    this.avatar =
+      profile.id === "olli"
+        ? new OlliV6Avatar(scene, profile, x, y, {
+            displayScale,
+            primary: false
+          })
+        : new IllustratedCrewAvatar(scene, profile, x, y, {
+            displayScale,
+            primary: false,
+            showName: false
+          });
   }
 
   updateFollow(playerX: number, playerY: number, delta: number): void {

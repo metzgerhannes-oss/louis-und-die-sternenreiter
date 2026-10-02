@@ -13,6 +13,7 @@ import { loadChapter1State } from "../../services/chapter1State";
 import { isStarPointCompleted } from "../../services/starPointState";
 import { IllustratedCrewMate } from "../entities/IllustratedCrewMate";
 import { IllustratedCrewAvatar } from "../entities/IllustratedCrewAvatar";
+import { OlliV6Avatar } from "../entities/OlliV6Avatar";
 import { IllustratedLouisCompanion } from "../entities/IllustratedLouisCompanion";
 import { AmbientMotionLayer } from "../effects/AmbientMotionLayer";
 import { WorldCameraController } from "../effects/WorldCameraController";
@@ -42,7 +43,7 @@ type NearestInteraction =
   | { kind: "starpoint"; starPoint: RuntimeStarPoint; distance: number };
 
 export class HangarScene extends Phaser.Scene {
-  private player?: IllustratedCrewAvatar;
+  private player?: IllustratedCrewAvatar | OlliV6Avatar;
   private crewMates: IllustratedCrewMate[] = [];
   private louis?: IllustratedLouisCompanion;
   private interactionFocus?: InteractionFocus;
@@ -949,11 +950,17 @@ export class HangarScene extends Phaser.Scene {
     const startX = width * 0.415;
     const startY = height * (compact ? 0.72 : 0.72);
 
-    this.player = new IllustratedCrewAvatar(this, profile, startX, startY, {
-      displayScale: compact ? 1.18 : 1.06,
-      primary: true,
-      showName: false
-    });
+    this.player =
+      profile.id === "olli"
+        ? new OlliV6Avatar(this, profile, startX, startY, {
+            displayScale: compact ? 1.12 : 1.02,
+            primary: true
+          })
+        : new IllustratedCrewAvatar(this, profile, startX, startY, {
+            displayScale: compact ? 1.18 : 1.06,
+            primary: true,
+            showName: false
+          });
     this.player.setPosition(startX, startY);
 
     const crewProfiles = getCrewMates(profile.id);
