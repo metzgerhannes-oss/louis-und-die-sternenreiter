@@ -1,35 +1,8 @@
 import Phaser from "phaser";
-import {
-  getCrewRigFrame,
-  getCrewSpriteTexture
-} from "../assets/crewTextures";
-
-type NormalizedCrop = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
+import { getCrewPartTexture } from "../assets/crewTextures";
 
 const SOURCE_WIDTH = 66;
 const SOURCE_HEIGHT = 160;
-
-const CROPS: Record<
-  "dogHead" | "dogBody" | "dogLeftLeg" | "dogRightLeg",
-  NormalizedCrop
-> = {
-  dogHead: { x: 0.06, y: 0.02, width: 0.88, height: 0.52 },
-  dogBody: { x: 0.08, y: 0.32, width: 0.84, height: 0.45 },
-  dogLeftLeg: { x: 0.08, y: 0.58, width: 0.48, height: 0.42 },
-  dogRightLeg: { x: 0.44, y: 0.58, width: 0.48, height: 0.42 }
-};
-
-function localCenter(crop: NormalizedCrop): Phaser.Math.Vector2 {
-  return new Phaser.Math.Vector2(
-    -SOURCE_WIDTH / 2 + SOURCE_WIDTH * (crop.x + crop.width / 2),
-    -SOURCE_HEIGHT + SOURCE_HEIGHT * (crop.y + crop.height / 2)
-  );
-}
 
 export class IllustratedLouisCompanion {
   readonly container: Phaser.GameObjects.Container;
@@ -56,79 +29,45 @@ export class IllustratedLouisCompanion {
     private readonly followOffsetX = -34,
     private readonly followOffsetY = 146
   ) {
-    const texture = getCrewSpriteTexture("louis");
+    const centerY = -SOURCE_HEIGHT / 2;
 
     this.shadow = scene.add
-      .ellipse(0, 7, 82, 21, 0x000000, 0.64)
-      .setScale(1.06, 1);
+      .ellipse(0, 7, 78, 20, 0x000000, 0.62)
+      .setScale(1.05, 1);
 
     this.floorFocus = scene.add
-      .ellipse(0, 6, 92, 23, 0xe4a04a, 0.035)
-      .setStrokeStyle(1.3, 0xe4a04a, 0.28)
+      .ellipse(0, 6, 88, 21, 0xe4a04a, 0.025)
+      .setStrokeStyle(1.2, 0xe4a04a, 0.2)
       .setBlendMode(Phaser.BlendModes.ADD);
 
-    const bodyCrop = CROPS.dogBody;
-    const bodyCenter = localCenter(bodyCrop);
     this.body = scene.add
-      .image(
-        bodyCenter.x,
-        bodyCenter.y,
-        texture,
-        getCrewRigFrame("dogBody")
-      )
-      .setDisplaySize(
-        SOURCE_WIDTH * bodyCrop.width,
-        SOURCE_HEIGHT * bodyCrop.height
-      );
+      .image(0, centerY, getCrewPartTexture("louis", "dogBody"))
+      .setDisplaySize(SOURCE_WIDTH, SOURCE_HEIGHT);
 
-    const headCrop = CROPS.dogHead;
-    const headCenter = localCenter(headCrop);
-    const headJoint = new Phaser.Math.Vector2(0, -SOURCE_HEIGHT * 0.62);
+    const headJointY = -SOURCE_HEIGHT + SOURCE_HEIGHT * 0.39;
     const head = scene.add
-      .image(
-        headCenter.x - headJoint.x,
-        headCenter.y - headJoint.y,
-        texture,
-        getCrewRigFrame("dogHead")
-      )
-      .setDisplaySize(
-        SOURCE_WIDTH * headCrop.width,
-        SOURCE_HEIGHT * headCrop.height
-      );
-
-    this.headPivot = scene.add.container(headJoint.x, headJoint.y, [head]);
+      .image(0, centerY - headJointY, getCrewPartTexture("louis", "dogHead"))
+      .setDisplaySize(SOURCE_WIDTH, SOURCE_HEIGHT);
+    this.headPivot = scene.add.container(0, headJointY, [head]);
 
     const createLeg = (
-      frame: "dogLeftLeg" | "dogRightLeg",
-      jointX: number
+      part: "dogLeftLeg" | "dogRightLeg",
+      jointXNorm: number
     ): Phaser.GameObjects.Container => {
-      const crop = CROPS[frame];
-      const center = localCenter(crop);
-      const joint = new Phaser.Math.Vector2(
-        -SOURCE_WIDTH / 2 + SOURCE_WIDTH * jointX,
-        -SOURCE_HEIGHT + SOURCE_HEIGHT * 0.62
-      );
+      const jointX = -SOURCE_WIDTH / 2 + SOURCE_WIDTH * jointXNorm;
+      const jointY = -SOURCE_HEIGHT + SOURCE_HEIGHT * 0.63;
       const image = scene.add
-        .image(
-          center.x - joint.x,
-          center.y - joint.y,
-          texture,
-          getCrewRigFrame(frame)
-        )
-        .setDisplaySize(
-          SOURCE_WIDTH * crop.width,
-          SOURCE_HEIGHT * crop.height
-        );
-
-      return scene.add.container(joint.x, joint.y, [image]);
+        .image(-jointX, centerY - jointY, getCrewPartTexture("louis", part))
+        .setDisplaySize(SOURCE_WIDTH, SOURCE_HEIGHT);
+      return scene.add.container(jointX, jointY, [image]);
     };
 
     this.leftLeg = createLeg("dogLeftLeg", 0.34);
     this.rightLeg = createLeg("dogRightLeg", 0.66);
 
     this.beacon = scene.add
-      .circle(23, -101, 4.5, 0x74e0e4, 1)
-      .setStrokeStyle(1.5, 0xd8ffff, 0.9);
+      .circle(22, -101, 4.5, 0x74e0e4, 1)
+      .setStrokeStyle(1.5, 0xd8ffff, 0.88);
 
     this.visualRoot = scene.add.container(0, 0, [
       this.leftLeg,
@@ -145,14 +84,14 @@ export class IllustratedLouisCompanion {
     ]);
 
     this.container
-      .setSize(100, 160)
+      .setSize(96, 154)
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", onInteract);
 
     scene.tweens.add({
       targets: [this.floorFocus, this.beacon],
-      alpha: { from: 0.08, to: 0.32 },
-      duration: 920,
+      alpha: { from: 0.06, to: 0.26 },
+      duration: 900,
       yoyo: true,
       repeat: -1,
       ease: "Sine.easeInOut"
@@ -166,7 +105,7 @@ export class IllustratedLouisCompanion {
     this.container.setDepth(y - 1);
 
     const perspectiveScale = Phaser.Math.Linear(
-      0.88,
+      0.9,
       1.02,
       Phaser.Math.Clamp((y - 420) / 620, 0, 1)
     );
@@ -181,10 +120,10 @@ export class IllustratedLouisCompanion {
     const previousY = this.container.y;
 
     const factor = 1 - Math.pow(0.006, delta / 1000);
-    const nextX = Phaser.Math.Linear(this.container.x, targetX, factor);
-    const nextY = Phaser.Math.Linear(this.container.y, targetY, factor);
-
-    this.setPosition(nextX, nextY);
+    this.setPosition(
+      Phaser.Math.Linear(this.container.x, targetX, factor),
+      Phaser.Math.Linear(this.container.y, targetY, factor)
+    );
 
     const dx = this.container.x - previousX;
     const dy = this.container.y - previousY;
@@ -201,48 +140,30 @@ export class IllustratedLouisCompanion {
 
   private updateAnimation(delta: number, moving: boolean): void {
     this.animationPhase += delta * (moving ? 0.016 : 0.0034);
-
     const wave = Math.sin(this.animationPhase);
     const counterWave = Math.sin(this.animationPhase + Math.PI);
     const step = Math.abs(wave);
 
     if (moving) {
-      this.visualRoot.y = -step * 3.6;
+      this.visualRoot.y = -step * 3.5;
       this.visualRoot.angle = Phaser.Math.Linear(
         this.visualRoot.angle,
         this.movementLean * this.facing,
         0.3
       );
-
-      this.leftLeg.angle = counterWave * 10;
-      this.rightLeg.angle = wave * 10;
-      this.headPivot.angle = wave * 2.3;
-      this.body.setScale(1 + step * 0.006, 1 - step * 0.004);
-
-      this.shadow.setScale(1.06 - step * 0.1, 1 - step * 0.08);
-      this.floorFocus.setScale(1 + step * 0.018, 1 - step * 0.02);
+      this.leftLeg.angle = counterWave * 9;
+      this.rightLeg.angle = wave * 9;
+      this.headPivot.angle = wave * 2;
+      this.shadow.setScale(1.05 - step * 0.09, 1 - step * 0.08);
       return;
     }
 
-    const breathing = wave * 0.82;
-    this.visualRoot.y = breathing;
+    this.visualRoot.y = wave * 0.7;
     this.visualRoot.angle = Phaser.Math.Linear(this.visualRoot.angle, 0, 0.18);
-
-    this.leftLeg.angle = Phaser.Math.Linear(
-      this.leftLeg.angle,
-      -1 + wave * 0.5,
-      0.14
-    );
-    this.rightLeg.angle = Phaser.Math.Linear(
-      this.rightLeg.angle,
-      1 - wave * 0.5,
-      0.14
-    );
-    this.headPivot.angle = wave * 0.8;
-    this.body.setScale(1, 1 + wave * 0.004);
-
-    this.shadow.setScale(1.06 + wave * 0.01, 1 - wave * 0.01);
-    this.floorFocus.setScale(1 + wave * 0.008, 1 - wave * 0.008);
+    this.leftLeg.angle = Phaser.Math.Linear(this.leftLeg.angle, -0.6, 0.14);
+    this.rightLeg.angle = Phaser.Math.Linear(this.rightLeg.angle, 0.6, 0.14);
+    this.headPivot.angle = wave * 0.75;
+    this.shadow.setScale(1.05 + wave * 0.01, 1 - wave * 0.01);
   }
 
   get x(): number {
