@@ -101,11 +101,9 @@ conceptPartSources["louis:rightLeg"] = {
 
 export function preloadCrewTextures(scene: Phaser.Scene): void {
   if (!scene.textures.exists(OLLI_V6_TEXTURE)) {
-    scene.load.spritesheet(OLLI_V6_TEXTURE, OLLI_V6_SPRITESHEET_URL, {
-      frameWidth: OLLI_V6_FRAME_WIDTH,
-      frameHeight: OLLI_V6_FRAME_HEIGHT,
-      endFrame: 5
-    });
+    // Load the V6 sheet as a plain image. Phaser's spritesheet loader has proven
+    // unreliable on the iOS/PWA path; frames are sliced manually after preload.
+    scene.load.image(OLLI_V6_TEXTURE, OLLI_V6_SPRITESHEET_URL);
   }
 
   for (const source of Object.values(crewPortraitSources)) {
@@ -164,12 +162,30 @@ function createHeadTexture(scene: Phaser.Scene, id: ProfileId): void {
 
 export function createCircularCrewTextures(scene: Phaser.Scene): void {
   if (scene.textures.exists(OLLI_V6_TEXTURE)) {
+    const texture = scene.textures.get(OLLI_V6_TEXTURE);
+
+    for (let index = 0; index < 6; index += 1) {
+      const frameName = `v6-${index}`;
+      if (!texture.has(frameName)) {
+        const column = index % 3;
+        const row = Math.floor(index / 3);
+        texture.add(
+          frameName,
+          0,
+          column * OLLI_V6_FRAME_WIDTH,
+          row * OLLI_V6_FRAME_HEIGHT,
+          OLLI_V6_FRAME_WIDTH,
+          OLLI_V6_FRAME_HEIGHT
+        );
+      }
+    }
+
     if (!scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
       scene.anims.create({
         key: OLLI_V6_IDLE_ANIM,
         frames: [
-          { key: OLLI_V6_TEXTURE, frame: 0 },
-          { key: OLLI_V6_TEXTURE, frame: 5 }
+          { key: OLLI_V6_TEXTURE, frame: "v6-0" },
+          { key: OLLI_V6_TEXTURE, frame: "v6-5" }
         ],
         frameRate: 1.6,
         repeat: -1,
@@ -180,9 +196,10 @@ export function createCircularCrewTextures(scene: Phaser.Scene): void {
     if (!scene.anims.exists(OLLI_V6_WALK_ANIM)) {
       scene.anims.create({
         key: OLLI_V6_WALK_ANIM,
-        frames: scene.anims.generateFrameNumbers(OLLI_V6_TEXTURE, {
-          frames: [1, 2, 3, 4]
-        }),
+        frames: [1, 2, 3, 4].map((index) => ({
+          key: OLLI_V6_TEXTURE,
+          frame: `v6-${index}`
+        })),
         frameRate: 7,
         repeat: -1
       });
@@ -247,7 +264,9 @@ export function getConceptCrewPartTexture(
 
 
 export function isOlliV6Ready(scene: Phaser.Scene): boolean {
-  // The HD texture alone is enough to use V6. Missing animations must never
-  // push the character back to V5; OlliV6Avatar can display a static frame.
-  return scene.textures.exists(OLLI_V6_TEXTURE);
+  if (!scene.textures.exists(OLLI_V6_TEXTURE)) {
+    return false;
+  }
+
+  return scene.textures.get(OLLI_V6_TEXTURE).has("v6-0");
 }
