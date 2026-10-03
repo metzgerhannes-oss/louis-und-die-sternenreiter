@@ -53,7 +53,7 @@ export class OlliV6Avatar {
       .setBlendMode(Phaser.BlendModes.ADD);
 
     this.sprite = scene.add
-      .sprite(0, -112, OLLI_V6_TEXTURE, 0)
+      .sprite(0, -112, OLLI_V6_TEXTURE, "v6-0")
       .setDisplaySize(130, 222);
 
     this.container = scene.add.container(x, y, [
@@ -66,7 +66,7 @@ export class OlliV6Avatar {
     if (scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
       this.sprite.play(OLLI_V6_IDLE_ANIM);
     } else {
-      this.sprite.setFrame(0);
+      this.sprite.setFrame("v6-0");
     }
 
     scene.tweens.add({
@@ -110,7 +110,7 @@ export class OlliV6Avatar {
     const targetAnimation = moving ? OLLI_V6_WALK_ANIM : OLLI_V6_IDLE_ANIM;
 
     if (!this.sprite.scene.anims.exists(targetAnimation)) {
-      this.sprite.setFrame(0);
+      this.sprite.setFrame("v6-0");
       return;
     }
 
