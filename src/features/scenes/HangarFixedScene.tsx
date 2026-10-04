@@ -210,7 +210,7 @@ export function getSceneImageName(
   gateReady: boolean
 ): string {
   if (sceneId === "overview") {
-    if (gateReady) return "hangar-main-open-v5.webp";
+    if (gateReady) return "hangar-main-open-v6.webp";
     if (!energyReady) return "hangar-main-blackout-v4.webp";
     if (!state.energyCellInstalled) return "hangar-main-powered-v4.webp";
     return "hangar-main-active-v4.webp";
@@ -227,7 +227,7 @@ export function getSceneImageName(
   if (sceneId === "navigation") return "hangar-navigation-v4.webp";
   if (sceneId === "system-test") return "hangar-systemtest-v4.webp";
   if (sceneId === "gate") {
-    return gateReady ? "hangar-gate-open-v5.webp" : "hangar-gate-closed-v4.webp";
+    return gateReady ? "hangar-gate-open-v6.webp" : "hangar-gate-closed-v4.webp";
   }
   return "hangar-crew-v4.webp";
 }
@@ -396,7 +396,7 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.11</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.12</div>
 
         <div className="fixed-scene-status">
           <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>

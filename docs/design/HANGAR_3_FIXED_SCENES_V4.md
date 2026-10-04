@@ -67,3 +67,14 @@ Die visuelle Nachprüfung des tatsächlich gebauten 0.10-Artefakts hat einen ein
 - `hangar-gate-open-v5.webp`
 
 Der Sternenraum wird nun innerhalb des vorhandenen Torrahmens in voller Szenenauflösung gerendert. Keine Storyboard-Beschriftung, keine zusätzliche Figur und kein CSS-/DOM-Overlay.
+
+
+## SCENES 0.12 – finale Open-Gate-Korrektur
+
+Die direkte Artefakt-Sichtprüfung von 0.11 zeigte, dass der Storyboard-Hintergrund im geöffneten Tor noch ein verkleinertes Schiff enthielt und wie ein eingefügter Bildschirm wirkte.
+
+0.12 verbietet deshalb Storyboard-Bildausschnitte für den Außenraum vollständig. Die Toröffnung verwendet einen eigenständig gerenderten, reinen Sternenraum/Cinder-Hintergrund. Der bereits vorhandene Hangar-/Torrahmen bleibt Teil des Szenenbilds; es wird kein zusätzlicher sichtbarer Rahmen aufgelegt.
+
+Neue Cache-sichere Assets:
+- `hangar-main-open-v6.webp`
+- `hangar-gate-open-v6.webp`
