@@ -17,7 +17,7 @@ export const OLLI_V6_IDLE_ANIM = "crew-olli-v6-idle";
 export const OLLI_V6_WALK_ANIM = "crew-olli-v6-walk";
 const OLLI_V6_FRAME_WIDTH = 150;
 const OLLI_V6_FRAME_HEIGHT = 216;
-const OLLI_V6_SPRITESHEET_URL = `${base}assets/sprites/olli-v6-pilot-80.webp`;
+const OLLI_V6_SPRITESHEET_URL = `${base}assets/sprites/olli-v6-pilot-v66.webp`;
 
 const crewPortraitSources: Record<CrewTextureId, { key: string; url: string }> = {
   philipp: {
