@@ -54,7 +54,7 @@ const base = import.meta.env.BASE_URL;
 
 const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
   overview: {
-    image: `${base}assets/scenes/hangar/hangar-main-active-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-main-active-v4.webp`,
     eyebrow: "Hangar 3 · Gesamtansicht",
     title: "Ein stiller Hangar voller Spuren",
     description: "Wählt einen Bereich aus, den ihr genauer untersuchen wollt.",
@@ -74,7 +74,7 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
     ]
   },
   energy: {
-    image: `${base}assets/scenes/hangar/hangar-energy-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-energy-v4.webp`,
     eyebrow: "Hangar 3 · Energieversorgung",
     title: "Der alte Energieverteiler",
     description: "Die Leitungen der dunklen Werkbank laufen hier zusammen.",
@@ -90,7 +90,7 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
     ]
   },
   workbench: {
-    image: `${base}assets/scenes/hangar/hangar-workbench-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-workbench-v4.webp`,
     eyebrow: "Hangar 3 · Werkbank",
     title: "Werkzeuge, Ersatzteile und eine Energiezelle",
     description: "Hier lässt sich einiges finden, sobald wieder Strom fließt.",
@@ -98,15 +98,15 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
       {
         id: "workbench",
         label: "Werkbank durchsuchen",
-        x: 18,
-        y: 50,
-        width: 36,
-        height: 30
+        x: 30,
+        y: 30,
+        width: 35,
+        height: 40
       }
     ]
   },
   ship: {
-    image: `${base}assets/scenes/hangar/hangar-ship-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-ship-v4.webp`,
     eyebrow: "Hangar 3 · Sternenschiff",
     title: "Das alte Sternenschiff",
     description: "Ohne Energie reagiert hier fast nichts.",
@@ -122,7 +122,7 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
     ]
   },
   cooling: {
-    image: `${base}assets/scenes/hangar/hangar-cooling-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-cooling-v4.webp`,
     eyebrow: "Hangar 3 · Wartungsbereich",
     title: "Die gerissene Kühlleitung",
     description: "Jetzt zeigt sich, warum der Antrieb noch nicht sicher laufen kann.",
@@ -130,15 +130,15 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
       {
         id: "ship",
         label: "Kühlleitung reparieren",
-        x: 58,
-        y: 28,
-        width: 22,
-        height: 42
+        x: 43,
+        y: 25,
+        width: 30,
+        height: 50
       }
     ]
   },
   navigation: {
-    image: `${base}assets/scenes/hangar/hangar-navigation-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-navigation-v4.webp`,
     eyebrow: "Hangar 3 · Cockpit",
     title: "Nur ein schwacher Weg",
     description: "Das Navigationsmodul zeigt kaum noch etwas. Eine Route könnte reichen.",
@@ -154,7 +154,7 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
     ]
   },
   "system-test": {
-    image: `${base}assets/scenes/hangar/hangar-systemtest-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-systemtest-v4.webp`,
     eyebrow: "Hangar 3 · Systemtest",
     title: "Das Schiff wacht auf",
     description: "Energie, Kühlung und Navigation müssen gemeinsam reagieren.",
@@ -170,7 +170,7 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
     ]
   },
   gate: {
-    image: `${base}assets/scenes/hangar/hangar-gate-closed-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-gate-closed-v4.webp`,
     eyebrow: "Hangar 3 · Hangartor",
     title: "Der Weg nach draußen",
     description: "Das Tor bleibt geschlossen, bis der letzte Engpass gelöst ist.",
@@ -178,15 +178,15 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
       {
         id: "hangar-door",
         label: "Hangartor untersuchen",
-        x: 76,
-        y: 12,
-        width: 21,
-        height: 57
+        x: 25,
+        y: 8,
+        width: 50,
+        height: 75
       }
     ]
   },
   crew: {
-    image: `${base}assets/scenes/hangar/hangar-crew-v3.webp`,
+    image: `${base}assets/scenes/hangar/hangar-crew-v4.webp`,
     eyebrow: "Hangar 3 · Crew",
     title: "Alle bleiben zusammen",
     description: "Louis beobachtet die Anzeigen und hilft, wenn ihr feststeckt.",
@@ -194,10 +194,10 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
       {
         id: "louis",
         label: "Mit Louis sprechen",
-        x: 60,
-        y: 62,
-        width: 14,
-        height: 31
+        x: 64,
+        y: 48,
+        width: 18,
+        height: 42
       }
     ]
   }
@@ -210,26 +210,26 @@ export function getSceneImageName(
   gateReady: boolean
 ): string {
   if (sceneId === "overview") {
-    if (gateReady) return "hangar-main-open-v3.webp";
-    if (!energyReady) return "hangar-main-blackout-v3.webp";
-    if (!state.energyCellInstalled) return "hangar-main-powered-v3.webp";
-    return "hangar-main-active-v3.webp";
+    if (gateReady) return "hangar-main-open-v4.webp";
+    if (!energyReady) return "hangar-main-blackout-v4.webp";
+    if (!state.energyCellInstalled) return "hangar-main-powered-v4.webp";
+    return "hangar-main-active-v4.webp";
   }
 
-  if (sceneId === "energy") return "hangar-energy-v3.webp";
+  if (sceneId === "energy") return "hangar-energy-v4.webp";
   if (sceneId === "workbench") {
-    return energyReady ? "hangar-workbench-v3.webp" : "hangar-workbench-dark-v3.webp";
+    return energyReady ? "hangar-workbench-v4.webp" : "hangar-workbench-dark-v4.webp";
   }
   if (sceneId === "ship") {
-    return state.energyCellInstalled ? "hangar-ship-v3.webp" : "hangar-ship-dark-v3.webp";
+    return state.energyCellInstalled ? "hangar-ship-v4.webp" : "hangar-ship-dark-v4.webp";
   }
-  if (sceneId === "cooling") return "hangar-cooling-v3.webp";
-  if (sceneId === "navigation") return "hangar-navigation-v3.webp";
-  if (sceneId === "system-test") return "hangar-systemtest-v3.webp";
+  if (sceneId === "cooling") return "hangar-cooling-v4.webp";
+  if (sceneId === "navigation") return "hangar-navigation-v4.webp";
+  if (sceneId === "system-test") return "hangar-systemtest-v4.webp";
   if (sceneId === "gate") {
-    return gateReady ? "hangar-gate-open-v3.webp" : "hangar-gate-closed-v3.webp";
+    return gateReady ? "hangar-gate-open-v4.webp" : "hangar-gate-closed-v4.webp";
   }
-  return "hangar-crew-v3.webp";
+  return "hangar-crew-v4.webp";
 }
 
 export function getRelevantShipScene(state: Chapter1State): HangarSceneId {
@@ -396,7 +396,7 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.9</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.10</div>
 
         <div className="fixed-scene-status">
           <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
