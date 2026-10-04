@@ -51,46 +51,46 @@ describe("Hangar storyboard scene flow", () => {
     expect(getOverviewTarget("louis", baseState)).toBe("crew");
   });
 
-  it("uses V3 story-native closed states before the gate is solved", () => {
+  it("uses V4 native-art closed states before the gate is solved", () => {
     expect(getSceneImageName("overview", baseState, false, false)).toBe(
-      "hangar-main-blackout-v3.webp"
+      "hangar-main-blackout-v4.webp"
     );
     expect(getSceneImageName("energy", baseState, false, false)).toBe(
-      "hangar-energy-v3.webp"
+      "hangar-energy-v4.webp"
     );
     expect(getSceneImageName("workbench", baseState, false, false)).toBe(
-      "hangar-workbench-dark-v3.webp"
+      "hangar-workbench-dark-v4.webp"
     );
     expect(getSceneImageName("ship", baseState, false, false)).toBe(
-      "hangar-ship-dark-v3.webp"
+      "hangar-ship-dark-v4.webp"
     );
 
     const powered = { ...baseState };
     expect(getSceneImageName("overview", powered, true, false)).toBe(
-      "hangar-main-powered-v3.webp"
+      "hangar-main-powered-v4.webp"
     );
     expect(getSceneImageName("workbench", powered, true, false)).toBe(
-      "hangar-workbench-v3.webp"
+      "hangar-workbench-v4.webp"
     );
 
     const shipActive = { ...baseState, energyCellInstalled: true };
     expect(getSceneImageName("overview", shipActive, true, false)).toBe(
-      "hangar-main-active-v3.webp"
+      "hangar-main-active-v4.webp"
     );
     expect(getSceneImageName("ship", shipActive, true, false)).toBe(
-      "hangar-ship-v3.webp"
+      "hangar-ship-v4.webp"
     );
     expect(getSceneImageName("cooling", shipActive, true, false)).toBe(
-      "hangar-cooling-v3.webp"
+      "hangar-cooling-v4.webp"
     );
     expect(getSceneImageName("navigation", shipActive, true, false)).toBe(
-      "hangar-navigation-v3.webp"
+      "hangar-navigation-v4.webp"
     );
     expect(getSceneImageName("system-test", shipActive, true, false)).toBe(
-      "hangar-systemtest-v3.webp"
+      "hangar-systemtest-v4.webp"
     );
     expect(getSceneImageName("gate", shipActive, true, false)).toBe(
-      "hangar-gate-closed-v3.webp"
+      "hangar-gate-closed-v4.webp"
     );
   });
 
@@ -104,26 +104,26 @@ describe("Hangar storyboard scene flow", () => {
     };
 
     expect(getSceneImageName("overview", ready, true, true)).toBe(
-      "hangar-main-open-v3.webp"
+      "hangar-main-open-v4.webp"
     );
     expect(getSceneImageName("gate", ready, true, true)).toBe(
-      "hangar-gate-open-v3.webp"
+      "hangar-gate-open-v4.webp"
     );
 
     expect(getSceneImageName("energy", ready, true, true)).toBe(
-      "hangar-energy-v3.webp"
+      "hangar-energy-v4.webp"
     );
     expect(getSceneImageName("workbench", ready, true, true)).toBe(
-      "hangar-workbench-v3.webp"
+      "hangar-workbench-v4.webp"
     );
     expect(getSceneImageName("cooling", ready, true, true)).toBe(
-      "hangar-cooling-v3.webp"
+      "hangar-cooling-v4.webp"
     );
     expect(getSceneImageName("navigation", ready, true, true)).toBe(
-      "hangar-navigation-v3.webp"
+      "hangar-navigation-v4.webp"
     );
     expect(getSceneImageName("system-test", ready, true, true)).toBe(
-      "hangar-systemtest-v3.webp"
+      "hangar-systemtest-v4.webp"
     );
   });
 });
