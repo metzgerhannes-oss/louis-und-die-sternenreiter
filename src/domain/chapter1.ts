@@ -78,7 +78,7 @@ export const chapter1StoryBeats: Record<Chapter1StoryBeatId, Chapter1StoryBeat> 
     lines: [
       { speaker: "Olli", text: "Das Ding zeigt drei Punkte und einen Fleck." },
       { speaker: "Philipp", text: "Die Navigation ist fast komplett tot." },
-      { speaker: "Charly", text: "Fast reicht. Wir brauchen nur einen Weg nach draußen." },
+      { speaker: "Charly", text: "Fast reicht. Wir brauchen nur einen sicheren Kurs." },
       { speaker: "Louis", text: "Ich sehe eine Route. Cinder. Sehr schwach." }
     ],
     action: "navigation-restored",
