@@ -40,12 +40,8 @@ export function Chapter1StoryDialog({
     return () => browserSpeech.stop();
   }, [autoRead, speechRate, spokenText]);
 
-  const advance = () => {
+  const finishBeat = () => {
     browserSpeech.stop();
-    if (!isLast) {
-      setLineIndex((index) => index + 1);
-      return;
-    }
 
     if (beat.action) {
       applyChapter1Action(beat.action);
@@ -58,6 +54,16 @@ export function Chapter1StoryDialog({
     }
 
     onClose();
+  };
+
+  const advance = () => {
+    browserSpeech.stop();
+    if (!isLast) {
+      setLineIndex((index) => index + 1);
+      return;
+    }
+
+    finishBeat();
   };
 
   return (
@@ -104,6 +110,13 @@ export function Chapter1StoryDialog({
       </div>
 
       <div className="dialog-actions">
+        <button
+          type="button"
+          className="secondary-button story-skip-button"
+          onClick={finishBeat}
+        >
+          Überspringen
+        </button>
         <ReadAloudButton text={spokenText} rate={speechRate} speaker={line.speaker} />
         <button type="button" onClick={advance}>
           {isLast ? beat.actionLabel : "Weiter"}
