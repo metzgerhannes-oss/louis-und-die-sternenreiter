@@ -104,10 +104,10 @@ describe("Hangar storyboard scene flow", () => {
     };
 
     expect(getSceneImageName("overview", ready, true, true)).toBe(
-      "hangar-main-open-v6.webp"
+      "hangar-main-open-v7.webp"
     );
     expect(getSceneImageName("gate", ready, true, true)).toBe(
-      "hangar-gate-open-v6.webp"
+      "hangar-gate-open-v7.webp"
     );
 
     expect(getSceneImageName("energy", ready, true, true)).toBe(
