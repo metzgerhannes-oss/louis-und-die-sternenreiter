@@ -284,19 +284,19 @@ await renderFrom(sources.workbench, "hangar-workbench-v3.webp", {
 await renderFrom(sources.mainClosed, "hangar-ship-dark-v3.webp", {
   brightness: 0.46,
   saturation: 0.64,
-  position: "60% 48%"
+  position: "centre"
 });
 
 await renderFrom(sources.mainClosed, "hangar-ship-v3.webp", {
   brightness: 0.95,
   saturation: 1.04,
-  position: "60% 48%"
+  position: "centre"
 });
 
 await renderFrom(sources.mainClosed, "hangar-cooling-v3.webp", {
   brightness: 0.74,
   saturation: 0.82,
-  position: "58% 54%",
+  position: "centre",
   overlays: [coolingRepairSvg()]
 });
 
@@ -304,14 +304,14 @@ await renderFrom(sources.mainClosed, "hangar-navigation-v3.webp", {
   brightness: 0.54,
   saturation: 0.76,
   blur: 1.2,
-  position: "70% 46%",
+  position: "centre",
   overlays: [navigationCockpitSvg()]
 });
 
 await renderFrom(sources.mainClosed, "hangar-systemtest-v3.webp", {
   brightness: 1.0,
   saturation: 1.05,
-  position: "60% 48%",
+  position: "centre",
   overlays: [systemLightsSvg()]
 });
 
