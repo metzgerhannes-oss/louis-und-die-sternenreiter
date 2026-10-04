@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-const assetPath = new URL("../public/assets/sprites/olli-v6-pilot-80.webp", import.meta.url);
+const assetPath = new URL("../public/assets/sprites/olli-v6-pilot-v66.webp", import.meta.url);
 const data = await readFile(assetPath);
 
 if (data.length < 16) {
