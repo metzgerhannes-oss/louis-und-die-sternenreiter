@@ -78,3 +78,14 @@ Die direkte Artefakt-Sichtprüfung von 0.11 zeigte, dass der Storyboard-Hintergr
 Neue Cache-sichere Assets:
 - `hangar-main-open-v6.webp`
 - `hangar-gate-open-v6.webp`
+
+
+## SCENES 0.13 – natives Open-Gate-Motiv
+
+Die Artefaktprüfung von 0.12 hat bestätigt, dass selbst ein technisch sauber in den Torbereich gerenderter Hintergrund noch wie eine eingefügte Fläche wirkt. Diese Variante ist verworfen.
+
+0.13 verwendet deshalb ein vollständiges eigenständiges 16:9-Open-Gate-Motiv: Hangarrahmen, geöffnetes Tor, Schiff im Ausgang, die drei Kinder und Louis sowie der freie Sternenraum/Cinder sind Bestandteil derselben Bildkomposition. Keine Beschriftung, kein UI und keine zusätzliche Figur sind im Asset enthalten.
+
+Cache-sichere Runtime-Dateien:
+- `hangar-main-open-v7.webp`
+- `hangar-gate-open-v7.webp`
