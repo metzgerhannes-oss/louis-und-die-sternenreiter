@@ -264,7 +264,7 @@ export function App() {
         <section className="fixed-launch-complete">
           <img
             className="launch-scene-image"
-            src={import.meta.env.BASE_URL + "assets/scenes/hangar/hangar-gate-open-v3.webp"}
+            src={import.meta.env.BASE_URL + "assets/scenes/hangar/hangar-gate-open-v4.webp"}
             alt=""
           />
           <div className="fixed-launch-card">
