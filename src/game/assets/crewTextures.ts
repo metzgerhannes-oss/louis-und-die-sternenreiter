@@ -15,8 +15,15 @@ const base = import.meta.env.BASE_URL;
 export const OLLI_V6_TEXTURE = "crew-olli-v6";
 export const OLLI_V6_IDLE_ANIM = "crew-olli-v6-idle";
 export const OLLI_V6_WALK_ANIM = "crew-olli-v6-walk";
+
+export type GeneratedCrewId = "charly" | "philipp" | "louis";
+
 const OLLI_V6_FRAME_WIDTH = 150;
 const OLLI_V6_FRAME_HEIGHT = 216;
+const GENERATED_V67_FRAME_WIDTH = 150;
+const GENERATED_V67_FRAME_HEIGHT = 216;
+const GENERATED_V67_COLUMNS = 3;
+const GENERATED_V67_ROWS = 2;
 const OLLI_V6_SPRITESHEET_URL = `${base}assets/sprites/olli-v6-pilot-v66.webp`;
 
 const crewPortraitSources: Record<CrewTextureId, { key: string; url: string }> = {
@@ -245,6 +252,10 @@ export function createCircularCrewTextures(scene: Phaser.Scene): void {
   createHeadTexture(scene, "charly");
   createHeadTexture(scene, "philipp");
   createHeadTexture(scene, "olli");
+
+  ensureGeneratedV67Animations(scene, "charly");
+  ensureGeneratedV67Animations(scene, "philipp");
+  ensureGeneratedV67Animations(scene, "louis");
 }
 
 export function getCrewPortraitTexture(id: CrewTextureId): string {
@@ -273,4 +284,172 @@ export function getConceptCrewPartTexture(
 
 export function isOlliV6Ready(scene: Phaser.Scene): boolean {
   return ensureOlliV6Frames(scene);
+}
+
+
+function generatedV67TextureKey(id: GeneratedCrewId): string {
+  return `crew-v67-${id}`;
+}
+
+export function generatedV67IdleAnim(id: GeneratedCrewId): string {
+  return `crew-v67-${id}-idle`;
+}
+
+export function generatedV67WalkAnim(id: GeneratedCrewId): string {
+  return `crew-v67-${id}-walk`;
+}
+
+function drawGeneratedV67Frame(
+  context: CanvasRenderingContext2D,
+  image: HTMLImageElement | HTMLCanvasElement,
+  id: GeneratedCrewId,
+  frameIndex: number
+): void {
+  const column = frameIndex % GENERATED_V67_COLUMNS;
+  const row = Math.floor(frameIndex / GENERATED_V67_COLUMNS);
+  const originX = column * GENERATED_V67_FRAME_WIDTH;
+  const originY = row * GENERATED_V67_FRAME_HEIGHT;
+
+  const poses = [
+    { dx: 0, dy: 0, angle: 0, sx: 1, sy: 1 },
+    { dx: -2, dy: -4, angle: -2.4, sx: 0.99, sy: 1.015 },
+    { dx: 2, dy: -7, angle: 2.5, sx: 1.01, sy: 0.99 },
+    { dx: -1, dy: -4, angle: -1.7, sx: 1.005, sy: 1.005 },
+    { dx: 2, dy: -6, angle: 2.0, sx: 0.995, sy: 1.01 },
+    { dx: 0, dy: -1, angle: 0.6, sx: 1, sy: 1.005 }
+  ] as const;
+
+  const pose = poses[frameIndex] ?? poses[0];
+
+  context.save();
+  context.beginPath();
+  context.rect(
+    originX,
+    originY,
+    GENERATED_V67_FRAME_WIDTH,
+    GENERATED_V67_FRAME_HEIGHT
+  );
+  context.clip();
+
+  const targetHeight = id === "louis" ? 190 : 196;
+  const aspect = image.width / image.height;
+  const targetWidth = Math.max(54, targetHeight * aspect);
+
+  context.translate(
+    originX + GENERATED_V67_FRAME_WIDTH / 2 + pose.dx,
+    originY + GENERATED_V67_FRAME_HEIGHT - 8 + pose.dy
+  );
+  context.rotate(Phaser.Math.DegToRad(pose.angle));
+  context.scale(pose.sx, pose.sy);
+  context.drawImage(
+    image,
+    -targetWidth / 2,
+    -targetHeight,
+    targetWidth,
+    targetHeight
+  );
+  context.restore();
+}
+
+export function ensureGeneratedV67Frames(
+  scene: Phaser.Scene,
+  id: GeneratedCrewId
+): boolean {
+  const textureKey = generatedV67TextureKey(id);
+
+  if (!scene.textures.exists(textureKey)) {
+    const source = crewSpriteSources[id];
+    if (!source || !scene.textures.exists(source.key)) {
+      return false;
+    }
+
+    const sourceImage = scene.textures.get(source.key).getSourceImage() as
+      | HTMLImageElement
+      | HTMLCanvasElement;
+
+    const canvasTexture = scene.textures.createCanvas(
+      textureKey,
+      GENERATED_V67_FRAME_WIDTH * GENERATED_V67_COLUMNS,
+      GENERATED_V67_FRAME_HEIGHT * GENERATED_V67_ROWS
+    );
+
+    if (!canvasTexture) {
+      return false;
+    }
+
+    const context = canvasTexture.context;
+    context.clearRect(0, 0, canvasTexture.width, canvasTexture.height);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+
+    for (let frameIndex = 0; frameIndex < 6; frameIndex += 1) {
+      drawGeneratedV67Frame(context, sourceImage, id, frameIndex);
+    }
+
+    canvasTexture.refresh();
+  }
+
+  const texture = scene.textures.get(textureKey);
+
+  for (let index = 0; index < 6; index += 1) {
+    const frameName = `v67-${index}`;
+    if (!texture.has(frameName)) {
+      const column = index % GENERATED_V67_COLUMNS;
+      const row = Math.floor(index / GENERATED_V67_COLUMNS);
+      texture.add(
+        frameName,
+        0,
+        column * GENERATED_V67_FRAME_WIDTH,
+        row * GENERATED_V67_FRAME_HEIGHT,
+        GENERATED_V67_FRAME_WIDTH,
+        GENERATED_V67_FRAME_HEIGHT
+      );
+    }
+  }
+
+  return texture.has("v67-0");
+}
+
+export function ensureGeneratedV67Animations(
+  scene: Phaser.Scene,
+  id: GeneratedCrewId
+): boolean {
+  if (!ensureGeneratedV67Frames(scene, id)) {
+    return false;
+  }
+
+  const textureKey = generatedV67TextureKey(id);
+  const idleKey = generatedV67IdleAnim(id);
+  const walkKey = generatedV67WalkAnim(id);
+
+  if (!scene.anims.exists(idleKey)) {
+    scene.anims.create({
+      key: idleKey,
+      frames: [
+        { key: textureKey, frame: "v67-0" },
+        { key: textureKey, frame: "v67-5" }
+      ],
+      frameRate: 1.8,
+      repeat: -1,
+      yoyo: true
+    });
+  }
+
+  if (!scene.anims.exists(walkKey)) {
+    scene.anims.create({
+      key: walkKey,
+      frames: [1, 2, 3, 4].map((index) => ({
+        key: textureKey,
+        frame: `v67-${index}`
+      })),
+      frameRate: id === "louis" ? 8 : 7,
+      repeat: -1
+    });
+  }
+
+  return true;
+}
+
+export function getGeneratedV67Texture(id: GeneratedCrewId): string {
+  return generatedV67TextureKey(id);
 }
