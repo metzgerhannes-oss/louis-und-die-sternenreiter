@@ -7,21 +7,21 @@ const sourceAssets = [
 ];
 
 const runtimeAssets = [
-  "hangar-main-blackout-v3.webp",
-  "hangar-main-powered-v3.webp",
-  "hangar-main-active-v3.webp",
-  "hangar-main-open-v3.webp",
-  "hangar-energy-v3.webp",
-  "hangar-workbench-dark-v3.webp",
-  "hangar-workbench-v3.webp",
-  "hangar-ship-dark-v3.webp",
-  "hangar-ship-v3.webp",
-  "hangar-cooling-v3.webp",
-  "hangar-navigation-v3.webp",
-  "hangar-systemtest-v3.webp",
-  "hangar-gate-closed-v3.webp",
-  "hangar-gate-open-v3.webp",
-  "hangar-crew-v3.webp"
+  "hangar-main-blackout-v4.webp",
+  "hangar-main-powered-v4.webp",
+  "hangar-main-active-v4.webp",
+  "hangar-main-open-v4.webp",
+  "hangar-energy-v4.webp",
+  "hangar-workbench-dark-v4.webp",
+  "hangar-workbench-v4.webp",
+  "hangar-ship-dark-v4.webp",
+  "hangar-ship-v4.webp",
+  "hangar-cooling-v4.webp",
+  "hangar-navigation-v4.webp",
+  "hangar-systemtest-v4.webp",
+  "hangar-gate-closed-v4.webp",
+  "hangar-gate-open-v4.webp",
+  "hangar-crew-v4.webp"
 ];
 
 async function verify(asset) {
@@ -57,5 +57,5 @@ for (const asset of [...sourceAssets, ...runtimeAssets]) {
 }
 
 console.log(
-  `Verified ${runtimeAssets.length} Hangar V3 runtime assets and ${sourceAssets.length} approved source assets.`
+  `Verified ${runtimeAssets.length} Hangar V4 runtime assets and ${sourceAssets.length} approved source assets.`
 );
