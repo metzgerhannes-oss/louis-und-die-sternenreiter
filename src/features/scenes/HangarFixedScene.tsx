@@ -186,6 +186,54 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
   }
 };
 
+function resolveScene(
+  sceneId: HangarSceneId,
+  state: Chapter1State
+): SceneSpec {
+  if (sceneId !== "ship") {
+    return sceneSpecs[sceneId];
+  }
+
+  if (!state.coolingRepaired) {
+    return {
+      ...sceneSpecs.ship,
+      image: `${base}assets/scenes/hangar/hangar-cooling-v1.webp`,
+      eyebrow: "Hangar 3 · Wartungsbereich",
+      title: "Die gerissene Kühlleitung",
+      description: "Bevor das Schiff starten kann, muss die Kühlung wieder dicht sein."
+    };
+  }
+
+  if (!state.navigationRestored) {
+    return {
+      ...sceneSpecs.ship,
+      image: `${base}assets/scenes/hangar/hangar-navigation-v1.webp`,
+      eyebrow: "Hangar 3 · Cockpit",
+      title: "Nur ein schwacher Weg",
+      description: "Das Navigationsmodul zeigt kaum noch etwas – aber vielleicht reicht ein einziger Kurs."
+    };
+  }
+
+  if (!state.shipTested) {
+    return {
+      ...sceneSpecs.ship,
+      image: `${base}assets/scenes/hangar/hangar-systemtest-v1.webp`,
+      eyebrow: "Hangar 3 · Systemtest",
+      title: "Das Schiff wacht auf",
+      description: "Energie, Kühlung und Navigation müssen jetzt gemeinsam reagieren."
+    };
+  }
+
+  return {
+    ...sceneSpecs.ship,
+    image: `${base}assets/scenes/hangar/hangar-systemtest-v1.webp`,
+    eyebrow: "Hangar 3 · Sternenschiff",
+    title: "Startklar",
+    description: "Alle Schiffssysteme reagieren. Jetzt fehlt nur noch das Hangartor."
+  };
+}
+
+
 function isActiveHotspot(
   id: HangarHotspotId,
   state: Chapter1State,
@@ -225,7 +273,7 @@ export function HangarFixedScene({
   onInteract,
   onSwitchProfile
 }: HangarFixedSceneProps) {
-  const scene = sceneSpecs[sceneId];
+  const scene = resolveScene(sceneId, state);
   const isOverview = sceneId === "overview";
 
   return (
