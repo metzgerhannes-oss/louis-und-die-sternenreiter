@@ -11,9 +11,10 @@ Kapitel 1 wird als Point-and-Click-Abenteuer aus festen Querformat-Szenen gespie
 | overview | hangar-main-v1.webp | Gesamtansicht und Auswahl der Bereiche |
 | energy | hangar-energy-v1.webp | Energieverteiler / erster Sternenpunkt |
 | workbench | hangar-workbench-v1.webp | Energiezelle finden |
-| ship / cooling | hangar-cooling-v1.webp | Kühlleitung reparieren |
-| ship / navigation | hangar-navigation-v1.webp | Navigation reaktivieren |
-| ship / system-test | hangar-systemtest-v1.webp | Schiffssysteme testen |
+| ship | hangar-ship-v1.webp | Energiezelle weckt das Schiff / Übergang zur Wartung |
+| cooling | hangar-cooling-v1.webp | Kühlleitung reparieren |
+| navigation | hangar-navigation-v1.webp | Navigation reaktivieren |
+| system-test | hangar-systemtest-v1.webp | Schiffssysteme testen |
 | gate | hangar-gate-v1.webp | Hangartor / zweiter Sternenpunkt / Start |
 | crew | hangar-crew-v1.webp | Louis und Crew ansprechen |
 
@@ -31,17 +32,21 @@ Alle Runtime-Szenen liegen unter `public/assets/scenes/hangar/`.
 
 ## Fortschrittsfolge
 
-1. Intro
+1. Intro / stromlose Gesamtansicht
 2. Energieverteiler
 3. Sternenpunkt Energie
 4. Werkbank
-5. Energiezelle
-6. Kühlleitung
-7. Navigation
-8. Systemtest
-9. Hangartor
-10. Sternenpunkt Tor
-11. Start nach Cinder
+5. Energiezelle einsetzen
+6. Schiff wacht sichtbar auf
+7. Kühlleitung als eigene Wartungsszene
+8. Navigation als eigene Cockpitszene
+9. Systemtest als eigene Szene – Hangartor bleibt geschlossen
+10. Hangartor
+11. Sternenpunkt Tor
+12. Tor offen / Sternenfeld
+13. Start nach Cinder
+
+Die kanonische Route bleibt **Cinder**. Ein Asteroidenfeld oder eine „Umsegelung“ gehört nicht zu Kapitel 1.
 
 ## Verbindliche Bildzustände
 

@@ -109,8 +109,13 @@ export function App() {
       return;
     }
 
-    if (beat.id === "cooling" || beat.id === "navigation") {
-      setSceneId("ship");
+    if (beat.id === "cooling") {
+      setSceneId("navigation");
+      return;
+    }
+
+    if (beat.id === "navigation") {
+      setSceneId("system-test");
       return;
     }
 
@@ -185,17 +190,37 @@ export function App() {
     }
 
     if (id === "ship") {
-      const beat = getChapter1BeatForHotspot("ship", chapter);
-      if (beat) {
-        setDialog({ kind: "story", beat });
-        return;
-      }
-
       if (!chapter.energyCellInstalled) {
         showInfo(
           "Das alte Sternenschiff",
           "Ohne Energiezelle bleibt das Schiff vollständig dunkel. Vielleicht gibt es an der Werkbank ein brauchbares Ersatzteil."
         );
+        return;
+      }
+
+      if (sceneId === "ship" && !chapter.coolingRepaired) {
+        setSceneId("cooling");
+        return;
+      }
+
+      if (sceneId === "cooling" && !chapter.coolingRepaired) {
+        setDialog({ kind: "story", beat: getStoryBeat("cooling") });
+        return;
+      }
+
+      if (sceneId === "navigation" && !chapter.navigationRestored) {
+        setDialog({ kind: "story", beat: getStoryBeat("navigation") });
+        return;
+      }
+
+      if (sceneId === "system-test" && !chapter.shipTested) {
+        setDialog({ kind: "story", beat: getStoryBeat("ship-test") });
+        return;
+      }
+
+      const beat = getChapter1BeatForHotspot("ship", chapter);
+      if (beat) {
+        setDialog({ kind: "story", beat });
         return;
       }
 
