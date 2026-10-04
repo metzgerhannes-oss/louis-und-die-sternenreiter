@@ -16,11 +16,9 @@ const baseState: Chapter1State = {
 };
 
 describe("Hangar storyboard scene flow", () => {
-  it("keeps the ship dark before the energy cell is installed", () => {
-    expect(getRelevantShipScene(baseState)).toBe("ship");
-  });
-
   it("routes the ship through cooling, navigation and system test in order", () => {
+    expect(getRelevantShipScene(baseState)).toBe("ship");
+
     expect(
       getRelevantShipScene({
         ...baseState,
@@ -53,50 +51,50 @@ describe("Hangar storyboard scene flow", () => {
     expect(getOverviewTarget("louis", baseState)).toBe("crew");
   });
 
-  it("uses native closed-gate V2 artwork before the gate solution", () => {
+  it("uses V3 story-native closed states before the gate is solved", () => {
     expect(getSceneImageName("overview", baseState, false, false)).toBe(
-      "hangar-main-blackout-v2.webp"
+      "hangar-main-blackout-v3.webp"
     );
     expect(getSceneImageName("energy", baseState, false, false)).toBe(
-      "hangar-energy-v2.webp"
+      "hangar-energy-v3.webp"
     );
     expect(getSceneImageName("workbench", baseState, false, false)).toBe(
-      "hangar-workbench-dark-v2.webp"
+      "hangar-workbench-dark-v3.webp"
     );
     expect(getSceneImageName("ship", baseState, false, false)).toBe(
-      "hangar-ship-dark-v2.webp"
+      "hangar-ship-dark-v3.webp"
     );
 
     const powered = { ...baseState };
     expect(getSceneImageName("overview", powered, true, false)).toBe(
-      "hangar-main-powered-v2.webp"
+      "hangar-main-powered-v3.webp"
     );
     expect(getSceneImageName("workbench", powered, true, false)).toBe(
-      "hangar-workbench-v2.webp"
+      "hangar-workbench-v3.webp"
     );
 
     const shipActive = { ...baseState, energyCellInstalled: true };
     expect(getSceneImageName("overview", shipActive, true, false)).toBe(
-      "hangar-main-active-v2.webp"
+      "hangar-main-active-v3.webp"
     );
     expect(getSceneImageName("ship", shipActive, true, false)).toBe(
-      "hangar-ship-v2.webp"
+      "hangar-ship-v3.webp"
     );
-
-    expect(
-      getSceneImageName(
-        "system-test",
-        { ...shipActive, coolingRepaired: true, navigationRestored: true },
-        true,
-        false
-      )
-    ).toBe("hangar-systemtest-v2.webp");
+    expect(getSceneImageName("cooling", shipActive, true, false)).toBe(
+      "hangar-cooling-v3.webp"
+    );
+    expect(getSceneImageName("navigation", shipActive, true, false)).toBe(
+      "hangar-navigation-v3.webp"
+    );
+    expect(getSceneImageName("system-test", shipActive, true, false)).toBe(
+      "hangar-systemtest-v3.webp"
+    );
     expect(getSceneImageName("gate", shipActive, true, false)).toBe(
-      "hangar-gate-closed-v2.webp"
+      "hangar-gate-closed-v3.webp"
     );
   });
 
-  it("switches every scene to a native open-state image only after the gate solution", () => {
+  it("opens only views that actually need an open gate after the solution", () => {
     const ready = {
       ...baseState,
       energyCellInstalled: true,
@@ -105,24 +103,27 @@ describe("Hangar storyboard scene flow", () => {
       shipTested: true
     };
 
-    const scenes = [
-      "overview",
-      "energy",
-      "workbench",
-      "ship",
-      "cooling",
-      "navigation",
-      "system-test",
-      "gate",
-      "crew"
-    ] as const;
+    expect(getSceneImageName("overview", ready, true, true)).toBe(
+      "hangar-main-open-v3.webp"
+    );
+    expect(getSceneImageName("gate", ready, true, true)).toBe(
+      "hangar-gate-open-v3.webp"
+    );
 
-    for (const scene of scenes) {
-      const image = getSceneImageName(scene, ready, true, true);
-      expect(image).toMatch(/-open-v2\.webp$/);
-      expect(image).not.toContain("-v1.");
-    }
+    expect(getSceneImageName("energy", ready, true, true)).toBe(
+      "hangar-energy-v3.webp"
+    );
+    expect(getSceneImageName("workbench", ready, true, true)).toBe(
+      "hangar-workbench-v3.webp"
+    );
+    expect(getSceneImageName("cooling", ready, true, true)).toBe(
+      "hangar-cooling-v3.webp"
+    );
+    expect(getSceneImageName("navigation", ready, true, true)).toBe(
+      "hangar-navigation-v3.webp"
+    );
+    expect(getSceneImageName("system-test", ready, true, true)).toBe(
+      "hangar-systemtest-v3.webp"
+    );
   });
-
-
 });

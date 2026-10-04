@@ -751,19 +751,6 @@ textarea,
   filter: saturate(0.9) brightness(0.72);
 }
 
-.launch-starfield {
-  position: absolute;
-  inset: 0;
-  opacity: 0.85;
-  background:
-    radial-gradient(circle at 16% 16%, #fff 0 1px, transparent 1.5px),
-    radial-gradient(circle at 72% 12%, #cfeeff 0 1.2px, transparent 1.7px),
-    radial-gradient(circle at 42% 35%, #fff 0 1px, transparent 1.4px),
-    radial-gradient(circle at 82% 48%, #fff1bd 0 1.2px, transparent 1.7px),
-    radial-gradient(circle at 24% 68%, #fff 0 1px, transparent 1.5px),
-    radial-gradient(circle at 62% 78%, #cfeeff 0 1.2px, transparent 1.7px);
-}
-
 .fixed-launch-card {
   position: relative;
   z-index: 2;
@@ -1385,29 +1372,33 @@ textarea,
   }
 }
 
-/* === H3 SCENES 0.7 · native V2 scene crops ============================ */
-.scene-cooling .story-scene-image {
-  object-position: 50% 54%;
+/* === H3 SCENES 0.9 · story-native V3 scenes ============================ */
+.scene-energy .story-scene-image,
+.scene-workbench .story-scene-image,
+.scene-ship .story-scene-image,
+.scene-cooling .story-scene-image,
+.scene-navigation .story-scene-image,
+.scene-system-test .story-scene-image,
+.scene-gate .story-scene-image,
+.scene-crew .story-scene-image {
+  object-position: 50% 50%;
 }
 
-.scene-navigation .story-scene-image {
-  object-position: 50% 48%;
-}
-
-.scene-system-test .story-scene-image {
-  object-position: 54% 50%;
-}
-
-@media (max-width: 720px) {
-  .scene-cooling .story-scene-image {
-    object-position: 47% 54%;
+/* On landscape phones the image and action target are the interface.
+   The mission bar + hotspot label carry the instruction without covering
+   the story object with a second text card. */
+@media (orientation: landscape) and (max-height: 700px) {
+  .story-scene-caption,
+  .scene-help-copy {
+    display: none;
   }
 
-  .scene-navigation .story-scene-image {
-    object-position: 48% 48%;
+  .scene-back-button {
+    bottom: max(0.45rem, env(safe-area-inset-bottom));
   }
 
-  .scene-system-test .story-scene-image {
-    object-position: 57% 50%;
+  .hotspot-focus-label {
+    max-width: 150px;
+    font-size: 0.64rem;
   }
 }
