@@ -56,7 +56,7 @@ async function renderCrew(output) {
 
 async function starBackdrop(storyboard, width, height) {
   return sharp(storyboard)
-    .extract({ left: 1259, top: 682, width: 355, height: 95 })
+    .extract({ left: 430, top: 895, width: 800, height: 129 })
     .resize(width, height, { fit: "cover", position: "centre" })
     .sharpen({ sigma: 0.55 })
     .webp({ quality: 94 })
