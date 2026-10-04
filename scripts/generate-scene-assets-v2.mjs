@@ -29,6 +29,36 @@ async function metadata(fileName) {
   return { width: data.width, height: data.height };
 }
 
+function horizontalFeatherMask(width, height, featherRatio = 0.28) {
+  const featherEnd = clamp(Math.round(featherRatio * 100), 8, 45);
+  return Buffer.from(`
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="mask" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0" />
+          <stop offset="${Math.round(featherEnd * 0.42)}%" stop-color="#fff" stop-opacity="0.18" />
+          <stop offset="${featherEnd}%" stop-color="#fff" stop-opacity="1" />
+          <stop offset="100%" stop-color="#fff" stop-opacity="1" />
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#mask)" />
+    </svg>
+  `);
+}
+
+async function featherPatch(input, width, height, featherRatio = 0.28) {
+  return sharp(input)
+    .ensureAlpha()
+    .composite([
+      {
+        input: horizontalFeatherMask(width, height, featherRatio),
+        blend: "dest-in"
+      }
+    ])
+    .png()
+    .toBuffer();
+}
+
 async function approvedGateBuffer(width, height) {
   const sourceMeta = await sharp(approvedClosedOverview).metadata();
   if (!sourceMeta.width || !sourceMeta.height) {
@@ -36,7 +66,7 @@ async function approvedGateBuffer(width, height) {
   }
 
   const sourceWidth = Math.round(sourceMeta.width * 0.31);
-  return sharp(approvedClosedOverview)
+  const gate = await sharp(approvedClosedOverview)
     .extract({
       left: sourceMeta.width - sourceWidth,
       top: 0,
@@ -44,8 +74,10 @@ async function approvedGateBuffer(width, height) {
       height: sourceMeta.height
     })
     .resize({ width, height, fit: "fill" })
-    .webp({ quality: 94 })
+    .png()
     .toBuffer();
+
+  return featherPatch(gate, width, height);
 }
 
 function sceneGlow(width, height, {
@@ -104,26 +136,6 @@ function starfield(width, height) {
   `);
 }
 
-function edgeShade(width, height) {
-  const shadeWidth = clamp(Math.round(width * 0.045), 12, 42);
-  return {
-    input: Buffer.from(`
-      <svg width="${shadeWidth}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="s" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#05090d" stop-opacity="0.52" />
-            <stop offset="100%" stop-color="#05090d" stop-opacity="0" />
-          </linearGradient>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#s)" />
-      </svg>
-    `),
-    left: 0,
-    top: 0,
-    blend: "over"
-  };
-}
-
 async function makeClosedScene({
   source,
   output,
@@ -143,9 +155,6 @@ async function makeClosedScene({
     overlays.push({ input: sceneGlow(width, height, glow), left: 0, top: 0, blend: "screen" });
   }
 
-  const seam = edgeShade(coverWidth, height);
-  overlays.push({ ...seam, left: width - coverWidth });
-
   await sharp(scenePath(source))
     .composite(overlays)
     .modulate({ brightness, saturation })
@@ -163,9 +172,15 @@ async function makeOpenScene({
 }) {
   const { width, height } = await metadata(source);
   const openingWidth = clamp(Math.round(width * gateWidth), 1, width);
+  const featheredSpace = await featherPatch(
+    starfield(openingWidth, height),
+    openingWidth,
+    height,
+    0.34
+  );
   const overlays = [
     {
-      input: starfield(openingWidth, height),
+      input: featheredSpace,
       left: width - openingWidth,
       top: 0,
       blend: "over"
@@ -175,9 +190,6 @@ async function makeOpenScene({
   if (glow) {
     overlays.push({ input: sceneGlow(width, height, glow), left: 0, top: 0, blend: "screen" });
   }
-
-  const seam = edgeShade(openingWidth, height);
-  overlays.push({ ...seam, left: width - openingWidth });
 
   await sharp(scenePath(source))
     .composite(overlays)
@@ -330,4 +342,4 @@ for (const [source, output, gateWidth] of open) {
   });
 }
 
-console.log("Generated Hangar V2 native scene states.");
+console.log("Generated Hangar V2 native scene states with feathered scene-native transitions.");
