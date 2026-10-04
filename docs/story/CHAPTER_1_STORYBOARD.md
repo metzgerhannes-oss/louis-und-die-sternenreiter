@@ -29,10 +29,10 @@ Wide Shot: der fast dunkle Hangar, das beschädigte Schiff im Hintergrund. Phili
 **Louis:** „Bleibt zusammen. Mein Harness zeigt irgendwas an.“
 
 ### Gameplay
-Freie Bewegung beginnt.
+Feste Hangar-Gesamtansicht. Das Kind untersucht die Szene über klickbare Gegenstände und Figuren. Der defekte Energieverteiler wird als erster relevanter Hotspot hervorgehoben.
 
 ### Ziel
-Den ersten leuchtenden Sternenpunkt am defekten Energieverteiler finden.
+Den ersten leuchtenden Sternenpunkt am defekten Energieverteiler anklicken.
 
 ---
 
@@ -47,6 +47,7 @@ Louis erkennt nicht nur einen Defekt, sondern eine **Möglichkeit**.
 > „Hier fehlt etwas zwischen dem Verteiler und der Werkbank. Was sollen wir daraus bauen?“
 
 ### Gameplay
+Der Energieverteiler öffnet den Sternenpunkt-Dialog:
 - Kabelbrücke
 - Verteilerroboter
 - Wandleitung
@@ -80,7 +81,7 @@ Werkbank und Ersatzteilregal sind jetzt beleuchtet. Die vier untersuchen gemeins
 **Louis:** „Energiezelle. Schwer, aber brauchbar.“
 
 ### Gameplay
-Energiezelle aufnehmen und ins Schiff einsetzen.
+Werkbank anklicken → Energiezelle untersuchen → im Dialog gemeinsam ins Schiff einsetzen.
 
 ### Ergebnis
 Cockpit und einzelne Schiffssysteme erwachen.
@@ -102,7 +103,7 @@ Naher Blick unter das Schiff. Charly und Philipp am offenen Wartungsbereich, Oll
 **Louis:** „Nicht nötig. Das hier können wir selbst reparieren. Reicht mir die Klemme.“
 
 ### Gameplay
-Kurze Reparaturinteraktion.
+Schiff anklicken → Wartungs-Nahansicht/Dialog → Reparaturentscheidung bestätigen.
 
 ### Storyfunktion
 Wichtig: Louis löst nicht alles. Die Crew kann selbst handeln.
@@ -124,7 +125,7 @@ Alle vier im Cockpit / an der geöffneten Navigationskonsole.
 **Louis:** „Ich sehe eine Route. Cinder. Sehr schwach.“
 
 ### Gameplay
-Navigationsmodul reaktivieren.
+Schiff anklicken → Cockpit-/Navigationsschritt öffnen → Navigationsmodul reaktivieren.
 
 ### Ergebnis
 Auf dem Kartentisch erscheint erstmals **Cinder**.
@@ -146,7 +147,7 @@ Die Crew steht vor dem Schiff. Triebwerke starten kurz, Licht läuft über den R
 **Louis:** „Navigation reagiert. Das Schiff will los.“
 
 ### Gameplay
-Systemtest auslösen.
+Schiff anklicken → Systemtest im Storydialog auslösen.
 
 ### Ergebnis
 Schiff ist technisch startklar.
