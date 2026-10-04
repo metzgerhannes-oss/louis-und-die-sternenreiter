@@ -1,7 +1,9 @@
 import sharp from "sharp";
+import { fileURLToPath } from "node:url";
 
 const sceneDir = new URL("../public/assets/scenes/hangar/", import.meta.url);
-const approvedClosedOverview = new URL("hangar-main-v2.webp", sceneDir);
+const scenePath = (fileName) => fileURLToPath(new URL(fileName, sceneDir));
+const approvedClosedOverview = scenePath("hangar-main-v2.webp");
 
 const sceneConfigs = {
   overview: { source: "hangar-main-v2.webp", gateWidth: 0.31 },
@@ -20,7 +22,7 @@ function clamp(value, min, max) {
 }
 
 async function metadata(fileName) {
-  const data = await sharp(new URL(fileName, sceneDir)).metadata();
+  const data = await sharp(scenePath(fileName)).metadata();
   if (!data.width || !data.height) {
     throw new Error(`${fileName}: missing dimensions`);
   }
@@ -144,11 +146,11 @@ async function makeClosedScene({
   const seam = edgeShade(coverWidth, height);
   overlays.push({ ...seam, left: width - coverWidth });
 
-  await sharp(new URL(source, sceneDir))
+  await sharp(scenePath(source))
     .composite(overlays)
     .modulate({ brightness, saturation })
     .webp({ quality: 92, effort: 5 })
-    .toFile(new URL(output, sceneDir));
+    .toFile(scenePath(output));
 }
 
 async function makeOpenScene({
@@ -177,11 +179,11 @@ async function makeOpenScene({
   const seam = edgeShade(openingWidth, height);
   overlays.push({ ...seam, left: width - openingWidth });
 
-  await sharp(new URL(source, sceneDir))
+  await sharp(scenePath(source))
     .composite(overlays)
     .modulate({ brightness, saturation })
     .webp({ quality: 92, effort: 5 })
-    .toFile(new URL(output, sceneDir));
+    .toFile(scenePath(output));
 }
 
 async function makeNativeState({
@@ -196,11 +198,11 @@ async function makeNativeState({
     ? [{ input: sceneGlow(width, height, glow), left: 0, top: 0, blend: "screen" }]
     : [];
 
-  await sharp(new URL(source, sceneDir))
+  await sharp(scenePath(source))
     .composite(overlays)
     .modulate({ brightness, saturation })
     .webp({ quality: 92, effort: 5 })
-    .toFile(new URL(output, sceneDir));
+    .toFile(scenePath(output));
 }
 
 const closed = [
