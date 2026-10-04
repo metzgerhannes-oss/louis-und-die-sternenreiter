@@ -390,12 +390,14 @@ export function HangarFixedScene({
           draggable={false}
         />
 
-        {gateClosed && (
+        {gateClosed ? (
           <div className="story-gate-shutter" aria-hidden="true">
             <span />
             <span />
             <span />
           </div>
+        ) : (
+          <div className="story-open-gate-space" aria-hidden="true" />
         )}
 
         {!energyReady && (
