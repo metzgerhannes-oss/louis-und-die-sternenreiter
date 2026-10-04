@@ -9,7 +9,7 @@
     "test": "npm run verify:scenes && vitest run",
     "build": "npm run generate:scenes && npm run typecheck && vite build",
     "verify:scenes": "npm run generate:scenes && node scripts/verify-scene-assets.mjs",
-    "generate:scenes": "node scripts/generate-scene-assets-v3.mjs",
+    "generate:scenes": "node scripts/generate-scene-assets-v4.mjs",
     "predev": "npm run generate:scenes"
   },
   "dependencies": {
