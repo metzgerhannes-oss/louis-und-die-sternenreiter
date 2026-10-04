@@ -116,7 +116,7 @@ async function renderMainOpen() {
       { input: opening, left: 1290, top: 105 }
     ])
     .webp({ quality: 93, effort: 5 })
-    .toFile(scenePath("hangar-main-open-v5.webp"));
+    .toFile(scenePath("hangar-main-open-v6.webp"));
 }
 
 async function renderGateOpen(storyboard) {
@@ -133,7 +133,7 @@ async function renderGateOpen(storyboard) {
       { input: opening, left: 250, top: 70 }
     ])
     .webp({ quality: 93, effort: 5 })
-    .toFile(scenePath("hangar-gate-open-v5.webp"));
+    .toFile(scenePath("hangar-gate-open-v6.webp"));
 }
 
 const storyboard = await loadStoryboard();
