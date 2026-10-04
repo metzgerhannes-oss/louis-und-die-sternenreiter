@@ -43,6 +43,19 @@ Alle Runtime-Szenen liegen unter `public/assets/scenes/hangar/`.
 10. Sternenpunkt Tor
 11. Start nach Cinder
 
+## Verbindliche Bildzustände
+
+- **S01 / vor Sternenpunkt 1:** Hangar fast dunkel; Werkbank und Schiff stromlos; nur Notlicht/Louis-Harness; Hangartor geschlossen.
+- **S02 / Energieverteiler:** Verteiler sichtbar defekt und dunkel; keine aktiven Displays.
+- **S03 / nach Sternenpunkt 1:** Werkbank ist der erste klar beleuchtete Bereich; Schiff nur teilweise aktiv; Hangartor geschlossen.
+- **S04 / Kühlung:** echte Wartungs-Nahansicht unter/am Schiff mit gerissener Leitung.
+- **S05 / Navigation:** echte Cockpit-/Navigations-Nahansicht; Cinder erst nach Reaktivierung sichtbar.
+- **S06 / Systemtest:** Schiff vollständig aktiv, aber Hangartor weiterhin geschlossen.
+- **S07 / Torproblem:** riesiges geschlossenes Tor als Bildkern.
+- **S07 Ergebnis / S08:** Tor offen; außerhalb Sternenfeld statt Tageslandschaft.
+
+Die Bildzustände folgen immer dem gespeicherten Storyzustand. Ein späterer Zustand darf nicht vorweggenommen werden.
+
 ## UI-Regeln
 
 - Bilder werden nativ im Querformat erstellt.
