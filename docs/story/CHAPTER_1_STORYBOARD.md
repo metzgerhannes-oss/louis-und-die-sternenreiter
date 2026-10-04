@@ -8,14 +8,14 @@ Philipp, Charly, Olli und Louis sind in jeder Storyszene gemeinsam anwesend.
 
 Die Kamera darf einzelne Figuren fokussieren. Die Crew darf bei einer Aufgabe kurz räumlich auseinanderstehen. Narrativ verschwindet aber niemand aus der Szene.
 
-Die aktive Spielfigur bestimmt die Steuerung, nicht die Besetzung.
+Das aktive Profil bestimmt persönliche Ansprache und Fortschritt, nicht die Besetzung. Es gibt keine frei steuerbare Spielfigur mehr.
 
 ---
 
 ## S01 – Ankunft in Hangar 3
 
 ### Bild
-Wide Shot: der fast dunkle Hangar, das beschädigte Schiff im Hintergrund. Philipp, Charly und Olli stehen gemeinsam im Vordergrund. Louis schnuppert zwischen alten Kisten und Kabeln.
+Wide Shot: der fast dunkle Hangar. Nur wenige Notlichter und Louis' Harness reagieren. Werkbank und Schiff sind sichtbar stromlos, das Hangartor ist vollständig geschlossen. Philipp, Charly und Olli stehen gemeinsam im Vordergrund. Louis schnuppert zwischen alten Kisten und Kabeln.
 
 ### Dialog
 **Louis:** „Ich weiß nicht warum, aber dieser Ort fühlt sich vertraut an.“
@@ -39,7 +39,7 @@ Den ersten leuchtenden Sternenpunkt am defekten Energieverteiler anklicken.
 ## S02 – Der erste Sternenpunkt
 
 ### Bild
-Crew versammelt sich um den defekten Verteiler. Louis steht direkt davor. Sein Harness leuchtet zum ersten Mal deutlich.
+Crew versammelt sich um den defekten, dunklen Verteiler. Keine Anzeige am Verteiler oder an der Werkbank ist aktiv. Louis steht direkt davor; nur sein Harness leuchtet deutlich.
 
 ### Dialogkern
 Louis erkennt nicht nur einen Defekt, sondern eine **Möglichkeit**.
@@ -69,7 +69,7 @@ Erster Beweis: Louis kann Ideen in reale Veränderungen übersetzen.
 ## S03 – Die Energiezelle
 
 ### Bild
-Werkbank und Ersatzteilregal sind jetzt beleuchtet. Die vier untersuchen gemeinsam die Teile.
+Werkbank und Ersatzteilregal sind jetzt als erster Bereich deutlich beleuchtet. Der restliche Hangar bleibt gedimmt, das Schiff ist noch weitgehend dunkel und das Hangartor weiterhin geschlossen.
 
 ### Dialog
 **Philipp:** „Die Werkbank hat wieder Strom.“
@@ -135,7 +135,7 @@ Auf dem Kartentisch erscheint erstmals **Cinder**.
 ## S06 – Systemtest
 
 ### Bild
-Die Crew steht vor dem Schiff. Triebwerke starten kurz, Licht läuft über den Rumpf.
+Die Crew steht vor dem Schiff. Triebwerke starten kurz, Licht läuft über den Rumpf. Das Hangartor bleibt im Hintergrund klar geschlossen.
 
 ### Dialog
 **Philipp:** „Energie stabil.“

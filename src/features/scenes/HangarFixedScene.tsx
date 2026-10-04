@@ -188,10 +188,74 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
 
 function resolveScene(
   sceneId: HangarSceneId,
-  state: Chapter1State
+  state: Chapter1State,
+  energyReady: boolean,
+  gateReady: boolean
 ): SceneSpec {
+  if (sceneId === "overview") {
+    return {
+      ...sceneSpecs.overview,
+      title: energyReady
+        ? "Hangar 3 bekommt langsam wieder Leben"
+        : "Fast dunkel. Nur Louis' Harness reagiert.",
+      description: energyReady
+        ? "Die Werkbank hat wieder Strom. Das Schiff bleibt noch still."
+        : "Werkbank, Schiff und Tor sind stromlos. Nur der defekte Verteiler fällt auf."
+    };
+  }
+
+  if (sceneId === "energy") {
+    return {
+      ...sceneSpecs.energy,
+      title: energyReady
+        ? "Die Verbindung hält"
+        : "Der Energieverteiler ist ausgefallen",
+      description: energyReady
+        ? "Von hier fließt wieder Strom zur Werkbank."
+        : "Keine Anzeige reagiert. Zwischen Verteiler und Werkbank fehlt eine funktionierende Verbindung."
+    };
+  }
+
+  if (sceneId === "workbench") {
+    return {
+      ...sceneSpecs.workbench,
+      title: energyReady
+        ? "Werkzeuge, Ersatzteile und eine Energiezelle"
+        : "Die Werkbank ist vollständig dunkel",
+      description: energyReady
+        ? "Jetzt ist genug Strom da, um das Ersatzteilregal zu durchsuchen."
+        : "Ohne Strom lässt sich hier nichts prüfen. Erst muss der Verteiler wieder funktionieren."
+    };
+  }
+
+  if (sceneId === "gate") {
+    return {
+      ...sceneSpecs.gate,
+      title: gateReady
+        ? "Das Hangartor ist offen"
+        : state.shipTested
+          ? "Das Schiff ist bereit – aber das Tor bleibt zu"
+          : "Das schwere Hangartor ist verriegelt",
+      description: gateReady
+        ? "Der Weg nach draußen ist frei."
+        : state.shipTested
+          ? "Der alte Torantrieb schafft die verklemmten Segmente nicht allein."
+          : "Solange das Schiff nicht startklar ist, bleibt das Tor geschlossen."
+    };
+  }
+
   if (sceneId !== "ship") {
     return sceneSpecs[sceneId];
+  }
+
+  if (!state.energyCellInstalled) {
+    return {
+      ...sceneSpecs.ship,
+      image: `${base}assets/scenes/hangar/hangar-ship-v1.webp`,
+      eyebrow: "Hangar 3 · Sternenschiff",
+      title: "Das Schiff ist noch vollständig dunkel",
+      description: "Ohne Energiezelle reagieren weder Cockpit noch Wartungssysteme."
+    };
   }
 
   if (!state.coolingRepaired) {
@@ -200,7 +264,7 @@ function resolveScene(
       image: `${base}assets/scenes/hangar/hangar-cooling-v1.webp`,
       eyebrow: "Hangar 3 · Wartungsbereich",
       title: "Die gerissene Kühlleitung",
-      description: "Bevor das Schiff starten kann, muss die Kühlung wieder dicht sein."
+      description: "Die Energiezelle ist drin. Jetzt zeigt sich der nächste Defekt: die Kühlleitung ist gerissen."
     };
   }
 
@@ -273,7 +337,17 @@ export function HangarFixedScene({
   onInteract,
   onSwitchProfile
 }: HangarFixedSceneProps) {
-  const scene = resolveScene(sceneId, state);
+  const scene = resolveScene(sceneId, state, energyReady, gateReady);
+  const visualPhase = !energyReady
+    ? "is-blackout"
+    : !state.energyCellInstalled
+      ? "is-workbench-powered"
+      : !state.shipTested
+        ? "is-ship-repair"
+        : !gateReady
+          ? "is-gate-blocked"
+          : "is-gate-open";
+  const gateClosed = !gateReady;
   const isOverview = sceneId === "overview";
 
   return (
@@ -290,7 +364,7 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.3</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.4</div>
 
         <div className="fixed-scene-status">
           <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
@@ -311,13 +385,34 @@ export function HangarFixedScene({
         <strong>{mission}</strong>
       </div>
 
-      <div className={"story-scene-frame scene-" + sceneId}>
+      <div
+        className={[
+          "story-scene-frame",
+          "scene-" + sceneId,
+          visualPhase,
+          gateClosed ? "has-closed-gate" : "has-open-gate"
+        ].join(" ")}
+      >
         <img
           className="story-scene-image"
           src={scene.image}
           alt=""
           draggable={false}
         />
+
+        {gateClosed ? (
+          <div className="story-gate-shutter" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+        ) : (
+          <div className="story-open-gate-space" aria-hidden="true" />
+        )}
+
+        {!energyReady && (
+          <div className="story-blackout-haze" aria-hidden="true" />
+        )}
 
         <div className="story-scene-caption">
           <span>{scene.eyebrow}</span>
