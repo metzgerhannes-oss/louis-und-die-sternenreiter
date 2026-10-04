@@ -14,6 +14,9 @@ export type HangarSceneId =
   | "energy"
   | "workbench"
   | "ship"
+  | "cooling"
+  | "navigation"
+  | "system-test"
   | "gate"
   | "crew";
 
@@ -37,7 +40,6 @@ type HotspotSpec = {
   y: number;
   width: number;
   height: number;
-  navigateTo?: HangarSceneId;
 };
 
 type SceneSpec = {
@@ -57,51 +59,18 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
     title: "Ein stiller Hangar voller Spuren",
     description: "Wählt einen Bereich aus, den ihr genauer untersuchen wollt.",
     hotspots: [
-      {
-        id: "workbench",
-        label: "Werkbank",
-        x: 4,
-        y: 35,
-        width: 27,
-        height: 28,
-        navigateTo: "workbench"
-      },
+      { id: "workbench", label: "Werkbank", x: 4, y: 35, width: 27, height: 28 },
       {
         id: "energy-distributor",
         label: "Energieverteiler",
         x: 20,
         y: 15,
         width: 19,
-        height: 42,
-        navigateTo: "energy"
+        height: 42
       },
-      {
-        id: "ship",
-        label: "Sternenschiff",
-        x: 42,
-        y: 22,
-        width: 40,
-        height: 37,
-        navigateTo: "ship"
-      },
-      {
-        id: "hangar-door",
-        label: "Hangartor",
-        x: 72,
-        y: 4,
-        width: 25,
-        height: 45,
-        navigateTo: "gate"
-      },
-      {
-        id: "louis",
-        label: "Louis & Crew",
-        x: 38,
-        y: 50,
-        width: 35,
-        height: 45,
-        navigateTo: "crew"
-      }
+      { id: "ship", label: "Sternenschiff", x: 42, y: 22, width: 40, height: 37 },
+      { id: "hangar-door", label: "Hangartor", x: 72, y: 4, width: 25, height: 45 },
+      { id: "louis", label: "Louis & Crew", x: 38, y: 50, width: 35, height: 45 }
     ]
   },
   energy: {
@@ -139,8 +108,8 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
   ship: {
     image: `${base}assets/scenes/hangar/hangar-ship-v1.webp`,
     eyebrow: "Hangar 3 · Sternenschiff",
-    title: "Ein Schiff, das lange geschlafen hat",
-    description: "Energie, Kühlung und Navigation müssen nacheinander wieder funktionieren.",
+    title: "Das alte Sternenschiff",
+    description: "Ohne Energie reagiert hier fast nichts.",
     hotspots: [
       {
         id: "ship",
@@ -152,11 +121,59 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
       }
     ]
   },
+  cooling: {
+    image: `${base}assets/scenes/hangar/hangar-cooling-v1.webp`,
+    eyebrow: "Hangar 3 · Wartungsbereich",
+    title: "Die gerissene Kühlleitung",
+    description: "Jetzt zeigt sich, warum der Antrieb noch nicht sicher laufen kann.",
+    hotspots: [
+      {
+        id: "ship",
+        label: "Kühlleitung reparieren",
+        x: 15,
+        y: 22,
+        width: 70,
+        height: 68
+      }
+    ]
+  },
+  navigation: {
+    image: `${base}assets/scenes/hangar/hangar-navigation-v1.webp`,
+    eyebrow: "Hangar 3 · Cockpit",
+    title: "Nur ein schwacher Weg",
+    description: "Das Navigationsmodul zeigt kaum noch etwas. Eine Route könnte reichen.",
+    hotspots: [
+      {
+        id: "ship",
+        label: "Navigation reaktivieren",
+        x: 15,
+        y: 18,
+        width: 72,
+        height: 70
+      }
+    ]
+  },
+  "system-test": {
+    image: `${base}assets/scenes/hangar/hangar-systemtest-v1.webp`,
+    eyebrow: "Hangar 3 · Systemtest",
+    title: "Das Schiff wacht auf",
+    description: "Energie, Kühlung und Navigation müssen gemeinsam reagieren.",
+    hotspots: [
+      {
+        id: "ship",
+        label: "Systemtest starten",
+        x: 18,
+        y: 16,
+        width: 68,
+        height: 72
+      }
+    ]
+  },
   gate: {
     image: `${base}assets/scenes/hangar/hangar-gate-v1.webp`,
-    eyebrow: "Hangar 3 · Tor",
+    eyebrow: "Hangar 3 · Hangartor",
     title: "Der Weg nach draußen",
-    description: "Hinter dem Tor liegt der erste Kurs nach Cinder.",
+    description: "Das Tor bleibt geschlossen, bis der letzte Engpass gelöst ist.",
     hotspots: [
       {
         id: "hangar-door",
@@ -186,6 +203,25 @@ const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
   }
 };
 
+export function getRelevantShipScene(state: Chapter1State): HangarSceneId {
+  if (!state.energyCellInstalled) return "ship";
+  if (!state.coolingRepaired) return "cooling";
+  if (!state.navigationRestored) return "navigation";
+  if (!state.shipTested) return "system-test";
+  return "ship";
+}
+
+export function getOverviewTarget(
+  id: HangarHotspotId,
+  state: Chapter1State
+): HangarSceneId {
+  if (id === "energy-distributor") return "energy";
+  if (id === "workbench") return "workbench";
+  if (id === "ship") return getRelevantShipScene(state);
+  if (id === "hangar-door") return "gate";
+  return "crew";
+}
+
 function resolveScene(
   sceneId: HangarSceneId,
   state: Chapter1State,
@@ -196,10 +232,14 @@ function resolveScene(
     return {
       ...sceneSpecs.overview,
       title: energyReady
-        ? "Hangar 3 bekommt langsam wieder Leben"
+        ? state.shipTested
+          ? "Das Schiff ist bereit. Das Tor hält euch noch auf."
+          : "Hangar 3 bekommt langsam wieder Leben"
         : "Fast dunkel. Nur Louis' Harness reagiert.",
       description: energyReady
-        ? "Die Werkbank hat wieder Strom. Das Schiff bleibt noch still."
+        ? state.energyCellInstalled
+          ? "Werkbank und erste Schiffssysteme sind aktiv. Das Hangartor bleibt geschlossen."
+          : "Die Werkbank hat wieder Strom. Das Schiff bleibt noch still."
         : "Werkbank, Schiff und Tor sind stromlos. Nur der defekte Verteiler fällt auf."
     };
   }
@@ -207,9 +247,7 @@ function resolveScene(
   if (sceneId === "energy") {
     return {
       ...sceneSpecs.energy,
-      title: energyReady
-        ? "Die Verbindung hält"
-        : "Der Energieverteiler ist ausgefallen",
+      title: energyReady ? "Die Verbindung hält" : "Der Energieverteiler ist ausgefallen",
       description: energyReady
         ? "Von hier fließt wieder Strom zur Werkbank."
         : "Keine Anzeige reagiert. Zwischen Verteiler und Werkbank fehlt eine funktionierende Verbindung."
@@ -220,11 +258,27 @@ function resolveScene(
     return {
       ...sceneSpecs.workbench,
       title: energyReady
-        ? "Werkzeuge, Ersatzteile und eine Energiezelle"
+        ? state.energyCellInstalled
+          ? "Die Energiezelle ist bereits im Schiff"
+          : "Werkzeuge, Ersatzteile und eine Energiezelle"
         : "Die Werkbank ist vollständig dunkel",
       description: energyReady
-        ? "Jetzt ist genug Strom da, um das Ersatzteilregal zu durchsuchen."
+        ? state.energyCellInstalled
+          ? "Die Werkbank läuft. Der nächste Schritt wartet am Schiff."
+          : "Jetzt ist genug Strom da, um das Ersatzteilregal zu durchsuchen."
         : "Ohne Strom lässt sich hier nichts prüfen. Erst muss der Verteiler wieder funktionieren."
+    };
+  }
+
+  if (sceneId === "ship") {
+    return {
+      ...sceneSpecs.ship,
+      title: state.energyCellInstalled
+        ? "Die Energiezelle weckt das Schiff"
+        : "Das Schiff ist noch vollständig dunkel",
+      description: state.energyCellInstalled
+        ? "Einige Anzeigen reagieren zum ersten Mal. Jetzt muss die Crew die Technik Schritt für Schritt prüfen."
+        : "Ohne Energiezelle reagieren weder Cockpit noch Wartungssysteme."
     };
   }
 
@@ -237,66 +291,15 @@ function resolveScene(
           ? "Das Schiff ist bereit – aber das Tor bleibt zu"
           : "Das schwere Hangartor ist verriegelt",
       description: gateReady
-        ? "Der Weg nach draußen ist frei."
+        ? "Der Weg zum Sternenfeld ist frei."
         : state.shipTested
           ? "Der alte Torantrieb schafft die verklemmten Segmente nicht allein."
           : "Solange das Schiff nicht startklar ist, bleibt das Tor geschlossen."
     };
   }
 
-  if (sceneId !== "ship") {
-    return sceneSpecs[sceneId];
-  }
-
-  if (!state.energyCellInstalled) {
-    return {
-      ...sceneSpecs.ship,
-      image: `${base}assets/scenes/hangar/hangar-ship-v1.webp`,
-      eyebrow: "Hangar 3 · Sternenschiff",
-      title: "Das Schiff ist noch vollständig dunkel",
-      description: "Ohne Energiezelle reagieren weder Cockpit noch Wartungssysteme."
-    };
-  }
-
-  if (!state.coolingRepaired) {
-    return {
-      ...sceneSpecs.ship,
-      image: `${base}assets/scenes/hangar/hangar-cooling-v1.webp`,
-      eyebrow: "Hangar 3 · Wartungsbereich",
-      title: "Die gerissene Kühlleitung",
-      description: "Die Energiezelle ist drin. Jetzt zeigt sich der nächste Defekt: die Kühlleitung ist gerissen."
-    };
-  }
-
-  if (!state.navigationRestored) {
-    return {
-      ...sceneSpecs.ship,
-      image: `${base}assets/scenes/hangar/hangar-navigation-v1.webp`,
-      eyebrow: "Hangar 3 · Cockpit",
-      title: "Nur ein schwacher Weg",
-      description: "Das Navigationsmodul zeigt kaum noch etwas – aber vielleicht reicht ein einziger Kurs."
-    };
-  }
-
-  if (!state.shipTested) {
-    return {
-      ...sceneSpecs.ship,
-      image: `${base}assets/scenes/hangar/hangar-systemtest-v1.webp`,
-      eyebrow: "Hangar 3 · Systemtest",
-      title: "Das Schiff wacht auf",
-      description: "Energie, Kühlung und Navigation müssen jetzt gemeinsam reagieren."
-    };
-  }
-
-  return {
-    ...sceneSpecs.ship,
-    image: `${base}assets/scenes/hangar/hangar-systemtest-v1.webp`,
-    eyebrow: "Hangar 3 · Sternenschiff",
-    title: "Startklar",
-    description: "Alle Schiffssysteme reagieren. Jetzt fehlt nur noch das Hangartor."
-  };
+  return sceneSpecs[sceneId];
 }
-
 
 function isActiveHotspot(
   id: HangarHotspotId,
@@ -364,7 +367,7 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.4</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.5</div>
 
         <div className="fixed-scene-status">
           <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
@@ -410,9 +413,7 @@ export function HangarFixedScene({
           <div className="story-open-gate-space" aria-hidden="true" />
         )}
 
-        {!energyReady && (
-          <div className="story-blackout-haze" aria-hidden="true" />
-        )}
+        {!energyReady && <div className="story-blackout-haze" aria-hidden="true" />}
 
         <div className="story-scene-caption">
           <span>{scene.eyebrow}</span>
@@ -421,18 +422,8 @@ export function HangarFixedScene({
         </div>
 
         {scene.hotspots.map((hotspot) => {
-          const active = isActiveHotspot(
-            hotspot.id,
-            state,
-            energyReady,
-            gateReady
-          );
-          const complete = isCompletedHotspot(
-            hotspot.id,
-            state,
-            energyReady,
-            gateReady
-          );
+          const active = isActiveHotspot(hotspot.id, state, energyReady, gateReady);
+          const complete = isCompletedHotspot(hotspot.id, state, energyReady, gateReady);
 
           return (
             <button
@@ -453,8 +444,8 @@ export function HangarFixedScene({
               }}
               aria-label={hotspot.label}
               onClick={() => {
-                if (hotspot.navigateTo) {
-                  onNavigate(hotspot.navigateTo);
+                if (isOverview) {
+                  onNavigate(getOverviewTarget(hotspot.id, state));
                   return;
                 }
                 onInteract(hotspot.id);
