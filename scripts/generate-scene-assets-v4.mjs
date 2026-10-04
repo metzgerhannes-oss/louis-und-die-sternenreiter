@@ -54,6 +54,59 @@ async function renderCrew(output) {
     .toFile(scenePath(output));
 }
 
+async function starBackdrop(storyboard, width, height) {
+  return sharp(storyboard)
+    .extract({ left: 1259, top: 682, width: 355, height: 95 })
+    .resize(width, height, { fit: "cover", position: "centre" })
+    .sharpen({ sigma: 0.55 })
+    .webp({ quality: 94 })
+    .toBuffer();
+}
+
+function portalFrame(width, height, stroke = 22) {
+  return Buffer.from(`
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect x="${stroke / 2}" y="${stroke / 2}"
+        width="${width - stroke}" height="${height - stroke}"
+        rx="10" fill="none" stroke="#1d2730" stroke-width="${stroke}"/>
+      <rect x="${stroke + 3}" y="${stroke + 3}"
+        width="${width - (stroke + 3) * 2}" height="${height - (stroke + 3) * 2}"
+        rx="7" fill="none" stroke="#9b692d" stroke-width="5"/>
+    </svg>
+  `);
+}
+
+async function renderMainOpen(storyboard) {
+  const opening = await starBackdrop(storyboard, 300, 430);
+  await sharp(scenePath("hangar-main-v2.webp"))
+    .resize(W, H, { fit: "cover", position: "centre" })
+    .modulate({ brightness: 0.98, saturation: 1.02 })
+    .composite([
+      { input: opening, left: 1280, top: 112 },
+      { input: portalFrame(300, 430, 14), left: 1280, top: 112 }
+    ])
+    .webp({ quality: 93, effort: 5 })
+    .toFile(scenePath("hangar-main-open-v5.webp"));
+}
+
+async function renderGateOpen(storyboard) {
+  const closedGate = await sharp(storyboard)
+    .extract({ left: 560, top: 675, width: 482, height: 207 })
+    .resize(W, H, { fit: "cover", position: "centre" })
+    .modulate({ brightness: 0.95, saturation: 0.96 })
+    .webp({ quality: 94 })
+    .toBuffer();
+  const opening = await starBackdrop(storyboard, 1090, 760);
+
+  await sharp(closedGate)
+    .composite([
+      { input: opening, left: 255, top: 80 },
+      { input: portalFrame(1090, 760, 24), left: 255, top: 80 }
+    ])
+    .webp({ quality: 93, effort: 5 })
+    .toFile(scenePath("hangar-gate-open-v5.webp"));
+}
+
 const storyboard = await loadStoryboard();
 
 await renderApprovedOverview("hangar-main-blackout-v4.webp", {
@@ -69,12 +122,7 @@ await renderApprovedOverview("hangar-main-active-v4.webp", {
   saturation: 1.02
 });
 
-await renderStoryboardCrop(
-  storyboard,
-  "hangar-main-open-v4.webp",
-  { left: 430, top: 884, width: 1106, height: 140 },
-  { brightness: 0.96, saturation: 1.02, position: "centre" }
-);
+await renderMainOpen(storyboard);
 
 await renderStoryboardCrop(
   storyboard,
@@ -137,13 +185,8 @@ await renderStoryboardCrop(
   { brightness: 0.95, saturation: 0.96, position: "centre" }
 );
 
-await renderStoryboardCrop(
-  storyboard,
-  "hangar-gate-open-v4.webp",
-  { left: 430, top: 884, width: 1106, height: 140 },
-  { brightness: 0.98, saturation: 1.03, position: "centre" }
-);
+await renderGateOpen(storyboard);
 
 await renderCrew("hangar-crew-v4.webp");
 
-console.log("Generated Hangar V4 native story-image set from approved visual source.");
+console.log("Generated Hangar V4/V5 story-image set with full-resolution open-gate states.");
