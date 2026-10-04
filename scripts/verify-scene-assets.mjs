@@ -10,7 +10,7 @@ const runtimeAssets = [
   "hangar-main-blackout-v4.webp",
   "hangar-main-powered-v4.webp",
   "hangar-main-active-v4.webp",
-  "hangar-main-open-v6.webp",
+  "hangar-main-open-v7.webp",
   "hangar-energy-v4.webp",
   "hangar-workbench-dark-v4.webp",
   "hangar-workbench-v4.webp",
@@ -20,7 +20,7 @@ const runtimeAssets = [
   "hangar-navigation-v4.webp",
   "hangar-systemtest-v4.webp",
   "hangar-gate-closed-v4.webp",
-  "hangar-gate-open-v6.webp",
+  "hangar-gate-open-v7.webp",
   "hangar-crew-v4.webp"
 ];
 
