@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { isOlliV6Ready } from "../assets/crewTextures";
 import {
   getCrewMates,
   playerProfiles,
@@ -952,7 +951,7 @@ export class HangarScene extends Phaser.Scene {
     const startY = height * (compact ? 0.72 : 0.72);
 
     this.player =
-      profile.id === "olli" && isOlliV6Ready(this)
+      profile.id === "olli"
         ? new OlliV6Avatar(this, profile, startX, startY, {
             displayScale: compact ? 1.12 : 1.02,
             primary: true
