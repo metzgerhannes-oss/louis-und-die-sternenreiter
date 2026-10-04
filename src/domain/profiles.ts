@@ -4,13 +4,7 @@ export type PlayerProfile = {
   id: ProfileId;
   databaseId: string;
   displayName: string;
-  avatarId: string;
-  accent: number;
   accentCss: string;
-  suit: number;
-  suitCss: string;
-  initials: string;
-  scaleFactor: number;
 };
 
 export const playerProfiles: readonly PlayerProfile[] = [
@@ -18,37 +12,19 @@ export const playerProfiles: readonly PlayerProfile[] = [
     id: "charly",
     databaseId: "00000000-0000-0000-0000-000000000101",
     displayName: "Charly",
-    avatarId: "charly-default",
-    accent: 0xd66f8f,
-    accentCss: "#d66f8f",
-    suit: 0x4e5f72,
-    suitCss: "#4e5f72",
-    initials: "C",
-    scaleFactor: 1.05
+    accentCss: "#d66f8f"
   },
   {
     id: "philipp",
     databaseId: "00000000-0000-0000-0000-000000000102",
     displayName: "Philipp",
-    avatarId: "philipp-default",
-    accent: 0x54a5c5,
-    accentCss: "#54a5c5",
-    suit: 0x4d5b48,
-    suitCss: "#4d5b48",
-    initials: "P",
-    scaleFactor: 1
+    accentCss: "#54a5c5"
   },
   {
     id: "olli",
     databaseId: "00000000-0000-0000-0000-000000000103",
     displayName: "Olli",
-    avatarId: "olli-default",
-    accent: 0xd49a52,
-    accentCss: "#d49a52",
-    suit: 0x665a4e,
-    suitCss: "#665a4e",
-    initials: "O",
-    scaleFactor: 0.92
+    accentCss: "#d49a52"
   }
 ] as const;
 

@@ -22,7 +22,7 @@ Mobile:
 Hauptaktion:
 - Profil auswählen
 
-## L02 – Game / Hangar HUD
+## L02 – Feste Spielszene / HUD
 
 Verwendung:
 - Hangar
@@ -31,12 +31,12 @@ Verwendung:
 
 Struktur:
 - sehr schmale Kopfzeile
-- großer ungestörter Game-Canvas
+- große ungestörte Szenenillustration
 - minimale Statusinformationen
-- Touchsteuerung nur auf Touchgeräten
-- Interaktionshinweis nahe Spielkontext
+- klickbare Hotspots direkt in der Illustration
+- Interaktionshinweise nur dort, wo sie wirklich benötigt werden
 
-Keine permanente große Menüleiste über dem Spiel.
+Keine D-Pad-Steuerung und keine permanente große Menüleiste über der Szene.
 
 ## L03 – Louis Dialog
 
@@ -100,8 +100,6 @@ Struktur:
 - Modulslots um/unter dem Schiff
 - rechte Seitenleiste Desktop / Bottom-Sheet Mobile
 - Werte nur dort, wo sie Entscheidungen helfen
-
-Babylon-3D-Viewer nutzt genau diese Layoutfamilie.
 
 ## L08 – Hangar Ausbau
 

@@ -142,10 +142,11 @@ Diese Zustände müssen visuell konsistent sein.
 Verbindliche Reihenfolge:
 
 1. `docs/design/DESIGN_SYSTEM_V1.md`
-2. `docs/design/AVATAR_SYSTEM_V1.md`
-3. `docs/design/PRODUCT_LAYOUTS_V1.md`
-4. `src/theme/tokens.css`
-5. freigegebene Referenzbilder unter `docs/design/reference/`
-6. Runtime-Assets unter `public/assets/`
+2. `docs/design/VISUAL_BIBLE_V1.md`
+3. `docs/design/CREW_RULES_V1.md`
+4. `docs/design/PRODUCT_LAYOUTS_V1.md`
+5. `docs/design/ASSET_STRUCTURE.md`
+6. `src/theme/tokens.css`
+7. freigegebene Runtime-Szenen unter `public/assets/scenes/`
 
-Ein neues Artwork gilt erst als freigegeben, wenn es in der Referenzablage vermerkt ist.
+Ein neues Szenen-Artwork gilt erst als freigegeben, wenn Perspektive, Figuren, Hotspots und Zustandsvarianten fachlich festgelegt sind.

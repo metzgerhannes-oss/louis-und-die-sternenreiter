@@ -119,3 +119,19 @@ Nach dem Finale ist die Hauptgeschichte abgeschlossen. Freie Reisen schaltet all
 
 ## D-20261001-040 – Datengetriebener Rest der Hauptstory
 Moss bis Herz der Wege verwenden eine gemeinsame AdventureScene und datengetriebene Story-/Sternenpunktdefinitionen. Neue Hauptwelten sollen nicht durch Kopieren kompletter Szenen implementiert werden.
+
+
+## D-20261004-001 – Fixed-Scene-Neuausrichtung
+Das bisherige freie 2D/2.5D-Spielprinzip wird ersetzt. Das Hauptspiel besteht künftig aus hochwertigen festen Szenenillustrationen mit responsiven klickbaren Hotspots, Dialogen, Nahansichten, kleinen Rätseln und sichtbaren Zustandsvarianten.
+
+Diese Entscheidung ersetzt für die Runtime insbesondere:
+- D-20261001-005 (Phaser als Hauptrenderer)
+- D-20261001-006 (Babylon als vorgesehener 3D-Spielbestandteil)
+- den Sprite-/Animationsanteil aus D-20261001-015
+- die direkte Player-Control aus D-20261001-018
+- die aktive Steuerung aus D-20261001-029
+- D-20261001-040 (gemeinsame Phaser AdventureScene)
+
+Erhalten bleiben Story, Canon, Crew, Profile, Louis, Sternenpunkte, Vorlesen, Spracheingabe, Creator, Persistenz und Supabase.
+
+Technischer Grundsatz: **Grafikqualität und klare Interaktion haben Vorrang vor freier Bewegungsfreiheit.**

@@ -10,9 +10,9 @@ Die Welt soll handgebaut wirken. Leitgedanke:
 
 ## Perspektive
 
-Hauptspiel: 2.5D mit schräger/isometrischer Wirkung, Tiefenebenen, Parallax, Licht und Partikeln.
+Hauptspiel: hochwertige feste Illustrationen mit klarer räumlicher Wirkung. Perspektive und Bildausschnitt werden pro Szene bewusst komponiert.
 
-Echtes 3D wird gezielt für Schiffsansichten und besondere Momente verwendet.
+Bewegung entsteht gezielt durch kleine UI-/Effektanimationen und Zustandswechsel, nicht durch frei laufende Figuren oder eine nachführende Kamera.
 
 ## Farb- und Materialgefühl
 
@@ -26,7 +26,7 @@ Echtes 3D wird gezielt für Schiffsansichten und besondere Momente verwendet.
 
 ## Charaktere
 
-Charly, Philipp und Olli erhalten jeweils eigenständige Avatare.
+Charly, Philipp und Olli bleiben visuell eindeutig wiedererkennbar. In Spielwelten werden sie bevorzugt direkt in die jeweilige Szenenillustration komponiert; separate Porträts bleiben für Profilwahl und Dialoge.
 
 Elemente:
 - kurze Jacken/Overalls

@@ -10,10 +10,10 @@ Die Kerncrew besteht immer aus:
 
 ## Aktives Profil
 
-Die Auswahl von Charly, Philipp oder Olli bestimmt die **aktive Spielfigur**, nicht die Zusammensetzung der Crew.
+Die Auswahl von Charly, Philipp oder Olli bestimmt das **aktive Profil / den persönlichen Fokus**, nicht die Zusammensetzung der Crew.
 
 Das aktive Profil steuert:
-- direkte Player-Control
+- persönliche Ansprache in Dialogen
 - persönliches XP / Level
 - Profilakzent
 - eigenes Reisejournal
@@ -21,13 +21,12 @@ Das aktive Profil steuert:
 
 ## Andere Kinder im Gameplay
 
-Die beiden nicht direkt gesteuerten Kinder:
+Die anderen Kinder:
 - reisen weiterhin mit
-- erscheinen in Storysequenzen
+- erscheinen in den festen Szenen und Storysequenzen
 - sind im Hangar präsent
-- können kontextabhängig als Companion/NPC sichtbar sein
-- können bei Rätseln, Dialogen oder Aktionen helfen
-- dürfen später begrenzt umgeschaltet oder direkt angesprochen werden
+- helfen bei Rätseln, Dialogen und Aktionen
+- können als klickbare Dialogpartner auftreten
 
 ## Story
 
