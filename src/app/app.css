@@ -1605,3 +1605,58 @@ textarea,
   .scene-gate .story-open-gate-space { width: 43%; }
   .scene-crew .story-open-gate-space { width: 24%; }
 }
+
+
+/* === H3 SCENES 0.5 · explicit storyboard steps ========================= */
+.scene-cooling .story-scene-image {
+  object-position: 50% 54%;
+}
+
+.scene-navigation .story-scene-image {
+  object-position: 50% 48%;
+}
+
+.scene-system-test .story-scene-image {
+  object-position: 54% 50%;
+}
+
+.scene-cooling .story-gate-shutter,
+.scene-navigation .story-gate-shutter,
+.scene-system-test .story-gate-shutter {
+  width: 27%;
+}
+
+.scene-cooling .story-open-gate-space,
+.scene-navigation .story-open-gate-space,
+.scene-system-test .story-open-gate-space {
+  width: 27%;
+}
+
+.scene-ship.is-ship-repair .story-scene-caption strong::after {
+  content: " · Energie ist da";
+  color: #9ed8cf;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .scene-cooling .story-scene-image {
+    object-position: 47% 54%;
+  }
+
+  .scene-navigation .story-scene-image {
+    object-position: 48% 48%;
+  }
+
+  .scene-system-test .story-scene-image {
+    object-position: 57% 50%;
+  }
+
+  .scene-cooling .story-gate-shutter,
+  .scene-navigation .story-gate-shutter,
+  .scene-system-test .story-gate-shutter,
+  .scene-cooling .story-open-gate-space,
+  .scene-navigation .story-open-gate-space,
+  .scene-system-test .story-open-gate-space {
+    width: 24%;
+  }
+}
