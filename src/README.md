@@ -1,14 +1,15 @@
 # src
 
-Geplante Bereiche:
+Aktive Struktur nach der Fixed-Scene-Neuausrichtung:
 
-- `app/` – App-Shell und Routing
-- `features/` – React-Features
-- `game/` – Phaser-Szenen, Entities und Systeme
-- `three/` – isolierte Babylon.js-Komponenten
-- `domain/` – domänenspezifische Typen und Regeln
-- `services/` – Supabase, Speech, Persistence, EventBus
-- `content/` – ladbare Weltinhalte
-- `shared/` – geteilte Komponenten und Utilities
+- `app/` – App-Shell und PWA-Status
+- `features/scenes/` – feste Point-and-Click-Szenen und Hotspots
+- `features/story/` – Storydialoge
+- `features/starpoints/` – Sternenpunkte / kreative Lösungsdialoge
+- `features/companion/` – Louis und Einstellungen
+- `features/profiles/` – Profilwahl
+- `features/speech/` – Vorlesen und Spracheingabe
+- `domain/` – Story, Regeln und Typen
+- `services/` – Persistenz, Supabase, Audio/Speech und App-Events
 
-Die eigentliche Vite/React-Basis wird in M0 erzeugt.
+Es gibt bewusst **keinen `game/`-Renderer mehr**. Szenen werden mit React/CSS als feste Illustrationen mit responsiven Hotspots umgesetzt.
