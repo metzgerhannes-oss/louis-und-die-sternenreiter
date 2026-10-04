@@ -1,246 +1,60 @@
-# Game Design
+# Game Design – Fixed Scene Adventure
 
 ## Produktkern
 
-**Louis & die Sternenreiter** ist ein kindgerechtes Sci-Fi-Abenteuerspiel mit Space-Western-, Garage-Punk- und Creator-Elementen.
+**Louis & die Sternenreiter** ist ein kindgerechtes Sci-Fi-Point-and-Click-Abenteuer.
 
-Philipp, Charly und Olli reisen immer gemeinsam mit Louis. Die Profilwahl bestimmt die aktive Spielfigur, nicht die Crew.
+Philipp, Charly, Olli und Louis reisen immer gemeinsam. Die Welt wird nicht mehr frei mit D-Pad oder virtueller Spielfigur durchlaufen. Jede Situation wird als bewusst komponierte, hochwertige Szene gezeigt.
 
-## Zentrale Fantasy
+## Kernloop
 
-Louis ist ein **Sternenformer**.
+> **Ansehen → entdecken → anklicken → sprechen / lösen → sichtbare Veränderung → nächste Szene**
 
-Sein Tech-Harness kann:
-- Ideen der Kinder aufnehmen
-- Rückfragen stellen
-- Weltregeln berücksichtigen
-- Material und Sternenenergie prüfen
-- kleine und vorbereitete Veränderungen direkt in der Welt umsetzen
-- größere Ideen als Entwurf sichern
+Eine Szene enthält:
+- eine freigegebene Gesamtillustration
+- klar definierte klickbare Figuren und Gegenstände
+- Dialoge und Vorlesefunktion
+- optionale Nahansichten
+- kleine Rätsel oder Auswahlaufgaben
+- sichtbare Zustandsvarianten nach gelösten Aufgaben
 
-Der Kern des Spiels lautet:
+## Beispiel Hangar 3
 
-> **Entdecken → Idee haben → Louis erzählen → gemeinsam konkretisieren → etwas verändern → neuen Weg öffnen**
+1. Hangar-Gesamtansicht
+2. Werkbank anklicken
+3. Nahansicht Werkbank
+4. Stromproblem untersuchen
+5. Louis / Crew kommentiert Hinweise
+6. richtige Ursache finden
+7. Werkbank sichtbar aktivieren
+8. Schiff als nächster Hotspot wird relevant
 
-## Hauptloop
+## Keine freie Bewegung
 
-1. Crew reist zu einem Ort.
-2. Spieler erkundet die Umgebung.
-3. Crew entdeckt Problem, Geheimnis oder Sternenpunkt.
-4. Material / Wissen / Sternenstaub werden gesammelt.
-5. Louis fragt nach einer Lösung oder Idee.
-6. Kind spricht oder schreibt.
-7. Louis stellt kontextbezogene Rückfragen.
-8. Idee wird einer Umsetzungsstufe zugeordnet.
-9. Veränderung wird gebaut oder als Entwurf gespeichert.
-10. Neue Reise-, Story- oder Ausbauoption wird geöffnet.
-11. Crew kehrt zum Hangar zurück.
+Entfernt sind:
+- D-Pad / WASD als Kernbedienung
+- Kamera-Follow und freie Zoom-Navigation
+- Laufwege / Kollisionen
+- Character-Rigs
+- Sprite-Walk-Cycles
+- prozedural zusammengesetzte Räume
 
-## Die vier Louis-Stufen
+Figuren sind Teil der Illustration oder erscheinen in klaren Dialog-/Nahansichten.
 
-### Stufe A – Sofort formen
-
-Kleine lokale Veränderungen.
-
-Beispiele:
-- Lampe
-- Schild
-- Sitzplatz
-- einfache Halterung
-- kleine Dekoration
-- Kabelabdeckung
-
-Anforderung:
-- freier Sternenpunkt
-- geringe oder keine Materialkosten
-
-Ergebnis:
-- sofort sichtbare Änderung
-
-### Stufe B – Bauen
-
-Größere technische Objekte.
-
-Beispiele:
-- Brücke
-- Energieverteiler
-- Werkbankmodul
-- Fahrzeugteil
-- Hangarausbau
-
-Anforderung:
-- Sternenpunkt
-- definierte Materialien
-- ggf. Bauplan
-
-Ergebnis:
-- Louis baut nach bestätigter Idee
-
-### Stufe C – Sternenformen
-
-Große ortsverändernde Inhalte.
-
-Beispiele:
-- Gebäude
-- Landschaftselement
-- besondere Station
-- größere Kreatur
-- neuer Bereich
-
-Anforderung:
-- Sternenstaub
-- Storyfreigabe
-- Weltregeln
-- ggf. vorbereitete Bausteine
-
-Ergebnis:
-- unmittelbar oder nach einer kurzen Formungssequenz
-
-### Stufe D – Große Idee
-
-Neue Inhalte, die nicht unmittelbar aus vorhandenen Bausteinen erzeugt werden können.
-
-Beispiele:
-- komplett neuer Planet
-- neue Spezies
-- umfangreiche Questreihe
-- neue Spielmechanik
-
-Ergebnis:
-- Louis speichert den Entwurf im Ideenbuch
-- Erwachsenenreview
-- ggf. GitHub-Backlog
-- spätere Implementierung
-- nach Freigabe kann der Inhalt in der Welt erscheinen
-
-## Sternenpunkte
-
-Sternenpunkte sind klar definierte Stellen, an denen Louis die Welt verändern darf.
-
-Jeder Sternenpunkt besitzt:
-- Ort
-- Kontext
-- erlaubte Veränderungstypen
-- feste Canon-Grenzen
-- Materialbedarf
-- Sternenstaubbedarf
-- mögliche vorbereitete Lösungen
-- freie Eingabemöglichkeit
-- Ergebniszustand
-
-Sternenpunkte verhindern, dass freie Ideen beliebig bestehende Welt zerstören.
-
-## Crew
-
-Kerncrew:
-- Philipp
-- Charly
-- Olli
-- Louis
-
-Aktives Profil bestimmt:
-- direkte Steuerung
-- persönliches XP / Level
-- Profilfarbe
-- persönliches Reisejournal
-- kosmetische Entwicklung
-
-Die anderen Kinder bleiben Begleiter, Dialogpartner und Helfer.
-
-## Louis als UI
-
-Louis ersetzt möglichst viele klassische Systemdialoge.
+## Louis
 
 Louis:
 - liest vor
-- erklärt Aufgaben
-- nimmt Spracheingabe an
-- erinnert an Missionsziele
+- kommentiert Entdeckungen
+- gibt Hinweise
 - erkennt Sternenpunkte
-- stellt Rückfragen
-- fasst Ideen zusammen
-- erklärt, warum etwas sofort / später / nicht an diesem Ort gebaut werden kann
+- nimmt eigene Ideen auf
+- fasst Lösungen zusammen
 
-## Progression
+## Sternenpunkte
 
-Fortschritt entsteht durch:
-- Entdecken
-- Helfen
-- Reparieren
-- Navigation
-- Rätsel
-- Kommunikation
-- Action-/Gefahrensituationen
-- Sternenpunkte
-- kreative Beiträge
+Sternenpunkte bleiben als kreative Entscheidungsstellen erhalten. Ihre Ergebnisse verändern gezielt den Zustand einer festen Szene oder schalten eine neue Szenenvariante frei.
 
-Kampf ist nicht die alleinige oder zentrale XP-Quelle.
+## Grafikregel
 
-## Sternenstaub
-
-Sternenstaub ist keine Kaufwährung.
-
-Er ist eine seltene Formungsressource.
-
-Er wird gefunden durch:
-- Storyfortschritt
-- Entdeckungen
-- besondere Missionen
-- Wiederherstellung alter Sternenpfade
-
-Er wird verwendet für:
-- Stufe-C-Formungen
-- bestimmte Schiff-/Hangar-Upgrades
-- Aktivierung besonderer Sternenpunkte
-
-Kein Echtgeldbezug.
-
-## Spielende
-
-Die Hauptgeschichte endet nach Kapitel 6 am Herz der Wege.
-
-Danach wird **Freie Reisen** freigeschaltet.
-
-Die Hauptstory bleibt abgeschlossen.
-
-## Schiff
-
-Das Startschiff bleibt über das ganze Spiel das gemeinsame Crew-Schiff.
-
-Master-Merkmale:
-- Panorama-Cockpit
-- große Haupttriebwerke
-- modulare Seiten-/Hecktriebwerke
-- sichtbare Bordkanone
-- Patchwork-Panels
-- Crew-Farben
-
-Upgrade-Bereiche:
-- Antrieb
-- Bordwaffe
-- Scanner
-- Laderaum
-- Schutzsysteme
-- Werkzeug-/Greifarm
-- Funk
-- Komfort
-- Lackierung
-
-## Hangar
-
-Hangar 3 ist:
-- Zuhause
-- Werkstatt
-- Startpunkt
-- Ideenraum
-- visuelles Reisetagebuch
-
-Pflichtbereiche:
-- Schiff
-- Werkbank
-- Louis-Ecke
-- Sternenkarte / Mission Wall
-- Upgrade-Station
-- persönliche Bereiche der Kinder
-- Hangartor
-- mehrere Sternenpunkte für sichtbaren Ausbau
+Grafikqualität hat Vorrang vor Bewegungsfreiheit. Jede Szene muss als Standbild bereits hochwertig, verständlich und atmosphärisch funktionieren.
