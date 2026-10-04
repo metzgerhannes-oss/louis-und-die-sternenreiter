@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const assets = [
   "hangar-main-v1.webp",
+  "hangar-main-v2.webp",
   "hangar-energy-v1.webp",
   "hangar-workbench-v1.webp",
   "hangar-ship-v1.webp",
