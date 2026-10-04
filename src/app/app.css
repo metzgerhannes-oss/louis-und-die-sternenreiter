@@ -878,3 +878,509 @@ textarea,
     flex: 1;
   }
 }
+
+
+/* === H3 SCENES 0.3 · immersive viewport ================================ */
+.app-shell {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.fixed-scene-shell {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  padding: 0;
+  display: block;
+  overflow: hidden;
+  background: #080d12;
+  overscroll-behavior: none;
+}
+
+.story-scene-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  aspect-ratio: auto;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.story-scene-image {
+  object-fit: cover;
+}
+
+.scene-overview .story-scene-image {
+  object-position: 50% 50%;
+}
+
+.scene-energy .story-scene-image {
+  object-position: 34% 50%;
+}
+
+.scene-workbench .story-scene-image {
+  object-position: 27% 50%;
+}
+
+.scene-ship .story-scene-image {
+  object-position: 55% 50%;
+}
+
+.scene-gate .story-scene-image {
+  object-position: 72% 50%;
+}
+
+.scene-crew .story-scene-image {
+  object-position: 50% 56%;
+}
+
+.fixed-scene-hud {
+  position: absolute;
+  top: max(0.45rem, env(safe-area-inset-top));
+  left: 0.65rem;
+  right: 0.65rem;
+  z-index: 70;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  pointer-events: none;
+}
+
+.fixed-scene-hud > * {
+  pointer-events: auto;
+}
+
+.fixed-scene-status {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fixed-scene-profile-mini {
+  min-width: 52px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.85rem;
+  padding: 0.55rem 0.65rem;
+  color: #eee8dc;
+  background: rgba(8, 14, 22, 0.84);
+  backdrop-filter: blur(8px);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.fixed-scene-stardust {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0.55rem 0.72rem;
+  background: rgba(8, 14, 22, 0.84);
+  backdrop-filter: blur(8px);
+}
+
+.fixed-scene-build {
+  margin-top: 0.1rem;
+  backdrop-filter: blur(8px);
+}
+
+.fixed-scene-mission {
+  position: absolute;
+  top: calc(max(0.45rem, env(safe-area-inset-top)) + 54px);
+  left: 0.65rem;
+  right: 0.65rem;
+  z-index: 65;
+  width: min(760px, calc(100% - 1.3rem));
+  min-height: 48px;
+  padding: 0.62rem 0.8rem;
+  border-radius: 0.9rem;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 28, 42, 0.86),
+    rgba(5, 18, 29, 0.9)
+  );
+  backdrop-filter: blur(9px);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+}
+
+.fixed-scene-mission strong {
+  font-size: clamp(0.92rem, 2.7vw, 1.15rem);
+}
+
+.story-scene-caption {
+  top: auto;
+  left: auto;
+  right: 0.75rem;
+  bottom: calc(max(0.65rem, env(safe-area-inset-bottom)) + 3.25rem);
+  width: min(390px, calc(100% - 1.5rem));
+  background: rgba(7, 14, 21, 0.72);
+}
+
+.scene-back-button {
+  left: 0.65rem;
+  bottom: max(0.65rem, env(safe-area-inset-bottom));
+}
+
+.scene-help-copy {
+  right: 0.65rem;
+  bottom: max(0.65rem, env(safe-area-inset-bottom));
+}
+
+.scene-footer-actions {
+  display: none;
+}
+
+.scene-screen-reader-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Dialogs stay inside the viewport; only genuinely long settings may scroll. */
+.dialog-backdrop {
+  height: 100vh;
+  height: 100dvh;
+  padding:
+    max(0.45rem, env(safe-area-inset-top))
+    0.55rem
+    max(0.45rem, env(safe-area-inset-bottom));
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.dialog-card {
+  max-height: calc(
+    100dvh - max(0.9rem, env(safe-area-inset-top)) -
+      max(0.9rem, env(safe-area-inset-bottom))
+  );
+  overscroll-behavior: contain;
+}
+
+.story-dialog {
+  overflow: hidden;
+}
+
+.starpoint-dialog {
+  overflow: auto;
+}
+
+/* Compact interaction surfaces */
+.dialog-actions button,
+.pwa-actions button,
+.starpoint-option,
+.starpoint-own-idea,
+.voice-preview-button,
+.voice-preview-grid button {
+  min-height: 44px;
+}
+
+@media (max-width: 720px) {
+  .fixed-scene-hud {
+    grid-template-columns: 1fr auto 1fr;
+    left: 0.45rem;
+    right: 0.45rem;
+  }
+
+  .fixed-scene-crew {
+    gap: 0.2rem;
+  }
+
+  .scene-portrait {
+    width: 38px;
+    height: 38px;
+  }
+
+  .fixed-scene-build {
+    position: static;
+    transform: none;
+    padding: 0.22rem 0.42rem;
+    font-size: 0.54rem;
+  }
+
+  .fixed-scene-status {
+    gap: 0.25rem;
+  }
+
+  .fixed-scene-profile-mini {
+    min-width: 46px;
+    min-height: 40px;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.66rem;
+  }
+
+  .fixed-scene-stardust {
+    min-width: 48px;
+    min-height: 40px;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.82rem;
+  }
+
+  .fixed-scene-mission {
+    top: calc(max(0.45rem, env(safe-area-inset-top)) + 47px);
+    left: 0.45rem;
+    right: 0.45rem;
+    width: calc(100% - 0.9rem);
+    min-height: 46px;
+    padding: 0.56rem 0.68rem;
+  }
+
+  .fixed-scene-mission strong {
+    font-size: 0.94rem;
+  }
+
+  .story-scene-caption {
+    display: none;
+  }
+
+  .scene-help-copy {
+    display: none;
+  }
+
+  .scene-back-button {
+    left: 0.45rem;
+    bottom: max(0.45rem, env(safe-area-inset-bottom));
+    min-height: 44px;
+  }
+
+  .scene-overview .story-scene-image {
+    object-position: 52% 50%;
+  }
+
+  .scene-energy .story-scene-image {
+    object-position: 34% 50%;
+  }
+
+  .scene-workbench .story-scene-image {
+    object-position: 22% 50%;
+  }
+
+  .scene-ship .story-scene-image {
+    object-position: 56% 50%;
+  }
+
+  .scene-gate .story-scene-image {
+    object-position: 74% 50%;
+  }
+
+  .scene-crew .story-scene-image {
+    object-position: 50% 58%;
+  }
+
+  .dialog-card {
+    width: min(100%, 640px);
+    border-radius: 1rem;
+    padding: 0.85rem;
+  }
+
+  .dialog-card h2 {
+    margin: 0.12rem 0 0.55rem;
+    font-size: clamp(1.2rem, 5.4vw, 1.65rem);
+  }
+
+  .story-dialog .eyebrow,
+  .starpoint-dialog .eyebrow {
+    margin-bottom: 0.2rem;
+    font-size: 0.64rem;
+  }
+
+  .story-dialog .story-crew-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.28rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .story-dialog .story-crew {
+    padding: 0.38rem 0.18rem;
+    border-radius: 0.58rem;
+    font-size: 0.68rem;
+    line-height: 1.1;
+  }
+
+  .story-dialog .story-line {
+    padding: 0.72rem;
+  }
+
+  .story-dialog .story-speaker {
+    margin-bottom: 0.28rem;
+    font-size: 0.7rem;
+  }
+
+  .story-dialog .story-line p {
+    font-size: 0.98rem;
+    line-height: 1.38;
+  }
+
+  .story-dialog .story-progress {
+    margin: 0.48rem 0;
+    gap: 0.28rem;
+  }
+
+  .story-dialog .dialog-actions {
+    margin-top: 0.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.38rem;
+  }
+
+  .story-dialog .story-skip-button {
+    grid-column: auto;
+  }
+
+  .story-dialog .dialog-actions button {
+    min-width: 0;
+    padding: 0.5rem 0.35rem;
+    font-size: 0.78rem;
+  }
+
+  .starpoint-dialog {
+    padding: 0.72rem;
+  }
+
+  .starpoint-dialog .story-crew-strip {
+    display: none;
+  }
+
+  .starpoint-dialog h2 {
+    margin-bottom: 0.42rem;
+  }
+
+  .starpoint-context,
+  .starpoint-dialog .louis-prompt,
+  .starpoint-review,
+  .starpoint-complete {
+    padding: 0.62rem;
+  }
+
+  .starpoint-context p,
+  .starpoint-dialog .louis-prompt p,
+  .starpoint-review p,
+  .starpoint-complete p {
+    margin: 0.18rem 0;
+    font-size: 0.82rem;
+    line-height: 1.32;
+  }
+
+  .starpoint-dialog .starpoint-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.38rem;
+  }
+
+  .starpoint-option,
+  .starpoint-own-idea {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.82rem;
+  }
+
+  .starpoint-option span {
+    display: block;
+    margin-top: 0.18rem;
+    font-size: 0.7rem;
+    line-height: 1.25;
+  }
+
+  .starpoint-own-idea {
+    width: 100%;
+    margin-top: 0.4rem;
+  }
+
+  .starpoint-dialog .dialog-actions {
+    margin-top: 0.5rem;
+  }
+
+  .louis-dialog {
+    overflow: auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .fixed-scene-shell {
+    padding: 0;
+    gap: 0;
+  }
+
+  .scene-portrait {
+    width: 34px;
+    height: 34px;
+  }
+
+  .fixed-scene-build {
+    font-size: 0.48rem;
+  }
+
+  .fixed-scene-profile-mini {
+    min-width: 43px;
+    font-size: 0.61rem;
+  }
+
+  .fixed-scene-mission {
+    top: calc(max(0.45rem, env(safe-area-inset-top)) + 44px);
+    min-height: 44px;
+  }
+
+  .fixed-scene-mission strong {
+    font-size: 0.86rem;
+  }
+
+  .hotspot-focus-label {
+    max-width: 112px;
+    font-size: 0.56rem;
+  }
+
+  .dialog-backdrop {
+    padding-inline: 0.35rem;
+  }
+
+  .story-dialog {
+    padding: 0.7rem;
+  }
+
+  .story-dialog .dialog-actions button {
+    font-size: 0.72rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 620px) {
+  .fixed-scene-hud {
+    top: max(0.3rem, env(safe-area-inset-top));
+  }
+
+  .fixed-scene-mission {
+    top: calc(max(0.3rem, env(safe-area-inset-top)) + 45px);
+    width: min(620px, calc(100% - 1rem));
+    min-height: 42px;
+  }
+
+  .story-scene-caption {
+    bottom: max(0.45rem, env(safe-area-inset-bottom));
+    width: min(350px, 40%);
+  }
+
+  .story-dialog {
+    width: min(760px, 94vw);
+    padding: 0.65rem 0.8rem;
+  }
+
+  .story-dialog .story-crew-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 0.35rem;
+  }
+
+  .story-dialog .story-line {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .story-dialog .dialog-actions {
+    margin-top: 0.35rem;
+  }
+}

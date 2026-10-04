@@ -290,10 +290,19 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.2</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.3</div>
 
-        <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
-          ✦ {stardust}
+        <div className="fixed-scene-status">
+          <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
+            ✦ {stardust}
+          </div>
+          <button
+            type="button"
+            className="fixed-scene-profile-mini"
+            onClick={onSwitchProfile}
+          >
+            Profil
+          </button>
         </div>
       </header>
 
@@ -379,16 +388,9 @@ export function HangarFixedScene({
         </div>
       </div>
 
-      <div className="scene-footer-actions">
-        {!isOverview && (
-          <button type="button" onClick={() => onNavigate("overview")}>
-            Übersicht
-          </button>
-        )}
-        <button type="button" onClick={onSwitchProfile}>
-          Profil wechseln
-        </button>
-      </div>
+      <span className="scene-screen-reader-status" aria-live="polite">
+        {scene.title}
+      </span>
     </section>
   );
 }
