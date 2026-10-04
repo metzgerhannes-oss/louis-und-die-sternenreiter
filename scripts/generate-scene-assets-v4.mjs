@@ -47,7 +47,7 @@ async function renderApprovedOverview(output, {
 
 async function renderCrew(output) {
   await sharp(scenePath("hangar-main-v2.webp"))
-    .extract({ left: 563, top: 512, width: 1037, height: 582 })
+    .extract({ left: 440, top: 400, width: 810, height: 455 })
     .resize(W, H, { fit: "cover", position: "centre" })
     .sharpen({ sigma: 0.65 })
     .webp({ quality: 92, effort: 5 })
