@@ -1384,3 +1384,186 @@ textarea,
     margin-top: 0.35rem;
   }
 }
+
+
+/* === H3 SCENES 0.4 · story-accurate visual states ====================== */
+.story-scene-image {
+  transition:
+    filter 260ms ease,
+    opacity 260ms ease;
+}
+
+.story-scene-frame.is-blackout .story-scene-image {
+  filter: brightness(0.34) saturate(0.48) contrast(1.08) sepia(0.05);
+}
+
+.story-scene-frame.is-workbench-powered .story-scene-image {
+  filter: brightness(0.68) saturate(0.76) contrast(1.04);
+}
+
+.story-scene-frame.is-ship-repair .story-scene-image {
+  filter: brightness(0.82) saturate(0.88) contrast(1.03);
+}
+
+.story-scene-frame.is-gate-blocked .story-scene-image {
+  filter: brightness(0.9) saturate(0.94) contrast(1.02);
+}
+
+.story-scene-frame.is-gate-open .story-scene-image {
+  filter: brightness(0.98) saturate(1) contrast(1.01);
+}
+
+.story-blackout-haze {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 43% 60%,
+      rgba(100, 190, 199, 0.08),
+      transparent 15%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(2, 8, 13, 0.22),
+      rgba(0, 3, 7, 0.4)
+    );
+  mix-blend-mode: multiply;
+}
+
+/*
+ * The V1 artwork was rendered with the outside visible in every shot.
+ * Until the next asset generation, a physical shutter masks that opening
+ * in every pre-launch scene so the picture obeys the chapter story.
+ */
+.story-gate-shutter {
+  position: absolute;
+  z-index: 8;
+  top: 0;
+  right: 0;
+  width: 32%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  border-left: 3px solid rgba(221, 164, 82, 0.33);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.025) 0 2px,
+      transparent 2px 16.5%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(45, 53, 58, 0.98),
+      rgba(20, 28, 33, 0.99)
+    );
+  box-shadow:
+    inset 16px 0 24px rgba(0, 0, 0, 0.28),
+    -10px 0 28px rgba(0, 0, 0, 0.2);
+}
+
+.story-gate-shutter::before,
+.story-gate-shutter::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  height: 7px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    135deg,
+    #b67d31 0 12px,
+    #2c3032 12px 24px
+  );
+  opacity: 0.62;
+}
+
+.story-gate-shutter::before {
+  top: 16%;
+}
+
+.story-gate-shutter::after {
+  bottom: 17%;
+}
+
+.story-gate-shutter > span {
+  position: absolute;
+  top: 7%;
+  bottom: 7%;
+  width: 2px;
+  background: rgba(230, 191, 125, 0.14);
+}
+
+.story-gate-shutter > span:nth-child(1) { left: 25%; }
+.story-gate-shutter > span:nth-child(2) { left: 50%; }
+.story-gate-shutter > span:nth-child(3) { left: 75%; }
+
+/* The same physical gate lands in a slightly different crop per scene. */
+.scene-overview .story-gate-shutter { width: 31%; }
+.scene-energy .story-gate-shutter { width: 31%; }
+.scene-workbench .story-gate-shutter { width: 27%; }
+.scene-ship .story-gate-shutter { width: 29%; }
+.scene-gate .story-gate-shutter { width: 46%; }
+.scene-crew .story-gate-shutter { width: 29%; }
+
+/* Keep active interaction layers above the shutter. */
+.story-scene-caption,
+.story-scene-hotspot,
+.scene-back-button,
+.scene-help-copy {
+  z-index: 25;
+}
+
+/* In blackout, the current clue must remain discoverable. */
+.is-blackout .story-scene-hotspot.is-active .hotspot-focus-dot {
+  border-color: #f1c36b;
+  background: rgba(13, 19, 23, 0.96);
+  box-shadow:
+    0 0 0 7px rgba(241, 195, 107, 0.12),
+    0 0 30px rgba(241, 195, 107, 0.42);
+}
+
+/* After the first Sternenpunkt, the workbench becomes the first warm light. */
+.is-workbench-powered.scene-workbench::before,
+.is-workbench-powered.scene-overview::before {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(240, 190, 105, 0.2),
+    rgba(240, 190, 105, 0.07) 42%,
+    transparent 72%
+  );
+}
+
+.is-workbench-powered.scene-workbench::before {
+  left: 0;
+  top: 22%;
+  width: 58%;
+  height: 68%;
+}
+
+.is-workbench-powered.scene-overview::before {
+  left: 0;
+  top: 26%;
+  width: 34%;
+  height: 48%;
+}
+
+/* The ship may wake, but the gate stays visually dead until S07 is solved. */
+.is-ship-repair .story-gate-shutter,
+.is-gate-blocked .story-gate-shutter {
+  filter: brightness(0.72) saturate(0.7);
+}
+
+@media (max-width: 720px) {
+  .scene-overview .story-gate-shutter { width: 28%; }
+  .scene-energy .story-gate-shutter { width: 26%; }
+  .scene-workbench .story-gate-shutter { width: 22%; }
+  .scene-ship .story-gate-shutter { width: 25%; }
+  .scene-gate .story-gate-shutter { width: 43%; }
+  .scene-crew .story-gate-shutter { width: 24%; }
+}
