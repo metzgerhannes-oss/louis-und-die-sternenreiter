@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "verify:assets": "node scripts/verify-static-assets.mjs",
+    "test": "npm run verify:assets && vitest run",
     "build": "npm run typecheck && vite build"
   },
   "dependencies": {
