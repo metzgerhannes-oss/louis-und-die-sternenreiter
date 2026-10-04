@@ -79,3 +79,10 @@ Die V1-Dateien bleiben ausschließlich als Build-Quellen für bereits freigegebe
 13. Start nach **Cinder**
 
 Cinder bleibt das kanonische Ziel. Eine Asteroiden-Umsegelung gehört nicht zu Kapitel 1.
+
+## V2.1 / SCENES 0.8 – Nahtfreie Szenenübergänge
+
+- Tor- und Sternenfeldbereiche werden beim Rendern mit einer breiten horizontalen Alpha-Feder in das jeweilige Szenenbild eingebettet.
+- Harte senkrechte Schnittkanten zwischen Originalszene und Torbereich sind unzulässig.
+- Der frühere zusätzliche dunkle Kantenstreifen wurde entfernt, weil er die Schnittkante visuell verstärkt hat.
+- Die Korrektur gilt für alle generierten geschlossenen und offenen Hangar-Szenen, nicht nur für die Kühlleitungsansicht.
