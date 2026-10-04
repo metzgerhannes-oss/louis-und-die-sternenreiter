@@ -9,7 +9,8 @@ import {
 import { LouisDialog } from "../features/companion/LouisDialog";
 import {
   HangarFixedScene,
-  type HangarHotspotId
+  type HangarHotspotId,
+  type HangarSceneId
 } from "../features/scenes/HangarFixedScene";
 import { ProfileSelect } from "../features/profiles/ProfileSelect";
 import { ReadAloudButton } from "../features/speech/ReadAloudButton";
@@ -45,13 +46,24 @@ export function App() {
     loadActiveProfile()
   );
   const [dialog, setDialog] = useState<DialogState>(null);
+  const [sceneId, setSceneId] = useState<HangarSceneId>("overview");
   const [revision, setRevision] = useState(0);
   const [launchComplete, setLaunchComplete] = useState(false);
 
   const refresh = () => setRevision((value) => value + 1);
 
   useEffect(() => {
-    const offStarPoint = appEventBus.on("starpoint:completed", refresh);
+    const offStarPoint = appEventBus.on("starpoint:completed", ({ id }) => {
+      refresh();
+
+      if (id === hangarEnergyStarPoint.id) {
+        setSceneId("workbench");
+      }
+
+      if (id === hangarGateStarPoint.id) {
+        setSceneId("gate");
+      }
+    });
     const offResources = appEventBus.on("resources:changed", refresh);
 
     return () => {
@@ -73,6 +85,7 @@ export function App() {
     saveActiveProfile(profile);
     setActiveProfile(profile);
     setDialog(null);
+    setSceneId("overview");
   };
 
   const switchProfile = () => {
@@ -80,11 +93,30 @@ export function App() {
     clearActiveProfile();
     setActiveProfile(null);
     setDialog(null);
+    setSceneId("overview");
   };
 
   const closeDialog = () => {
     browserSpeech.stop();
     setDialog(null);
+  };
+
+  const afterStoryBeat = (beat: Chapter1StoryBeat) => {
+    refresh();
+
+    if (beat.id === "energy-cell") {
+      setSceneId("ship");
+      return;
+    }
+
+    if (beat.id === "cooling" || beat.id === "navigation") {
+      setSceneId("ship");
+      return;
+    }
+
+    if (beat.id === "ship-test") {
+      setSceneId("gate");
+    }
   };
 
   if (!activeProfile) {
@@ -205,6 +237,11 @@ export function App() {
     <main className="app-shell">
       {launchComplete ? (
         <section className="fixed-launch-complete">
+          <img
+            className="launch-scene-image"
+            src={import.meta.env.BASE_URL + "assets/scenes/hangar/hangar-gate-v1.webp"}
+            alt=""
+          />
           <div className="launch-starfield" aria-hidden="true" />
           <div className="fixed-launch-card">
             <p className="eyebrow">Kapitel 1 abgeschlossen</p>
@@ -226,6 +263,8 @@ export function App() {
           state={chapter}
           energyReady={energyReady}
           gateReady={gateReady}
+          sceneId={sceneId}
+          onNavigate={setSceneId}
           onInteract={interact}
           onSwitchProfile={switchProfile}
         />
@@ -251,7 +290,7 @@ export function App() {
               profile={activeProfile}
               autoRead={speechSettings.autoRead}
               speechRate={speechSettings.rate}
-              onStateChange={refresh}
+              onStateChange={() => afterStoryBeat(dialog.beat)}
               onClose={closeDialog}
               onLaunch={() => {
                 browserSpeech.stop();
