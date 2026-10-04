@@ -254,7 +254,7 @@ export function HangarFixedScene({
         <strong>{mission}</strong>
       </div>
 
-      <div className="story-scene-frame">
+      <div className={"story-scene-frame scene-" + sceneId}>
         <img
           className="story-scene-image"
           src={scene.image}
