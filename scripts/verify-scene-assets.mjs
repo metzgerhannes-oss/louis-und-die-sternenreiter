@@ -1,41 +1,27 @@
 import { readFile } from "node:fs/promises";
 
 const sourceAssets = [
-  "hangar-main-v1.webp",
   "hangar-main-v2.webp",
   "hangar-energy-v1.webp",
-  "hangar-workbench-v1.webp",
-  "hangar-ship-v1.webp",
-  "hangar-cooling-v1.webp",
-  "hangar-navigation-v1.webp",
-  "hangar-systemtest-v1.webp",
-  "hangar-gate-v1.webp",
-  "hangar-crew-v1.webp"
+  "hangar-workbench-v1.webp"
 ];
 
 const runtimeAssets = [
-  "hangar-main-blackout-v2.webp",
-  "hangar-main-powered-v2.webp",
-  "hangar-main-active-v2.webp",
-  "hangar-main-open-v2.webp",
-  "hangar-energy-v2.webp",
-  "hangar-energy-open-v2.webp",
-  "hangar-workbench-dark-v2.webp",
-  "hangar-workbench-v2.webp",
-  "hangar-workbench-open-v2.webp",
-  "hangar-ship-dark-v2.webp",
-  "hangar-ship-v2.webp",
-  "hangar-ship-open-v2.webp",
-  "hangar-cooling-v2.webp",
-  "hangar-cooling-open-v2.webp",
-  "hangar-navigation-v2.webp",
-  "hangar-navigation-open-v2.webp",
-  "hangar-systemtest-v2.webp",
-  "hangar-systemtest-open-v2.webp",
-  "hangar-gate-closed-v2.webp",
-  "hangar-gate-open-v2.webp",
-  "hangar-crew-v2.webp",
-  "hangar-crew-open-v2.webp"
+  "hangar-main-blackout-v3.webp",
+  "hangar-main-powered-v3.webp",
+  "hangar-main-active-v3.webp",
+  "hangar-main-open-v3.webp",
+  "hangar-energy-v3.webp",
+  "hangar-workbench-dark-v3.webp",
+  "hangar-workbench-v3.webp",
+  "hangar-ship-dark-v3.webp",
+  "hangar-ship-v3.webp",
+  "hangar-cooling-v3.webp",
+  "hangar-navigation-v3.webp",
+  "hangar-systemtest-v3.webp",
+  "hangar-gate-closed-v3.webp",
+  "hangar-gate-open-v3.webp",
+  "hangar-crew-v3.webp"
 ];
 
 async function verify(asset) {
@@ -71,5 +57,5 @@ for (const asset of [...sourceAssets, ...runtimeAssets]) {
 }
 
 console.log(
-  `Verified ${runtimeAssets.length} native Hangar V2 runtime assets and ${sourceAssets.length} source assets.`
+  `Verified ${runtimeAssets.length} Hangar V3 runtime assets and ${sourceAssets.length} approved source assets.`
 );
