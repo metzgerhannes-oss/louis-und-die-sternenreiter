@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-const assets = [
+const sourceAssets = [
   "hangar-main-v1.webp",
   "hangar-main-v2.webp",
   "hangar-energy-v1.webp",
@@ -13,7 +13,32 @@ const assets = [
   "hangar-crew-v1.webp"
 ];
 
-for (const asset of assets) {
+const runtimeAssets = [
+  "hangar-main-blackout-v2.webp",
+  "hangar-main-powered-v2.webp",
+  "hangar-main-active-v2.webp",
+  "hangar-main-open-v2.webp",
+  "hangar-energy-v2.webp",
+  "hangar-energy-open-v2.webp",
+  "hangar-workbench-dark-v2.webp",
+  "hangar-workbench-v2.webp",
+  "hangar-workbench-open-v2.webp",
+  "hangar-ship-dark-v2.webp",
+  "hangar-ship-v2.webp",
+  "hangar-ship-open-v2.webp",
+  "hangar-cooling-v2.webp",
+  "hangar-cooling-open-v2.webp",
+  "hangar-navigation-v2.webp",
+  "hangar-navigation-open-v2.webp",
+  "hangar-systemtest-v2.webp",
+  "hangar-systemtest-open-v2.webp",
+  "hangar-gate-closed-v2.webp",
+  "hangar-gate-open-v2.webp",
+  "hangar-crew-v2.webp",
+  "hangar-crew-open-v2.webp"
+];
+
+async function verify(asset) {
   const url = new URL(
     `../public/assets/scenes/hangar/${asset}`,
     import.meta.url
@@ -41,4 +66,10 @@ for (const asset of assets) {
   }
 }
 
-console.log(`Verified ${assets.length} Hangar story scene assets.`);
+for (const asset of [...sourceAssets, ...runtimeAssets]) {
+  await verify(asset);
+}
+
+console.log(
+  `Verified ${runtimeAssets.length} native Hangar V2 runtime assets and ${sourceAssets.length} source assets.`
+);
