@@ -1,5 +1,7 @@
 # Hangar 3 – Fixed Scenes V1
 
+> **Historischer Stand.** Für die aktuelle Umsetzung gilt verbindlich `HANGAR_3_FIXED_SCENES_V2.md`. V1-Dateien dürfen nur noch als Build-Quellen dienen, nicht als direkte Runtime-Szenen.
+
 ## Ziel
 
 Kapitel 1 wird als Point-and-Click-Abenteuer aus festen Querformat-Szenen gespielt. Die Bilder tragen die Atmosphäre; Hotspots liegen als unsichtbare bzw. nur bei Relevanz sichtbare Interaktionsflächen darüber.
