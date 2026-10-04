@@ -160,26 +160,34 @@ function createHeadTexture(scene: Phaser.Scene, id: ProfileId): void {
   canvasTexture.refresh();
 }
 
-export function createCircularCrewTextures(scene: Phaser.Scene): void {
-  if (scene.textures.exists(OLLI_V6_TEXTURE)) {
-    const texture = scene.textures.get(OLLI_V6_TEXTURE);
+export function ensureOlliV6Frames(scene: Phaser.Scene): boolean {
+  if (!scene.textures.exists(OLLI_V6_TEXTURE)) {
+    return false;
+  }
 
-    for (let index = 0; index < 6; index += 1) {
-      const frameName = `v6-${index}`;
-      if (!texture.has(frameName)) {
-        const column = index % 3;
-        const row = Math.floor(index / 3);
-        texture.add(
-          frameName,
-          0,
-          column * OLLI_V6_FRAME_WIDTH,
-          row * OLLI_V6_FRAME_HEIGHT,
-          OLLI_V6_FRAME_WIDTH,
-          OLLI_V6_FRAME_HEIGHT
-        );
-      }
+  const texture = scene.textures.get(OLLI_V6_TEXTURE);
+
+  for (let index = 0; index < 6; index += 1) {
+    const frameName = `v6-${index}`;
+    if (!texture.has(frameName)) {
+      const column = index % 3;
+      const row = Math.floor(index / 3);
+      texture.add(
+        frameName,
+        0,
+        column * OLLI_V6_FRAME_WIDTH,
+        row * OLLI_V6_FRAME_HEIGHT,
+        OLLI_V6_FRAME_WIDTH,
+        OLLI_V6_FRAME_HEIGHT
+      );
     }
+  }
 
+  return texture.has("v6-0");
+}
+
+export function createCircularCrewTextures(scene: Phaser.Scene): void {
+  if (ensureOlliV6Frames(scene)) {
     if (!scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
       scene.anims.create({
         key: OLLI_V6_IDLE_ANIM,
@@ -264,9 +272,5 @@ export function getConceptCrewPartTexture(
 
 
 export function isOlliV6Ready(scene: Phaser.Scene): boolean {
-  if (!scene.textures.exists(OLLI_V6_TEXTURE)) {
-    return false;
-  }
-
-  return scene.textures.get(OLLI_V6_TEXTURE).has("v6-0");
+  return ensureOlliV6Frames(scene);
 }

@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type { PlayerProfile } from "../../domain/profiles";
 import {
+  ensureOlliV6Frames,
   OLLI_V6_IDLE_ANIM,
   OLLI_V6_TEXTURE,
   OLLI_V6_WALK_ANIM
@@ -32,6 +33,8 @@ export class OlliV6Avatar {
     this.displayScale = options.displayScale ?? 1;
     this.lastX = x;
 
+    const v6Ready = ensureOlliV6Frames(scene);
+
     this.shadow = scene.add
       .ellipse(0, 7, 78, 20, 0x000000, 0.62)
       .setScale(1.05, 1);
@@ -53,19 +56,41 @@ export class OlliV6Avatar {
       .setBlendMode(Phaser.BlendModes.ADD);
 
     this.sprite = scene.add
-      .sprite(0, -112, OLLI_V6_TEXTURE, "v6-0")
+      .sprite(
+        0,
+        -112,
+        v6Ready ? OLLI_V6_TEXTURE : "__MISSING",
+        v6Ready ? "v6-0" : undefined
+      )
       .setDisplaySize(130, 222);
 
-    this.container = scene.add.container(x, y, [
+    const children: Phaser.GameObjects.GameObject[] = [
       this.shadow,
       this.floorFocus,
       this.sprite
-    ]);
+    ];
+
+    if (!v6Ready) {
+      children.push(
+        scene.add
+          .text(0, -118, "V6-ASSET FEHLT", {
+            fontFamily: "system-ui, sans-serif",
+            fontSize: "14px",
+            fontStyle: "900",
+            color: "#fff4e8",
+            backgroundColor: "#a32121e8",
+            padding: { x: 7, y: 4 }
+          })
+          .setOrigin(0.5)
+      );
+    }
+
+    this.container = scene.add.container(x, y, children);
     this.container.setDepth(y);
 
-    if (scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
+    if (v6Ready && scene.anims.exists(OLLI_V6_IDLE_ANIM)) {
       this.sprite.play(OLLI_V6_IDLE_ANIM);
-    } else {
+    } else if (v6Ready) {
       this.sprite.setFrame("v6-0");
     }
 
@@ -109,8 +134,13 @@ export class OlliV6Avatar {
   updateAnimation(_delta: number, moving: boolean): void {
     const targetAnimation = moving ? OLLI_V6_WALK_ANIM : OLLI_V6_IDLE_ANIM;
 
-    if (!this.sprite.scene.anims.exists(targetAnimation)) {
-      this.sprite.setFrame("v6-0");
+    if (
+      this.sprite.texture.key !== OLLI_V6_TEXTURE ||
+      !this.sprite.scene.anims.exists(targetAnimation)
+    ) {
+      if (this.sprite.texture.key === OLLI_V6_TEXTURE) {
+        this.sprite.setFrame("v6-0");
+      }
       return;
     }
 
