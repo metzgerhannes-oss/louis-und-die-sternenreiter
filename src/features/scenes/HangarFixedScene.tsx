@@ -408,7 +408,7 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.7</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.8</div>
 
         <div className="fixed-scene-status">
           <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
