@@ -248,13 +248,23 @@ function resolveScene(
     return sceneSpecs[sceneId];
   }
 
+  if (!state.energyCellInstalled) {
+    return {
+      ...sceneSpecs.ship,
+      image: `${base}assets/scenes/hangar/hangar-ship-v1.webp`,
+      eyebrow: "Hangar 3 · Sternenschiff",
+      title: "Das Schiff ist noch vollständig dunkel",
+      description: "Ohne Energiezelle reagieren weder Cockpit noch Wartungssysteme."
+    };
+  }
+
   if (!state.coolingRepaired) {
     return {
       ...sceneSpecs.ship,
       image: `${base}assets/scenes/hangar/hangar-cooling-v1.webp`,
       eyebrow: "Hangar 3 · Wartungsbereich",
       title: "Die gerissene Kühlleitung",
-      description: "Bevor das Schiff starten kann, muss die Kühlung wieder dicht sein."
+      description: "Die Energiezelle ist drin. Jetzt zeigt sich der nächste Defekt: die Kühlleitung ist gerissen."
     };
   }
 
