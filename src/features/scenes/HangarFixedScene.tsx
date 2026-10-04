@@ -54,7 +54,7 @@ const base = import.meta.env.BASE_URL;
 
 const sceneSpecs: Record<HangarSceneId, SceneSpec> = {
   overview: {
-    image: `${base}assets/scenes/hangar/hangar-main-v1.webp`,
+    image: `${base}assets/scenes/hangar/hangar-main-v2.webp`,
     eyebrow: "Hangar 3 · Gesamtansicht",
     title: "Ein stiller Hangar voller Spuren",
     description: "Wählt einen Bereich aus, den ihr genauer untersuchen wollt.",
@@ -231,6 +231,9 @@ function resolveScene(
   if (sceneId === "overview") {
     return {
       ...sceneSpecs.overview,
+      image: gateReady
+        ? `${base}assets/scenes/hangar/hangar-main-v1.webp`
+        : `${base}assets/scenes/hangar/hangar-main-v2.webp`,
       title: energyReady
         ? state.shipTested
           ? "Das Schiff ist bereit. Das Tor hält euch noch auf."
@@ -367,7 +370,7 @@ export function HangarFixedScene({
           ))}
         </div>
 
-        <div className="fixed-scene-build">H3 · SCENES 0.5</div>
+        <div className="fixed-scene-build">H3 · SCENES 0.6</div>
 
         <div className="fixed-scene-status">
           <div className="fixed-scene-stardust" aria-label={stardust + " Sternenstaub"}>
@@ -403,15 +406,15 @@ export function HangarFixedScene({
           draggable={false}
         />
 
-        {gateClosed ? (
+        {gateClosed && !isOverview ? (
           <div className="story-gate-shutter" aria-hidden="true">
             <span />
             <span />
             <span />
           </div>
-        ) : (
+        ) : !gateClosed ? (
           <div className="story-open-gate-space" aria-hidden="true" />
-        )}
+        ) : null}
 
         {!energyReady && <div className="story-blackout-haze" aria-hidden="true" />}
 
