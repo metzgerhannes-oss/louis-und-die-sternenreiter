@@ -2650,3 +2650,28 @@ button:focus-visible {
     opacity: 0.9;
   }
 }
+
+
+/* === iOS gameplay selection / callout suppression ======================= */
+.game-stage,
+.game-stage *,
+.game-hud,
+.game-hud *,
+.touch-controls,
+.touch-controls *,
+.phaser-root,
+.phaser-root * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Keep text selection available where the product actually expects typing. */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
