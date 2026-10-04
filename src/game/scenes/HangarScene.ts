@@ -12,9 +12,9 @@ import {
 import { loadChapter1State } from "../../services/chapter1State";
 import { isStarPointCompleted } from "../../services/starPointState";
 import { IllustratedCrewMate } from "../entities/IllustratedCrewMate";
-import { IllustratedCrewAvatar } from "../entities/IllustratedCrewAvatar";
+import { GeneratedCrewV67Avatar } from "../entities/GeneratedCrewV67Avatar";
 import { OlliV6Avatar } from "../entities/OlliV6Avatar";
-import { IllustratedLouisCompanion } from "../entities/IllustratedLouisCompanion";
+import { LouisV67Companion } from "../entities/LouisV67Companion";
 import { AmbientMotionLayer } from "../effects/AmbientMotionLayer";
 import { WorldCameraController } from "../effects/WorldCameraController";
 import { InteractionFocus } from "../effects/InteractionFocus";
@@ -43,9 +43,9 @@ type NearestInteraction =
   | { kind: "starpoint"; starPoint: RuntimeStarPoint; distance: number };
 
 export class HangarScene extends Phaser.Scene {
-  private player?: IllustratedCrewAvatar | OlliV6Avatar;
+  private player?: GeneratedCrewV67Avatar | OlliV6Avatar;
   private crewMates: IllustratedCrewMate[] = [];
-  private louis?: IllustratedLouisCompanion;
+  private louis?: LouisV67Companion;
   private interactionFocus?: InteractionFocus;
   private atmosphere?: AmbientMotionLayer;
   private cameraController?: WorldCameraController;
@@ -956,10 +956,9 @@ export class HangarScene extends Phaser.Scene {
             displayScale: compact ? 1.12 : 1.02,
             primary: true
           })
-        : new IllustratedCrewAvatar(this, profile, startX, startY, {
-            displayScale: compact ? 1.18 : 1.06,
-            primary: true,
-            showName: false
+        : new GeneratedCrewV67Avatar(this, profile, startX, startY, {
+            displayScale: compact ? 1.12 : 1.02,
+            primary: true
           });
     this.player.setPosition(startX, startY);
 
@@ -987,7 +986,7 @@ export class HangarScene extends Phaser.Scene {
       );
     });
 
-    this.louis = new IllustratedLouisCompanion(
+    this.louis = new LouisV67Companion(
       this,
       startX - (compact ? 24 : 30),
       startY + (compact ? 170 : 150),
