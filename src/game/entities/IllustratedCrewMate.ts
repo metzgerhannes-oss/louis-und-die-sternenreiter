@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import type { PlayerProfile } from "../../domain/profiles";
-import { isOlliV6Ready } from "../assets/crewTextures";
 import { IllustratedCrewAvatar } from "./IllustratedCrewAvatar";
 import { OlliV6Avatar } from "./OlliV6Avatar";
 
@@ -19,7 +18,7 @@ export class IllustratedCrewMate {
     displayScale = 1
   ) {
     this.avatar =
-      profile.id === "olli" && isOlliV6Ready(scene)
+      profile.id === "olli"
         ? new OlliV6Avatar(scene, profile, x, y, {
             displayScale,
             primary: false
