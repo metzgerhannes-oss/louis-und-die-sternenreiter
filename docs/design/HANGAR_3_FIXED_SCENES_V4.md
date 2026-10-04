@@ -56,3 +56,14 @@ Release-Blocker sind:
 4. Hotspot liegt nicht am Storyobjekt
 5. mobile Überlagerungen verhindern die Interaktion
 6. Rückfall auf V1/V2/V3-Kompositing in der Runtime
+
+
+## SCENES 0.11 – Open-Gate-Abnahme
+
+Die visuelle Nachprüfung des tatsächlich gebauten 0.10-Artefakts hat einen einzelnen Restblocker gefunden: Die beiden geöffneten Torbilder stammten aus einem nur 140 px hohen Storyboard-Ausschnitt und wurden auf 1600×900 hochskaliert.
+
+0.11 ersetzt ausschließlich diese beiden Zustände:
+- `hangar-main-open-v5.webp`
+- `hangar-gate-open-v5.webp`
+
+Der Sternenraum wird nun innerhalb des vorhandenen Torrahmens in voller Szenenauflösung gerendert. Keine Storyboard-Beschriftung, keine zusätzliche Figur und kein CSS-/DOM-Overlay.
