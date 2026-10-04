@@ -1,8 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Chapter1StoryBeat } from "../domain/chapter1";
 import type { PlayerProfile } from "../domain/profiles";
-import { FixedSceneStage } from "../features/scenes/FixedSceneStage";
+import {
+  hangarEnergyStarPoint,
+  hangarGateStarPoint,
+  type StarPointDefinition
+} from "../domain/starPoints";
+import { LouisDialog } from "../features/companion/LouisDialog";
+import {
+  HangarFixedScene,
+  type HangarHotspotId
+} from "../features/scenes/HangarFixedScene";
 import { ProfileSelect } from "../features/profiles/ProfileSelect";
-import { getChapter1Objective, loadChapter1State } from "../services/chapter1State";
+import { ReadAloudButton } from "../features/speech/ReadAloudButton";
+import { StarPointFlow } from "../features/starpoints/StarPointFlow";
+import { Chapter1StoryDialog } from "../features/story/Chapter1StoryDialog";
+import { appEventBus } from "../services/appEventBus";
+import {
+  getChapter1BeatForHotspot,
+  getChapter1Objective,
+  getStoryBeat,
+  loadChapter1State
+} from "../services/chapter1State";
 import { loadCrewResources } from "../services/crewResources";
 import {
   clearActiveProfile,
@@ -10,22 +29,62 @@ import {
   saveActiveProfile
 } from "../services/profileStorage";
 import { browserSpeech } from "../services/speech/browserSpeech";
+import { loadSpeechSettings } from "../services/speech/speechSettings";
+import { isStarPointCompleted } from "../services/starPointState";
 import { PwaStatus } from "./PwaStatus";
+
+type DialogState =
+  | { kind: "louis" }
+  | { kind: "story"; beat: Chapter1StoryBeat }
+  | { kind: "starpoint"; point: StarPointDefinition }
+  | { kind: "info"; title: string; text: string }
+  | null;
 
 export function App() {
   const [activeProfile, setActiveProfile] = useState<PlayerProfile | null>(() =>
     loadActiveProfile()
   );
+  const [dialog, setDialog] = useState<DialogState>(null);
+  const [revision, setRevision] = useState(0);
+  const [launchComplete, setLaunchComplete] = useState(false);
+
+  const refresh = () => setRevision((value) => value + 1);
+
+  useEffect(() => {
+    const offStarPoint = appEventBus.on("starpoint:completed", refresh);
+    const offResources = appEventBus.on("resources:changed", refresh);
+
+    return () => {
+      offStarPoint();
+      offResources();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!activeProfile || dialog || launchComplete) return;
+
+    const chapter = loadChapter1State();
+    if (!chapter.introSeen) {
+      setDialog({ kind: "story", beat: getStoryBeat("intro") });
+    }
+  }, [activeProfile, dialog, launchComplete, revision]);
 
   const selectProfile = (profile: PlayerProfile) => {
     saveActiveProfile(profile);
     setActiveProfile(profile);
+    setDialog(null);
   };
 
   const switchProfile = () => {
     browserSpeech.stop();
     clearActiveProfile();
     setActiveProfile(null);
+    setDialog(null);
+  };
+
+  const closeDialog = () => {
+    browserSpeech.stop();
+    setDialog(null);
   };
 
   if (!activeProfile) {
@@ -37,18 +96,209 @@ export function App() {
     );
   }
 
+  void revision;
+
+  const chapter = loadChapter1State();
   const resources = loadCrewResources();
-  const mission = getChapter1Objective(loadChapter1State());
+  const speechSettings = loadSpeechSettings(activeProfile.id);
+  const energyReady = isStarPointCompleted(hangarEnergyStarPoint.id);
+  const gateReady = isStarPointCompleted(hangarGateStarPoint.id);
+  const mission = getChapter1Objective(chapter);
+
+  const showInfo = (title: string, text: string) => {
+    setDialog({ kind: "info", title, text });
+  };
+
+  const interact = (id: HangarHotspotId) => {
+    if (id === "louis") {
+      setDialog({ kind: "louis" });
+      return;
+    }
+
+    if (id === "energy-distributor") {
+      if (!energyReady) {
+        setDialog({ kind: "starpoint", point: hangarEnergyStarPoint });
+        return;
+      }
+
+      showInfo(
+        "Energieverteiler",
+        "Die neue Verbindung hält. Von hier aus fließt wieder Strom zur Werkbank."
+      );
+      return;
+    }
+
+    if (id === "workbench") {
+      if (!energyReady) {
+        showInfo(
+          "Werkbank ohne Strom",
+          "Die Werkbank ist noch dunkel. Die Leitungen führen zum alten Energieverteiler links daneben."
+        );
+        return;
+      }
+
+      const beat = getChapter1BeatForHotspot("workbench", chapter);
+      if (beat) {
+        setDialog({ kind: "story", beat });
+        return;
+      }
+
+      showInfo(
+        "Werkbank",
+        chapter.energyCellInstalled
+          ? "Die Werkbank läuft wieder. Die brauchbare Energiezelle ist bereits im Schiff."
+          : "Zwischen Werkzeugen und Ersatzteilen blinkt eine schwere Energiezelle."
+      );
+      return;
+    }
+
+    if (id === "ship") {
+      const beat = getChapter1BeatForHotspot("ship", chapter);
+      if (beat) {
+        setDialog({ kind: "story", beat });
+        return;
+      }
+
+      if (!chapter.energyCellInstalled) {
+        showInfo(
+          "Das alte Sternenschiff",
+          "Ohne Energiezelle bleibt das Schiff vollständig dunkel. Vielleicht gibt es an der Werkbank ein brauchbares Ersatzteil."
+        );
+        return;
+      }
+
+      showInfo(
+        "Das alte Sternenschiff",
+        chapter.shipTested
+          ? "Energie, Kühlung und Navigation reagieren. Das Schiff wäre startklar – wenn das Hangartor mitspielen würde."
+          : "Einige Systeme reagieren bereits. Am Schiff gibt es noch Arbeit."
+      );
+      return;
+    }
+
+    if (!chapter.shipTested) {
+      showInfo(
+        "Hangartor",
+        "Das schwere Tor bewegt sich keinen Millimeter. Erst sollte das Schiff technisch startklar sein."
+      );
+      return;
+    }
+
+    if (!gateReady) {
+      setDialog({ kind: "starpoint", point: hangarGateStarPoint });
+      return;
+    }
+
+    const beat = getChapter1BeatForHotspot("hangar-door", chapter);
+    if (beat) {
+      setDialog({ kind: "story", beat });
+      return;
+    }
+
+    showInfo(
+      "Offenes Hangartor",
+      "Der Weg ist frei. Hinter Hangar 3 liegt das Sternenfeld."
+    );
+  };
 
   return (
     <main className="app-shell">
-      <FixedSceneStage
-        profile={activeProfile}
-        mission={mission}
-        stardust={resources.stardust}
-        onSwitchProfile={switchProfile}
-      />
-      <PwaStatus />
+      {launchComplete ? (
+        <section className="fixed-launch-complete">
+          <div className="launch-starfield" aria-hidden="true" />
+          <div className="fixed-launch-card">
+            <p className="eyebrow">Kapitel 1 abgeschlossen</p>
+            <h1>Der erste Weg</h1>
+            <p>
+              Das Hangartor ist offen, das Schiff läuft und vor der Crew leuchtet
+              ein schwacher Kurs nach Cinder.
+            </p>
+            <button type="button" onClick={() => setLaunchComplete(false)}>
+              Hangar 3 noch einmal ansehen
+            </button>
+          </div>
+        </section>
+      ) : (
+        <HangarFixedScene
+          profile={activeProfile}
+          mission={mission}
+          stardust={resources.stardust}
+          state={chapter}
+          energyReady={energyReady}
+          gateReady={gateReady}
+          onInteract={interact}
+          onSwitchProfile={switchProfile}
+        />
+      )}
+
+      <PwaStatus suppressed={Boolean(dialog)} />
+
+      {dialog && !launchComplete && (
+        <div
+          className="dialog-backdrop"
+          role="presentation"
+          onClick={
+            dialog.kind === "story" || dialog.kind === "starpoint"
+              ? undefined
+              : closeDialog
+          }
+        >
+          {dialog.kind === "louis" ? (
+            <LouisDialog profile={activeProfile} onClose={closeDialog} />
+          ) : dialog.kind === "story" ? (
+            <Chapter1StoryDialog
+              beat={dialog.beat}
+              profile={activeProfile}
+              autoRead={speechSettings.autoRead}
+              speechRate={speechSettings.rate}
+              onStateChange={refresh}
+              onClose={closeDialog}
+              onLaunch={() => {
+                browserSpeech.stop();
+                setDialog(null);
+                setLaunchComplete(true);
+              }}
+            />
+          ) : dialog.kind === "starpoint" ? (
+            <StarPointFlow
+              point={dialog.point}
+              profile={activeProfile}
+              autoRead={speechSettings.autoRead}
+              speechRate={speechSettings.rate}
+              onClose={closeDialog}
+            />
+          ) : (
+            <section
+              className="dialog-card scene-info-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="scene-info-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                className="dialog-close-button"
+                aria-label="Dialog schließen"
+                onClick={closeDialog}
+              >
+                ×
+              </button>
+              <p className="eyebrow">Hangar 3 · Untersuchung</p>
+              <h2 id="scene-info-title">{dialog.title}</h2>
+              <p>{dialog.text}</p>
+              <div className="dialog-actions">
+                <ReadAloudButton
+                  text={dialog.title + ". " + dialog.text}
+                  rate={speechSettings.rate}
+                />
+                <button type="button" onClick={closeDialog}>
+                  Zurück zur Szene
+                </button>
+              </div>
+            </section>
+          )}
+        </div>
+      )}
     </main>
   );
 }
