@@ -87,7 +87,7 @@ export function GameHud({
 
   return (
     <div className="game-hud" aria-label="Spiel-HUD">
-      <div className="hud-build-id" aria-label="Build-Version">V6.4</div>
+      <div className="hud-build-id" aria-label="Build-Version">V6.5</div>
       <div className="hud-crew">
         {crew.map((member) => (
           <CrewPortrait
