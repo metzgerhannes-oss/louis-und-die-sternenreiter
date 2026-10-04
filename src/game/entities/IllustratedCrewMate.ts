@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 import type { PlayerProfile } from "../../domain/profiles";
-import { IllustratedCrewAvatar } from "./IllustratedCrewAvatar";
+import { GeneratedCrewV67Avatar } from "./GeneratedCrewV67Avatar";
 import { OlliV6Avatar } from "./OlliV6Avatar";
 
-type CrewAvatar = IllustratedCrewAvatar | OlliV6Avatar;
+type CrewAvatar = GeneratedCrewV67Avatar | OlliV6Avatar;
 
 export class IllustratedCrewMate {
   readonly avatar: CrewAvatar;
@@ -23,10 +23,9 @@ export class IllustratedCrewMate {
             displayScale,
             primary: false
           })
-        : new IllustratedCrewAvatar(scene, profile, x, y, {
+        : new GeneratedCrewV67Avatar(scene, profile, x, y, {
             displayScale,
-            primary: false,
-            showName: false
+            primary: false
           });
   }
 
