@@ -1,5 +1,7 @@
 # Hangar 3 – Fixed Scenes V2
 
+> **Historischer Stand.** Seit SCENES 0.9 gilt verbindlich `HANGAR_3_FIXED_SCENES_V3.md`. Die V2-Compositing-Logik ist abgelöst.
+
 ## Verbindliches Prinzip
 
 Kapitel 1 verwendet ausschließlich native Querformat-Szenenbilder als sichtbaren Weltzustand. Tor, Dunkelheit, Aktivierung und Sternenfeld werden nicht mehr per CSS über das Szenenbild gelegt.
