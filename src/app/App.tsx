@@ -237,6 +237,11 @@ export function App() {
     <main className="app-shell">
       {launchComplete ? (
         <section className="fixed-launch-complete">
+          <img
+            className="launch-scene-image"
+            src={import.meta.env.BASE_URL + "assets/scenes/hangar/hangar-gate-v1.webp"}
+            alt=""
+          />
           <div className="launch-starfield" aria-hidden="true" />
           <div className="fixed-launch-card">
             <p className="eyebrow">Kapitel 1 abgeschlossen</p>
