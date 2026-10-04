@@ -61,6 +61,15 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
       aria-labelledby="louis-dialog-title"
       onClick={(event) => event.stopPropagation()}
     >
+      <button
+        type="button"
+        className="dialog-close-button"
+        aria-label="Louis-Einstellungen schließen"
+        onClick={onClose}
+      >
+        ×
+      </button>
+
       {mode === "creator" ? (
         <CreatorFlow
           profile={profile}
