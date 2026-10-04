@@ -2675,3 +2675,64 @@ textarea,
   user-select: text;
   -webkit-touch-callout: default;
 }
+
+
+/* === V6.8 dialog escape hardening ======================================= */
+.dialog-card {
+  position: relative;
+}
+
+.dialog-close-button {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.75rem;
+  z-index: 5;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(210, 163, 95, 0.42);
+  border-radius: 999px;
+  padding: 0;
+  color: #fff3d3;
+  background: rgba(11, 18, 26, 0.88);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dialog-close-button:hover,
+.dialog-close-button:focus-visible {
+  border-color: #e4bd77;
+  background: rgba(42, 49, 56, 0.96);
+}
+
+.story-dialog .dialog-actions {
+  flex-wrap: wrap;
+}
+
+.story-skip-button {
+  order: -1;
+}
+
+@media (max-width: 680px) {
+  .story-dialog .dialog-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .story-dialog .story-skip-button {
+    grid-column: 1 / -1;
+    min-height: 2.7rem;
+  }
+
+  .dialog-close-button {
+    top: 0.55rem;
+    right: 0.55rem;
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+}
