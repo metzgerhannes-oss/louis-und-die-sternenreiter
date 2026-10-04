@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { AdventureBeat, AdventureSpeaker } from "../../domain/adventure";
 import { adventureSpeakerColor } from "../../domain/adventure";
 import type { PlayerProfile } from "../../domain/profiles";
-import { gameEventBus } from "../../game/EventBus";
+import { appEventBus } from "../../services/appEventBus";
 import { addStardust } from "../../services/crewResources";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
@@ -44,7 +44,7 @@ export function AdventureStoryDialog({
 
     if (beat.rewardStardust) {
       addStardust(beat.rewardStardust);
-      gameEventBus.emit("resources:changed", undefined);
+      appEventBus.emit("resources:changed", undefined);
     }
 
     onComplete();

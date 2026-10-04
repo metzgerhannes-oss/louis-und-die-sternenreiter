@@ -1,33 +1,38 @@
 # Louis & die Sternenreiter
 
-Ein kindgerechtes Sci-Fi-Abenteuerspiel über Entdecken, Reisen, Tüfteln und das kreative Weitergestalten einer gemeinsamen Galaxie.
+Kindgerechtes Sci-Fi-Point-and-Click-Abenteuer über Entdecken, Reparieren, Rätsel und kreative Ideen.
 
-## Kernidee
+## Aktuelles Spielprinzip
 
-Charly, Philipp und Olli sind als eigene Profile mit individuellen Avataren spielbar. Louis ist ihr gemeinsamer tierischer Begleiter, Erzähler, Vorlese-Helfer und die natürliche Schnittstelle, über die Kinder eigene Ideen für neue Reisen, Orte, Figuren und Missionen einreichen.
+Das Projekt verwendet ab der Fixed-Scene-Neuausrichtung **keine freie Laufsteuerung mehr**.
 
-Das Spiel besitzt eine abgeschlossene Hauptgeschichte mit sechs Kapiteln und einem echten Ende. Nach dem Finale wird ein Modus für freie Reisen freigeschaltet.
+Die Kernschleife ist:
 
-## Technischer Zielstack
+1. feste, hochwertig komponierte Szene ansehen
+2. Gegenstände oder Figuren anklicken
+3. Dialog, Hinweis oder Nahansicht öffnen
+4. kleine Aufgabe / Rätsel lösen
+5. sichtbare Veränderung in der Szene auslösen
+6. nächste Szene oder Story-Stufe freischalten
 
-- React + TypeScript + Vite für App und UI
-- Phaser für das 2D/2.5D-Hauptspiel
-- Babylon.js gezielt für 3D-Schiff und besondere Ansichten
-- Supabase für Auth, Datenbank, Storage und Edge Functions
-- PWA für Browser, iPhone/iPad und Desktop
-- Phaser/Web Audio für Musik und Sound
-- Web Speech API als erste kostenlose Basis für Vorlesen und Spracheingabe
-- GitHub Issues als geprüfter Entwicklungs-Backlog
+Philipp, Charly und Olli reisen immer gemeinsam mit Louis. Die Profilwahl personalisiert Ansprache und Fortschritt, nicht die Anwesenheit der Crew.
+
+## Technischer Stack
+
+- React + TypeScript + Vite
+- PWA für iPhone/iPad, Android und Desktop
+- Supabase / PostgreSQL für persistente Daten und spätere Cloud-Synchronisierung
+- Web Speech API als kostenlose Basis für Vorlesen und Spracheingabe
+- CSS-/DOM-Hotspots für responsive Point-and-Click-Szenen
+
+**Nicht mehr Teil der Runtime:** Phaser, D-Pad, freie Bewegung, Kamera-Follow, Character-Rigs und Sprite-Walk-Cycles.
 
 ## Grundsätze
 
-- keine dedizierte oder realistische Gewalt als Spielkern
-- Fokus auf Entdecken, Helfen, Rätsel, Reparieren, Handeln und Gestalten
-- Space-Western + Garage-Punk + warme Sci-Fi
-- Welt-Canon, Spielstand und Kinderideen sind strikt getrennt
-- Kinderideen werden nie automatisch Canon
-- Louis hält Story, Weltwissen und Ideenfluss zusammen
-- spielrelevante Informationen sollen lesbar und vorlesbar sein
-- Spracheingabe ist eine gleichwertige Alternative zur Texteingabe
+- hochwertige feste Szenen statt technisch erzwungener freier Bewegung
+- Fokus auf Entdecken, Helfen, Rätsel, Reparieren und Gestalten
+- alle spielrelevanten Texte vorlesbar
+- Kinderideen verändern Canon nie ungeprüft
+- Louis bleibt Begleiter, Vorlese-Helfer und Creator-Schnittstelle
 
 Weitere verbindliche Entscheidungen liegen unter `docs/`.
