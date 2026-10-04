@@ -331,7 +331,7 @@ await renderFrom(sources.mainClosed, "hangar-gate-open-v3.webp", {
 await renderFrom(sources.mainClosed, "hangar-crew-v3.webp", {
   brightness: 0.92,
   saturation: 1.0,
-  position: "50% 68%"
+  position: "centre"
 });
 
 console.log("Generated Hangar V3 story-native scene set.");
