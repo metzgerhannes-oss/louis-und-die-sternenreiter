@@ -1567,3 +1567,41 @@ textarea,
   .scene-gate .story-gate-shutter { width: 43%; }
   .scene-crew .story-gate-shutter { width: 24%; }
 }
+
+
+.story-open-gate-space {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  right: 0;
+  width: 32%;
+  height: 100%;
+  pointer-events: none;
+  border-left: 2px solid rgba(119, 159, 185, 0.24);
+  background:
+    radial-gradient(circle at 18% 24%, #fff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 66% 16%, #d6ecff 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 82% 42%, #fff4c7 0 1px, transparent 1.6px),
+    radial-gradient(circle at 34% 65%, #ffffff 0 1.1px, transparent 1.7px),
+    radial-gradient(circle at 72% 79%, #bddfff 0 1.2px, transparent 1.8px),
+    linear-gradient(180deg, #06111f, #02070f 72%);
+  box-shadow:
+    inset 14px 0 28px rgba(2, 5, 9, 0.55),
+    -10px 0 30px rgba(0, 0, 0, 0.24);
+}
+
+.scene-overview .story-open-gate-space { width: 31%; }
+.scene-energy .story-open-gate-space { width: 31%; }
+.scene-workbench .story-open-gate-space { width: 27%; }
+.scene-ship .story-open-gate-space { width: 29%; }
+.scene-gate .story-open-gate-space { width: 46%; }
+.scene-crew .story-open-gate-space { width: 29%; }
+
+@media (max-width: 720px) {
+  .scene-overview .story-open-gate-space { width: 28%; }
+  .scene-energy .story-open-gate-space { width: 26%; }
+  .scene-workbench .story-open-gate-space { width: 22%; }
+  .scene-ship .story-open-gate-space { width: 25%; }
+  .scene-gate .story-open-gate-space { width: 43%; }
+  .scene-crew .story-open-gate-space { width: 24%; }
+}
