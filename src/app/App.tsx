@@ -501,7 +501,17 @@ export function App() {
       <PwaStatus suppressed={Boolean(dialog) || launching || finale} />
 
       {dialog && !launching && !finale && (
-        <div className="dialog-backdrop" role="presentation" onClick={closeDialog}>
+        <div
+          className="dialog-backdrop"
+          role="presentation"
+          onClick={
+            dialog.kind === "chapter1-story" ||
+            dialog.kind === "cinder-story" ||
+            dialog.kind === "adventure-story"
+              ? undefined
+              : closeDialog
+          }
+        >
           {dialog.kind === "louis" ? (
             <LouisDialog profile={activeProfile} onClose={closeDialog} />
           ) : dialog.kind === "starpoint" ? (
