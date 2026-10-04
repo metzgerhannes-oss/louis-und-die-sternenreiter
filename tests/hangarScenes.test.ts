@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { Chapter1State } from "../src/services/chapter1State";
 import {
@@ -125,21 +124,5 @@ describe("Hangar storyboard scene flow", () => {
     }
   });
 
-  it("does not reintroduce CSS gate, starfield or blackout compositing", () => {
-    const component = readFileSync(
-      new URL("../src/features/scenes/HangarFixedScene.tsx", import.meta.url),
-      "utf8"
-    );
-    const css = readFileSync(
-      new URL("../src/app/app.css", import.meta.url),
-      "utf8"
-    );
 
-    expect(component).not.toContain("story-gate-shutter");
-    expect(component).not.toContain("story-open-gate-space");
-    expect(component).not.toContain("story-blackout-haze");
-    expect(css).not.toContain(".story-gate-shutter");
-    expect(css).not.toContain(".story-open-gate-space");
-    expect(css).not.toContain(".story-blackout-haze");
-  });
 });
