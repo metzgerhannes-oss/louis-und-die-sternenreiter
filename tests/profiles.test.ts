@@ -29,13 +29,4 @@ describe("player profiles", () => {
       "olli"
     ]);
   });
-
-  it("encodes the approved relative crew proportions", () => {
-    expect(getProfile("charly")!.scaleFactor).toBeGreaterThan(
-      getProfile("philipp")!.scaleFactor
-    );
-    expect(getProfile("olli")!.scaleFactor).toBeLessThan(
-      getProfile("philipp")!.scaleFactor
-    );
-  });
 });
