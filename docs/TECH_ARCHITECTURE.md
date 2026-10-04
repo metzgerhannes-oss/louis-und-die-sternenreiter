@@ -2,84 +2,46 @@
 
 ## Ziel
 
-Eine kostenlose bzw. im kleinen privaten Betrieb kostenfreie Web-/PWA-Architektur, die auf iPhone/iPad, Android und Desktop funktioniert und später kontrolliert erweitert werden kann.
+Robuste, kostenlose bzw. im privaten Betrieb kostenarme Web/PWA-Architektur für iPhone/iPad, Android und Desktop.
 
 ## Stack
 
-- **React + TypeScript + Vite**: App-Shell, Menüs, Profile, Journal, Dialogoberflächen
-- **Phaser**: 2D/2.5D-Hauptspiel
-- **Babylon.js**: nur dort, wo echtes 3D Mehrwert bringt
-- **Supabase / PostgreSQL**: Auth, persistenter Zustand, Canon, Ideen, Storage
-- **Supabase Edge Functions**: serverseitige Aktionen, insbesondere GitHub-Integration
-- **PWA**: installierbare Web-App und Offline-App-Shell
-- **Phaser/Web Audio**: Sound und Musik
+- **React + TypeScript + Vite** – gesamte Runtime
+- **CSS/DOM Hotspots** – klickbare Bereiche über festen Szenenillustrationen
+- **Supabase / PostgreSQL** – persistente Daten, Ideen und später Cloud-Sync
+- **PWA** – Installation und Offline-App-Shell
+- **Web Audio / Web Speech API** – Sound, Vorlesen und Spracheingabe
 
-## Architekturregel
+## Bewusst entfernt
 
-Spielcode und Weltdaten bleiben getrennt.
+- Phaser
+- freie 2D/2.5D-Bewegung
+- Character-Rigs
+- Kamera-/Follow-Systeme
+- D-Pad/WASD als Spielkern
+- Sprite-Sheet-Laufanimationen
 
-Phaser rendert und simuliert. Story, Orte, Quests, Dialoge, Regeln und freigegebener Canon werden über Domain-/Content-Schichten geladen und nicht in Szenen verteilt hartcodiert.
+## Szenenmodell
 
-## Geplante Struktur
+Eine feste Szene besteht aus:
+- eindeutiger Scene-ID
+- Hintergrund-/Szenenillustration
+- responsiven Hotspot-Koordinaten
+- Sichtbarkeitsbedingungen
+- Dialog-/Storyaktion pro Hotspot
+- optionalen Zustandsvarianten der Illustration
+- optionaler Nahansicht
 
-```
-src/
-  app/
-  features/
-    profiles/
-    journal/
-    companion/
-    ideas/
-    ship/
-    hangar/
-    inventory/
-    map/
-    settings/
-    parent/
-  game/
-    bootstrap/
-    scenes/
-    entities/
-    systems/
-    world/
-  three/
-  domain/
-  services/
-  content/
-  shared/
+Storyzustand und Szenendarstellung bleiben getrennt.
 
-supabase/
-  migrations/
-  functions/
-```
+## Datenbereiche
 
-## React ↔ Phaser
-
-Kommunikation über einen zentralen typisierten EventBus.
-
-Beispiele:
-- Phaser meldet Interaktion mit Louis → React öffnet Dialog
-- React wählt Mission → Phaser lädt Missionszustand
-
-## Babylon.js
-
-Babylon wird lazy geladen und nicht als permanenter Hauptrenderer verwendet.
-
-V1-Einsatz:
-- Schiff im Hangar in 3D ansehen
-- Schiff drehen
-- sichtbare Module
-- Lackierung/Abzeichen
-
-## Persistenz
-
-Drei getrennte Bereiche:
-1. **Canon** – offiziell freigegebene Welt
-2. **Player State** – individueller Fortschritt
-3. **Ideas** – Vorschläge des Kindes
+1. **Canon** – freigegebene Welt
+2. **Player State** – Fortschritt
+3. **Ideas** – Vorschläge der Kinder
 
 Keine Kinderidee verändert direkt den Canon.
 
-## Sicherheitsregel
+## Sicherheit
 
-GitHub-Tokens, Service-Role-Keys und andere privilegierte Secrets dürfen niemals im Client ausgeliefert werden. GitHub-Erstellung erfolgt ausschließlich serverseitig.
+GitHub-Tokens, Service-Role-Keys und privilegierte Secrets dürfen niemals im Client ausgeliefert werden.
