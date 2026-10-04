@@ -256,6 +256,12 @@ await renderFrom(sources.mainClosed, "hangar-main-active-v3.webp", {
   saturation: 1.02
 });
 
+await renderFrom(sources.mainClosed, "hangar-main-open-v3.webp", {
+  brightness: 0.91,
+  saturation: 0.96,
+  overlays: [gateOpenSvg()]
+});
+
 await renderFrom(sources.energy, "hangar-energy-v3.webp", {
   brightness: 0.54,
   saturation: 0.62,
