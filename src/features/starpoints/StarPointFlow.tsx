@@ -5,7 +5,7 @@ import type {
   StarPointDefinition,
   StarPointOption
 } from "../../domain/starPoints";
-import { gameEventBus } from "../../game/EventBus";
+import { appEventBus } from "../../services/appEventBus";
 import {
   canSpendStardust,
   loadCrewResources,
@@ -86,8 +86,8 @@ export function StarPointFlow({
       inputMethod: selectedOption ? "prepared" : customInputMethod
     });
 
-    gameEventBus.emit("resources:changed", undefined);
-    gameEventBus.emit("starpoint:completed", {
+    appEventBus.emit("resources:changed", undefined);
+    appEventBus.emit("starpoint:completed", {
       id: point.id,
       ideaText
     });
