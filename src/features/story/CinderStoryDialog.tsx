@@ -10,6 +10,7 @@ import { applyCinderAction, loadCinderState } from "../../services/cinderState";
 import { addStardust } from "../../services/crewResources";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
+import { SpeakerFocus } from "./SpeakerFocus";
 
 type CinderStoryDialogProps = {
   beat: CinderStoryBeat;
@@ -99,14 +100,21 @@ export function CinderStoryDialog({
         ))}
       </div>
 
-      <div className="story-line">
-        <span
-          className="story-speaker"
-          style={{ color: cinderSpeakerColor[line.speaker] }}
-        >
-          {line.speaker}
-        </span>
-        <p>{line.text}</p>
+      <div className="story-person-layout">
+        <SpeakerFocus
+          speaker={line.speaker}
+          color={cinderSpeakerColor[line.speaker]}
+          subtitle={line.speaker === "Rika" ? "Staubhafen" : "Crew"}
+        />
+        <div className="story-line">
+          <span
+            className="story-speaker"
+            style={{ color: cinderSpeakerColor[line.speaker] }}
+          >
+            {line.speaker}
+          </span>
+          <p>{line.text}</p>
+        </div>
       </div>
 
       <div

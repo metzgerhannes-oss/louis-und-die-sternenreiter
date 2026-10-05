@@ -30,9 +30,9 @@ describe("Cinder chapter 2A", () => {
     expect(cinderDistributionStarPoint.customIdeaAllowed).toBe(true);
   });
 
-  it("ends the Cinder arc by revealing Moss", () => {
+  it("installs the drive upgrade before the separate departure to Moss", () => {
     const finalBeat = cinderStoryBeats["drive-upgrade"];
-    expect(finalBeat.action).toBe("cinder-complete");
+    expect(finalBeat.action).toBe("drive-upgraded");
     expect(finalBeat.lines.at(-1)?.text).toContain("Moss");
   });
 });
