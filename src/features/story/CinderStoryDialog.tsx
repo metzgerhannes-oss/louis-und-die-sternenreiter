@@ -91,7 +91,7 @@ export function CinderStoryDialog({
 
   return (
     <section
-      className="dialog-card story-dialog"
+      className={challengeActive ? "dialog-card story-dialog challenge-dialog" : "dialog-card story-dialog"}
       role="dialog"
       aria-modal="true"
       aria-labelledby="cinder-story-title"
@@ -119,6 +119,14 @@ export function CinderStoryDialog({
             {speaker.toLowerCase() === profile.id ? " · aktiv" : ""}
           </span>
         ))}
+        {beat.lines.some((storyLine) => storyLine.speaker === "Rika") && (
+          <span
+            className={line.speaker === "Rika" ? "story-crew active" : "story-crew"}
+            style={{ "--speaker-color": cinderSpeakerColor.Rika } as React.CSSProperties}
+          >
+            Rika
+          </span>
+        )}
       </div>
 
       <div className="story-person-layout">
