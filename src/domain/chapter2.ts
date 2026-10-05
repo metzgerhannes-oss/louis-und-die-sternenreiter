@@ -54,7 +54,7 @@ export const cinderStoryBeats: Record<CinderStoryBeatId, CinderStoryBeat> = {
     lines: [
       { speaker: "Rika", text: "Ihr seid wirklich durch den Sternenpfad gekommen? Dann funktioniert da draußen wenigstens noch irgendetwas." },
       { speaker: "Philipp", text: "Was ist hier passiert?" },
-      { speaker: "Rika", text: "Unsere alten Kondensatoren liefern fast nichts mehr. Ohne Wasser hält Staubhafen nicht lange durch." },
+      { speaker: "Rika", text: "Unsere alten Kondensatoren liefern fast nichts mehr. Die Tanks reichen vielleicht noch ein paar Tage." },
       { speaker: "Charly", text: "Dann zeigen Sie uns die Anlage." },
       { speaker: "Olli", text: "Louis leuchtet schon wieder." },
       { speaker: "Louis", text: "Noch nicht. Erst müssen wir verstehen, was fehlt." }
@@ -67,13 +67,14 @@ export const cinderStoryBeats: Record<CinderStoryBeatId, CinderStoryBeat> = {
     eyebrow: "Cinder · Alte Kondensatorfelder",
     title: "Die Luft ist nicht leer",
     lines: [
-      { speaker: "Philipp", text: "Die Maschinen sind alt, aber nicht tot. Sie bekommen die Luft nur nicht mehr kalt genug." },
-      { speaker: "Charly", text: "Nachts fällt die Temperatur hier stark. Dann müsste man Feuchtigkeit sammeln können." },
-      { speaker: "Olli", text: "Also Wasser aus Luft?" },
-      { speaker: "Louis", text: "Genau. Und jetzt reagiert mein Harness. Hier ist ein Sternenpunkt." }
+      { speaker: "Rika", text: "Die Anlage läuft, aber fast ohne Ertrag. Wir haben schon Lüfter und Pumpen getauscht. Nichts hat geholfen." },
+      { speaker: "Philipp", text: "Dann sollten wir nicht weiter raten. Ich will die Temperaturen an verschiedenen Stellen sehen." },
+      { speaker: "Charly", text: "Und vergleichen, was die Anlage tatsächlich macht – nicht, was sie machen sollte." },
+      { speaker: "Olli", text: "Also erst messen, dann schrauben. Langweilig vernünftig." },
+      { speaker: "Louis", text: "Mein Harness reagiert hier ganz schwach. Finden wir zuerst heraus, warum." }
     ],
     action: "intake-inspected",
-    actionLabel: "Louis' Sternenpunkt ansehen"
+    actionLabel: "Anlage untersuchen"
   },
   stardust: {
     id: "stardust",
