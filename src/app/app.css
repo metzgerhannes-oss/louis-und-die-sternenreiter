@@ -1402,3 +1402,211 @@ textarea,
     font-size: 0.64rem;
   }
 }
+
+
+/* === Chapter 1 · interactive action challenges ======================== */
+.chapter-action-challenge {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.challenge-status {
+  display: grid;
+  gap: 0.25rem;
+  border: 1px solid rgba(222, 178, 103, 0.28);
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.8rem;
+  background: rgba(8, 14, 20, 0.52);
+}
+
+.challenge-status strong {
+  color: #fff3d6;
+  font-size: 0.98rem;
+}
+
+.challenge-status span {
+  color: #c8d0d5;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.challenge-choice-grid,
+.system-check-grid,
+.launch-checklist {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.challenge-choice-grid button,
+.challenge-controls button,
+.challenge-sequence button,
+.system-check-grid button,
+.launch-checklist button,
+.chapter-action-challenge > button {
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.78rem;
+  padding: 0.62rem 0.72rem;
+  color: #f8f1e5;
+  background: rgba(34, 45, 55, 0.92);
+}
+
+.challenge-choice-grid button {
+  display: grid;
+  gap: 0.22rem;
+  text-align: left;
+}
+
+.challenge-choice-grid button span {
+  color: #b9c2c8;
+  font-size: 0.76rem;
+}
+
+.challenge-choice-grid button.selected {
+  border-color: rgba(220, 168, 87, 0.75);
+}
+
+.challenge-choice-grid button.correct,
+.challenge-controls button.done,
+.challenge-sequence button.done,
+.system-check-grid button.done,
+.launch-checklist button.done,
+.chapter-action-challenge > button.done {
+  border-color: rgba(104, 205, 169, 0.72);
+  background: rgba(30, 83, 70, 0.78);
+}
+
+.challenge-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.challenge-controls > * {
+  flex: 1 1 180px;
+}
+
+.challenge-sequence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.challenge-sequence button {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: left;
+}
+
+.challenge-sequence button span {
+  display: grid;
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: 0 0 1.7rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.09);
+  font-weight: 900;
+}
+
+.challenge-sequence button.current {
+  border-color: rgba(222, 178, 103, 0.72);
+}
+
+.navigation-tuner {
+  display: grid;
+  gap: 0.58rem;
+}
+
+.navigation-tuner label {
+  display: grid;
+  gap: 0.28rem;
+  color: #dbe2e5;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.navigation-tuner input[type="range"] {
+  width: 100%;
+  accent-color: #d9ad67;
+}
+
+.system-check-grid button {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.system-check-grid button span {
+  color: #aeb9bf;
+  font-size: 0.67rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.launch-checklist button {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: left;
+}
+
+.challenge-complete {
+  background: #2e6a70 !important;
+  font-weight: 850;
+}
+
+.chapter-action-challenge button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .challenge-choice-grid,
+  .system-check-grid,
+  .launch-checklist {
+    gap: 0.35rem;
+  }
+
+  .challenge-choice-grid button,
+  .challenge-sequence button,
+  .system-check-grid button,
+  .launch-checklist button,
+  .challenge-controls button,
+  .chapter-action-challenge > button {
+    padding: 0.48rem 0.5rem;
+    font-size: 0.76rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  .chapter-action-challenge {
+    gap: 0.42rem;
+  }
+
+  .challenge-status {
+    padding: 0.45rem 0.58rem;
+  }
+
+  .challenge-status span {
+    font-size: 0.74rem;
+  }
+
+  .challenge-choice-grid button span {
+    font-size: 0.65rem;
+  }
+
+  .navigation-tuner {
+    gap: 0.32rem;
+  }
+
+  .navigation-tuner label {
+    gap: 0.12rem;
+    font-size: 0.7rem;
+  }
+
+  .chapter-action-challenge .challenge-controls {
+    gap: 0.35rem;
+  }
+}
