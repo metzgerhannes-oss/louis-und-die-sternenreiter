@@ -17,6 +17,7 @@ import { ReadAloudButton } from "../features/speech/ReadAloudButton";
 import { StarPointFlow } from "../features/starpoints/StarPointFlow";
 import { Chapter1StoryDialog } from "../features/story/Chapter1StoryDialog";
 import { PostHangarJourney } from "../features/story/PostHangarJourney";
+import { TestChapterLauncher } from "../features/story/TestChapterLauncher";
 import { appEventBus } from "../services/appEventBus";
 import {
   getChapter1BeatForHotspot,
@@ -33,6 +34,10 @@ import {
 import { browserSpeech } from "../services/speech/browserSpeech";
 import { loadSpeechSettings } from "../services/speech/speechSettings";
 import { isStarPointCompleted } from "../services/starPointState";
+import {
+  prepareTestChapter,
+  type TestChapterTarget
+} from "../services/testChapterJump";
 import { PwaStatus } from "./PwaStatus";
 
 type DialogState =
@@ -50,6 +55,7 @@ export function App() {
   const [sceneId, setSceneId] = useState<HangarSceneId>("overview");
   const [revision, setRevision] = useState(0);
   const [launchComplete, setLaunchComplete] = useState(false);
+  const [showTestLauncher, setShowTestLauncher] = useState(true);
 
   const refresh = () => setRevision((value) => value + 1);
 
@@ -74,13 +80,13 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (!activeProfile || dialog || launchComplete) return;
+    if (!activeProfile || dialog || launchComplete || showTestLauncher) return;
 
     const chapter = loadChapter1State();
     if (!chapter.introSeen) {
       setDialog({ kind: "story", beat: getStoryBeat("intro") });
     }
-  }, [activeProfile, dialog, launchComplete, revision]);
+  }, [activeProfile, dialog, launchComplete, revision, showTestLauncher]);
 
   const selectProfile = (profile: PlayerProfile) => {
     saveActiveProfile(profile);
@@ -95,6 +101,17 @@ export function App() {
     setActiveProfile(null);
     setDialog(null);
     setSceneId("overview");
+    setShowTestLauncher(true);
+  };
+
+  const startTestChapter = (target: TestChapterTarget) => {
+    browserSpeech.stop();
+    prepareTestChapter(target);
+    setDialog(null);
+    setSceneId("overview");
+    setLaunchComplete(false);
+    setShowTestLauncher(false);
+    refresh();
   };
 
   const closeDialog = () => {
@@ -130,6 +147,21 @@ export function App() {
       <>
         <ProfileSelect onSelect={selectProfile} />
         <PwaStatus />
+      </>
+    );
+  }
+
+  if (showTestLauncher) {
+    return (
+      <>
+        <TestChapterLauncher
+          onSelect={startTestChapter}
+          onContinue={() => {
+            setShowTestLauncher(false);
+            refresh();
+          }}
+        />
+        <PwaStatus suppressed />
       </>
     );
   }
