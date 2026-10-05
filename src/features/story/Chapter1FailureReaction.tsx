@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export type FailureReactionKind =
   | "energy-low"
@@ -20,7 +20,7 @@ export type FailureReaction = {
 type FailureReactionSpec = {
   image: string;
   className: string;
-  durationMs: number;
+  minDisplayMs: number;
 };
 
 const base = import.meta.env.BASE_URL;
@@ -29,47 +29,47 @@ export const failureReactionSpecs: Record<FailureReactionKind, FailureReactionSp
   "energy-low": {
     image: `${base}assets/scenes/hangar/hangar-workbench-v4.webp`,
     className: "reaction-energy-low",
-    durationMs: 1050
+    minDisplayMs: 1800
   },
   "energy-overheat": {
     image: `${base}assets/scenes/hangar/hangar-workbench-v4.webp`,
     className: "reaction-energy-overheat",
-    durationMs: 1250
+    minDisplayMs: 2000
   },
   "energy-lock": {
     image: `${base}assets/scenes/hangar/hangar-workbench-v4.webp`,
     className: "reaction-energy-lock",
-    durationMs: 950
+    minDisplayMs: 1800
   },
   "coolant-burst": {
     image: `${base}assets/scenes/hangar/hangar-cooling-v4.webp`,
     className: "reaction-coolant-burst",
-    durationMs: 1250
+    minDisplayMs: 2000
   },
   "seal-slip": {
     image: `${base}assets/scenes/hangar/hangar-cooling-v4.webp`,
     className: "reaction-seal-slip",
-    durationMs: 1050
+    minDisplayMs: 1800
   },
   "clamp-kickback": {
     image: `${base}assets/scenes/hangar/hangar-cooling-v4.webp`,
     className: "reaction-clamp-kickback",
-    durationMs: 1150
+    minDisplayMs: 1900
   },
   "navigation-glitch": {
     image: `${base}assets/scenes/hangar/hangar-navigation-v4.webp`,
     className: "reaction-navigation-glitch",
-    durationMs: 1100
+    minDisplayMs: 1900
   },
   "system-abort": {
     image: `${base}assets/scenes/hangar/hangar-systemtest-v4.webp`,
     className: "reaction-system-abort",
-    durationMs: 1050
+    minDisplayMs: 1800
   },
   "launch-abort": {
     image: `${base}assets/scenes/hangar/hangar-gate-open-v7.webp`,
     className: "reaction-launch-abort",
-    durationMs: 1100
+    minDisplayMs: 1900
   }
 };
 
@@ -82,10 +82,13 @@ export function Chapter1FailureReaction({
 }) {
   const spec = failureReactionSpecs[reaction.kind];
 
+  const [canContinue, setCanContinue] = useState(false);
+
   useEffect(() => {
-    const timer = window.setTimeout(onDone, spec.durationMs);
+    setCanContinue(false);
+    const timer = window.setTimeout(() => setCanContinue(true), spec.minDisplayMs);
     return () => window.clearTimeout(timer);
-  }, [onDone, spec.durationMs]);
+  }, [reaction.kind, spec.minDisplayMs]);
 
   return (
     <div
@@ -110,6 +113,13 @@ export function Chapter1FailureReaction({
       <div className="reaction-copy">
         <strong>{reaction.title}</strong>
         <span>{reaction.text}</span>
+        {canContinue ? (
+          <button type="button" className="reaction-continue" onClick={onDone}>
+            Weiter versuchen
+          </button>
+        ) : (
+          <small className="reaction-reading-cue">Kurz anschauen …</small>
+        )}
       </div>
     </div>
   );
