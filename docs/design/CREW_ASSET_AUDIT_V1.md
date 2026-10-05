@@ -41,3 +41,33 @@ Für jede neue Szene mit sichtbaren Gesichtern gilt:
 4. danach Der leere Pfad, Störungsknoten, Glasküste, Wolkenozean, Schrottring, Herz der Wege
 
 Kein neues Bild wird ingame übernommen, bevor diese Identitätsprüfung bestanden ist.
+
+
+## Hand-/Anatomie-QA – verbindlicher Release-Blocker
+
+Jede sichtbare menschliche Hand hat exakt **5 Fingerstrahlen: 4 Finger + 1 Daumen**.
+
+Nicht zulässig:
+- zusätzliche oder fehlende Finger, sofern nicht eindeutig durch Perspektive/Verdeckung erklärt
+- doppelte Daumen
+- verschmolzene, gegabelte oder unplausibel angeordnete Finger
+- zusätzliche Hände oder unplausible Handgelenke
+- Gesten, die nur durch anatomisch falsche Fingerzahl funktionieren
+
+Vor jeder Bildfreigabe wird **jede sichtbare Hand einzeln geprüft**.
+
+Aktueller Audit:
+- **Cinder Overview:** PASS für Hand-QA; Rückenansicht, Hände nicht relevant sichtbar.
+- **Moss Overview:** PASS für Hand-QA; Rückenansicht, Hände nicht relevant sichtbar.
+- **V4-Portraits:** N/A; Hände nicht im Bild.
+- **Junction-12/67-Bilder mit Handgeste:** FAIL; mehrere Hände sind anatomisch falsch bzw. nicht eindeutig fünfgliedrig. Diese Varianten sind verworfen.
+- **ältere Hangar-Generationen:** nicht sicher freigebbar; Hände teils klein/angeschnitten. Da die Crew dort ohnehin nicht mehr den V4-Mastern entspricht, werden sie bei Neuproduktion komplett erneut geprüft.
+- **alte Storyboard-/Collage-Entwürfe:** nicht als Runtime-Grafik verwenden.
+
+Abnahmereihenfolge für neue Bilder:
+1. exakt Philipp + Charlotte/Charly + Olli, NPC nur bei Storybedarf
+2. V4-Identität
+3. Größenverhältnis: Charlotte ca. 15 cm größer als Philipp, Olli jünger/kleiner
+4. Louis schlanker hellbrauner Golden Retriever
+5. **jede sichtbare Hand: 4 Finger + 1 Daumen**
+6. erst danach Storyzustand, Licht, Welt und UI
