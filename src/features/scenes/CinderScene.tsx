@@ -17,6 +17,7 @@ type CinderSceneProps = {
   distributionReady: boolean;
   onInteract: (id: CinderHotspotId) => void;
   onSwitchProfile: () => void;
+  onTravelToMoss: () => void;
 };
 
 const hotspots: Array<{
@@ -64,7 +65,8 @@ export function CinderScene({
   moistureReady,
   distributionReady,
   onInteract,
-  onSwitchProfile
+  onSwitchProfile,
+  onTravelToMoss
 }: CinderSceneProps) {
   return (
     <section className="world-scene cinder-scene" aria-label="Cinder">
@@ -156,6 +158,12 @@ export function CinderScene({
         <span className={moistureReady ? "lit" : ""}>Kondensatoren</span>
         <span className={distributionReady ? "lit" : ""}>Wasserleitung</span>
       </div>
+
+      {state.complete && (
+        <button type="button" className="world-primary-action" onClick={onTravelToMoss}>
+          Kurs Moss setzen
+        </button>
+      )}
     </section>
   );
 }
