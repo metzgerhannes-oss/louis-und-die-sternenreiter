@@ -15,7 +15,11 @@ export type GameSoundId =
   | "repair-step"
   | "switch"
   | "error"
-  | "system-ready";
+  | "system-ready"
+  | "failure-burst"
+  | "coolant-spray"
+  | "glitch"
+  | "alarm";
 
 export type SoundscapeId =
   | "hangar"
@@ -221,6 +225,24 @@ class GameAudioService {
         this.playTone(392, 0.16, "sine", 0.032);
         this.playTone(523.25, 0.18, "sine", 0.03, 0.12);
         this.playTone(659.25, 0.22, "sine", 0.028, 0.24);
+        break;
+      case "failure-burst":
+        this.playNoiseBurst(0.34, 980, 0.08, "bandpass");
+        this.playTone(118, 0.24, "sawtooth", 0.04, 0, 72);
+        this.playTone(340, 0.09, "square", 0.022, 0.05, 180);
+        break;
+      case "coolant-spray":
+        this.playNoiseBurst(0.58, 1850, 0.055, "highpass", 0, 820);
+        this.playTone(210, 0.18, "triangle", 0.02, 0.06, 150);
+        break;
+      case "glitch":
+        this.playTone(760, 0.05, "square", 0.02, 0, 310);
+        this.playTone(410, 0.07, "square", 0.018, 0.09, 930);
+        this.playNoiseBurst(0.22, 2100, 0.025, "bandpass", 0.05, 420);
+        break;
+      case "alarm":
+        this.playTone(270, 0.12, "square", 0.026);
+        this.playTone(220, 0.14, "square", 0.022, 0.15);
         break;
     }
   }
