@@ -6,17 +6,26 @@ import {
 } from "../src/services/speech/characterVoices";
 
 describe("character voice profiles", () => {
-  it("has a distinct profile for every core crew member", () => {
+  it("has a profile for every core crew member", () => {
     const crew: VoiceRole[] = ["Philipp", "Charly", "Olli", "Louis"];
 
     for (const member of crew) {
       expect(voiceProfiles[member]).toBeDefined();
       expect(voiceProfiles[member].preferredNames.length).toBeGreaterThan(0);
     }
+  });
 
-    expect(voiceProfiles.Louis.pitch).toBeLessThan(voiceProfiles.Philipp.pitch);
-    expect(voiceProfiles.Olli.pitch).toBeGreaterThan(voiceProfiles.Philipp.pitch);
-    expect(voiceProfiles.Charly.pitch).not.toBe(voiceProfiles.Louis.pitch);
+  it("keeps character pitch close to natural speech", () => {
+    const crew: VoiceRole[] = ["Philipp", "Charly", "Olli", "Louis"];
+
+    for (const member of crew) {
+      expect(voiceProfiles[member].pitch).toBeGreaterThanOrEqual(0.95);
+      expect(voiceProfiles[member].pitch).toBeLessThanOrEqual(1.05);
+    }
+
+    expect(voiceProfiles.Louis.rateMultiplier).toBeLessThan(
+      voiceProfiles.Olli.rateMultiplier
+    );
   });
 
   it("maps story speakers and falls back safely to the narrator", () => {
@@ -27,12 +36,12 @@ describe("character voice profiles", () => {
     expect(asVoiceRole(undefined)).toBe("Narrator");
   });
 
-  it("keeps all configured speech rates and pitches in browser-safe ranges", () => {
+  it("keeps all configured speech rates and pitches in natural browser-safe ranges", () => {
     for (const profile of Object.values(voiceProfiles)) {
-      expect(profile.rateMultiplier).toBeGreaterThanOrEqual(0.75);
-      expect(profile.rateMultiplier).toBeLessThanOrEqual(1.15);
-      expect(profile.pitch).toBeGreaterThanOrEqual(0.65);
-      expect(profile.pitch).toBeLessThanOrEqual(1.3);
+      expect(profile.rateMultiplier).toBeGreaterThanOrEqual(0.8);
+      expect(profile.rateMultiplier).toBeLessThanOrEqual(1.08);
+      expect(profile.pitch).toBeGreaterThanOrEqual(0.95);
+      expect(profile.pitch).toBeLessThanOrEqual(1.05);
     }
   });
 });
