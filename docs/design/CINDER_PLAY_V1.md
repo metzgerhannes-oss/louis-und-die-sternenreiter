@@ -82,3 +82,15 @@ Die dauerhafte Kapitelauswahl aus TEST 0.20 bleibt bestehen. Cinder kann damit d
 ## Sichtbare Kennung
 
 **H3 · CINDER 0.21**
+
+
+## Abnahme im Testmenü
+
+Über TEST 0.20 direkt **Cinder** starten und vollständig durchspielen. Besonders prüfen:
+- Landung: beide falschen Plätze mit sichtbarer Konsequenz
+- Kondensator: mindestens zwei Messpunkte vor Diagnose
+- falsche Diagnose: Gegenbeobachtung bleibt lesbar stehen
+- Canyonroute: beide falschen Korridore zeigen Wirkung
+- Crew und Rika direkt antippbar
+- Impulsspule: falsche Reihenfolge erzeugt Reaktion, richtige Reihenfolge bleibt unmarkiert
+- nach Upgrade erscheint erst dann „Kurs Moss setzen“
