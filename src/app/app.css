@@ -1610,3 +1610,14 @@ textarea,
     gap: 0.35rem;
   }
 }
+
+
+.story-dialog.challenge-dialog {
+  overflow: auto;
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  .story-dialog.challenge-dialog {
+    overflow: hidden;
+  }
+}
