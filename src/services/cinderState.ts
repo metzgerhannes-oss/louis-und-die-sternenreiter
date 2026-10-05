@@ -86,7 +86,8 @@ export function applyCinderAction(action: CinderAction): CinderState {
 }
 
 export function getCinderObjective(state = loadCinderState()): string {
-  if (state.complete) return "Cinder versorgt · Neuer Sternenpfad: Moss";
+  if (state.complete) return "Cinder abgeschlossen · Kurs Moss";
+  if (state.driveUpgraded) return "Das Upgrade sitzt. Setzt Kurs auf Moss.";
   if (!state.landingSeen) return "Landet gemeinsam auf Cinder.";
   if (!state.problemKnown) return "Sucht die Siedlung Staubhafen.";
   if (!state.intakeInspected) return "Untersucht mit Rika die alten Kondensatorfelder.";
@@ -131,7 +132,7 @@ export function getCinderBeatForHotspot(
     return cinderStoryBeats.stardust;
   }
 
-  if (hotspotId === "workshop" && state.waterCelebrated && !state.complete) {
+  if (hotspotId === "workshop" && state.waterCelebrated && !state.driveUpgraded) {
     return cinderStoryBeats["drive-upgrade"];
   }
 
