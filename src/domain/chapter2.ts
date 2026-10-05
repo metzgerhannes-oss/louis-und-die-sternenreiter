@@ -113,7 +113,7 @@ export const cinderStoryBeats: Record<CinderStoryBeatId, CinderStoryBeat> = {
       { speaker: "Olli", text: "Wohin führt der?" },
       { speaker: "Louis", text: "Ein Name kommt durch. Moss." }
     ],
-    action: "cinder-complete",
+    action: "drive-upgraded",
     actionLabel: "Antriebsupgrade einbauen"
   }
 };
