@@ -14,6 +14,7 @@ type CinderActionChallengeProps = {
 const challengedBeats = new Set<CinderStoryBeatId>([
   "landing",
   "inspect-intake",
+  "route-survey",
   "drive-upgrade"
 ]);
 
@@ -91,6 +92,10 @@ export function CinderActionChallenge({
 
   if (beatId === "inspect-intake") {
     return <CondenserChallenge onComplete={onComplete} />;
+  }
+
+  if (beatId === "route-survey") {
+    return <RouteSurveyChallenge onComplete={onComplete} />;
   }
 
   if (beatId === "drive-upgrade") {
@@ -315,6 +320,90 @@ function CondenserChallenge({ onComplete }: { onComplete: () => void }) {
           onClick={onComplete}
         >
           Rika die Diagnose zeigen
+        </button>
+      )}
+    </div>
+  );
+}
+
+export type WaterRouteId = "surface" | "service-trench" | "canyon-floor";
+
+export function isSafeWaterRoute(route: WaterRouteId): boolean {
+  return route === "service-trench";
+}
+
+function RouteSurveyChallenge({ onComplete }: { onComplete: () => void }) {
+  const [selected, setSelected] = useState<WaterRouteId | null>(null);
+  const [message, setMessage] = useState(
+    "Drei Korridore führen Richtung Staubhafen. Keiner ist als sicher markiert."
+  );
+  const { reaction, clear, trigger } = useFailureReaction();
+
+  const choose = (route: WaterRouteId) => {
+    if (route === "surface") {
+      setSelected(null);
+      setMessage("Die Oberflächenroute ist zu heiß.");
+      trigger(
+        {
+          kind: "ground-crack",
+          title: "Rohrweg verzieht sich",
+          text: "In der Mittagshitze arbeitet der Boden sichtbar. Eine starre Leitung würde hier schnell aufreißen."
+        },
+        "alarm"
+      );
+      return;
+    }
+
+    if (route === "canyon-floor") {
+      setSelected(null);
+      setMessage("Am Canyonboden liegen frische Geröllspuren.");
+      trigger(
+        {
+          kind: "dust-blast",
+          title: "Sturzflut-Spuren!",
+          text: "Zwischen den Felsen steckt Treibgut hoch über dem Boden. Bei seltenem Regen wird dieser Weg zum Fluss."
+        },
+        "coolant-spray"
+      );
+      return;
+    }
+
+    setSelected(route);
+    setMessage("Der alte Wartungsgraben liegt im Schatten, ist erhöht und führt fast bis Staubhafen.");
+    void cue("system-ready");
+  };
+
+  return (
+    <div className="chapter-action-challenge cinder-action-challenge">
+      {reaction && <CinderFailureReaction reaction={reaction} onDone={clear} />}
+
+      <div className="challenge-status">
+        <strong>Wasserweg erkunden</strong>
+        <span>{message}</span>
+      </div>
+
+      <div className="cinder-choice-grid">
+        <button type="button" onClick={() => choose("surface")}>
+          <strong>Gerade über die Ebene</strong>
+          <span>kürzester Weg · volle Sonne · arbeitender Boden</span>
+        </button>
+        <button
+          type="button"
+          className={selected === "service-trench" ? "done" : ""}
+          onClick={() => choose("service-trench")}
+        >
+          <strong>Alter Wartungsgraben</strong>
+          <span>länger · schattig · erhöht · alte Befestigungen</span>
+        </button>
+        <button type="button" onClick={() => choose("canyon-floor")}>
+          <strong>Durch den Canyonboden</strong>
+          <span>kühl · eben · Geröll und Treibgut</span>
+        </button>
+      </div>
+
+      {selected === "service-trench" && (
+        <button type="button" className="challenge-complete" onClick={onComplete}>
+          Route für Louis markieren
         </button>
       )}
     </div>
