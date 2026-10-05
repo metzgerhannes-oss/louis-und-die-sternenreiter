@@ -21,10 +21,10 @@ describe("chapter 1 failure consequence frames", () => {
     expect(Object.keys(failureReactionSpecs).sort()).toEqual(expected.sort());
   });
 
-  it("keeps reactions short enough to return quickly to play", () => {
+  it("keeps each reaction visible long enough before manual continuation", () => {
     for (const spec of Object.values(failureReactionSpecs)) {
-      expect(spec.durationMs).toBeGreaterThanOrEqual(900);
-      expect(spec.durationMs).toBeLessThanOrEqual(1300);
+      expect(spec.minDisplayMs).toBeGreaterThanOrEqual(1800);
+      expect(spec.minDisplayMs).toBeLessThanOrEqual(2200);
       expect(spec.image).toMatch(/assets\/scenes\/hangar\/.*\.webp$/);
       expect(spec.className).toMatch(/^reaction-/);
     }
