@@ -29,9 +29,6 @@ export function AdventureWorldScene({
   onPrimaryAction,
   onSwitchProfile
 }: AdventureWorldSceneProps) {
-  const currentHotspot =
-    step.kind === "story" ? step.hotspotId : undefined;
-
   return (
     <section
       className={"world-scene adventure-world world-" + world.id}
@@ -92,11 +89,7 @@ export function AdventureWorldScene({
           <button
             key={hotspot.id}
             type="button"
-            className={
-              currentHotspot === hotspot.id
-                ? "world-hotspot current"
-                : "world-hotspot"
-            }
+            className="world-hotspot"
             style={{
               left: hotspot.x * 100 + "%",
               top: hotspot.y * 100 + "%"
@@ -122,7 +115,7 @@ export function AdventureWorldScene({
         )}
       </div>
 
-      {step.kind !== "starpoint" && !currentHotspot && (
+      {step.kind !== "starpoint" && !(step.kind === "story" && step.hotspotId) && (
         <button
           type="button"
           className="world-primary-action"
