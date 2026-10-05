@@ -18,10 +18,6 @@ function normalize(value: string): string {
   return value.toLowerCase().replace(/[-_]/g, " ");
 }
 
-function voiceKey(voice: SpeechSynthesisVoice): string {
-  return voice.voiceURI || `${voice.lang}:${voice.name}`;
-}
-
 function scoreVoice(
   voice: SpeechSynthesisVoice,
   role: VoiceRole,
@@ -35,8 +31,8 @@ function scoreVoice(
   let score = 0;
 
   if (normalizedLang.startsWith(targetLang)) score += 100;
-  if (voice.localService) score += 18;
-  if (voice.default) score += 5;
+  if (voice.localService) score += 12;
+  if (voice.default) score += 8;
 
   profile.preferredNames.forEach((name, index) => {
     if (normalizedName.includes(normalize(name))) {
@@ -44,8 +40,8 @@ function scoreVoice(
     }
   });
 
-  if (/premium|enhanced|natural|neural/.test(normalizedName)) score += 24;
-  if (/compact/.test(normalizedName)) score -= 10;
+  if (/premium|enhanced|natural|neural/.test(normalizedName)) score += 40;
+  if (/compact|espeak|festival/.test(normalizedName)) score -= 28;
 
   return score;
 }
@@ -92,8 +88,8 @@ class BrowserSpeechService {
       Math.min(1.3, baseRate * profile.rateMultiplier)
     );
     utterance.pitch = Math.max(
-      0.55,
-      Math.min(1.5, options.pitch ?? profile.pitch)
+      0.9,
+      Math.min(1.1, options.pitch ?? profile.pitch)
     );
     utterance.volume = Math.max(0, Math.min(1, options.volume ?? 1));
 
@@ -162,16 +158,18 @@ class BrowserSpeechService {
       normalize(voice.lang).startsWith(languageKey)
     );
     const pool = languageVoices.length > 0 ? languageVoices : voices;
-    const used = new Set<string>();
 
+    /*
+     * Naturalness beats forced distinctness. The old implementation consumed a
+     * different voice for every crew member even when the remaining voices were
+     * low-quality/compact variants. On iOS this often sounded much worse than
+     * reusing one good native voice. Each role now independently chooses its
+     * best native candidate; roles may intentionally share a voice.
+     */
     for (const role of coreVoiceRoles) {
-      const unused = pool.filter((voice) => !used.has(voiceKey(voice)));
-      const candidates = unused.length > 0 ? unused : pool;
-      const selected = this.rankVoices(candidates, role, lang)[0];
-
+      const selected = this.rankVoices(pool, role, lang)[0];
       if (selected) {
         this.assignedVoices.set(role, selected);
-        used.add(voiceKey(selected));
       }
     }
   }
