@@ -16,6 +16,7 @@ import { ProfileSelect } from "../features/profiles/ProfileSelect";
 import { ReadAloudButton } from "../features/speech/ReadAloudButton";
 import { StarPointFlow } from "../features/starpoints/StarPointFlow";
 import { Chapter1StoryDialog } from "../features/story/Chapter1StoryDialog";
+import { PostHangarJourney } from "../features/story/PostHangarJourney";
 import { appEventBus } from "../services/appEventBus";
 import {
   getChapter1BeatForHotspot,
@@ -141,6 +142,18 @@ export function App() {
   const energyReady = isStarPointCompleted(hangarEnergyStarPoint.id);
   const gateReady = isStarPointCompleted(hangarGateStarPoint.id);
   const mission = getChapter1Objective(chapter);
+
+  if (chapter.launched && !launchComplete) {
+    return (
+      <>
+        <PostHangarJourney
+          profile={activeProfile}
+          onSwitchProfile={switchProfile}
+        />
+        <PwaStatus />
+      </>
+    );
+  }
 
   const showInfo = (title: string, text: string) => {
     setDialog({ kind: "info", title, text });
@@ -275,7 +288,7 @@ export function App() {
               ein schwacher Kurs nach Cinder.
             </p>
             <button type="button" onClick={() => setLaunchComplete(false)}>
-              Hangar 3 noch einmal ansehen
+              Auf Cinder landen
             </button>
           </div>
         </section>
