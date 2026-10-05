@@ -11,7 +11,11 @@ export type GameSoundId =
   | "starpoint"
   | "reward"
   | "travel"
-  | "louis";
+  | "louis"
+  | "repair-step"
+  | "switch"
+  | "error"
+  | "system-ready";
 
 export type SoundscapeId =
   | "hangar"
@@ -105,8 +109,10 @@ class GameAudioService {
 
     switch (soundscape) {
       case "hangar":
-        this.startAmbientBed([48, 72], "lowpass", 520, 0.028, 0.022);
-        this.ambientPulse(7600, () => this.playTone(420, 0.09, "sine", 0.045, 0, 525));
+        this.startAmbientBed([44], "lowpass", 360, 0.014, 0.008);
+        this.ambientPulse(12000, () =>
+          this.playTone(310, 0.16, "sine", 0.018, 0, 360)
+        );
         break;
       case "cinder":
         this.startAmbientBed([42], "bandpass", 760, 0.062, 0.018, 0.13);
@@ -197,8 +203,24 @@ class GameAudioService {
         this.playTone(124, 0.85, "sine", 0.04, 0.25, 190);
         break;
       case "louis":
-        this.playTone(440, 0.1, "sine", 0.045);
-        this.playTone(587.33, 0.15, "sine", 0.035, 0.11);
+        this.playTone(392, 0.12, "sine", 0.028);
+        this.playTone(523.25, 0.16, "sine", 0.022, 0.12);
+        break;
+      case "repair-step":
+        this.playTone(330, 0.08, "triangle", 0.026);
+        this.playTone(440, 0.11, "sine", 0.022, 0.07);
+        break;
+      case "switch":
+        this.playTone(260, 0.045, "sine", 0.022);
+        this.playTone(390, 0.055, "sine", 0.018, 0.045);
+        break;
+      case "error":
+        this.playTone(180, 0.12, "sine", 0.022, 0, 150);
+        break;
+      case "system-ready":
+        this.playTone(392, 0.16, "sine", 0.032);
+        this.playTone(523.25, 0.18, "sine", 0.03, 0.12);
+        this.playTone(659.25, 0.22, "sine", 0.028, 0.24);
         break;
     }
   }
