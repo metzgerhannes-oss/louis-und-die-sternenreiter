@@ -1,4 +1,3 @@
-import { crewPortraits } from "../../domain/crewPortraits";
 import type { PlayerProfile } from "../../domain/profiles";
 import type { CinderState } from "../../services/cinderState";
 
@@ -60,6 +59,19 @@ const hotspots: Array<{
   }
 ];
 
+const base = import.meta.env.BASE_URL;
+
+const crewTouchpoints: Array<{
+  id: CinderCrewId;
+  label: string;
+  x: number;
+}> = [
+  { id: "philipp", label: "Philipp", x: 34 },
+  { id: "charly", label: "Charly", x: 49 },
+  { id: "olli", label: "Olli", x: 65 },
+  { id: "louis", label: "Louis", x: 80 }
+];
+
 export function CinderScene({
   profile,
   mission,
@@ -73,13 +85,20 @@ export function CinderScene({
   onTravelToMoss
 }: CinderSceneProps) {
   return (
-    <section className="world-scene cinder-scene" aria-label="Cinder">
+    <section className="world-scene cinder-scene has-native-world-art" aria-label="Cinder">
+      <img
+        className="world-native-background"
+        src={`${base}assets/scenes/worlds/world-cinder-overview-v1.webp`}
+        alt=""
+        draggable={false}
+      />
+
       <header className="world-scene-hud">
         <div>
           <p className="eyebrow">Kapitel 2 · Cinder</p>
           <strong>Staubhafen</strong>
         </div>
-        <div className="world-scene-build">H3 · CINDER 0.21</div>
+        <div className="world-scene-build">H3 · ART 0.23</div>
         <div className="world-scene-status">
           <span>✦ {stardust}</span>
           <button type="button" onClick={onSwitchProfile}>Profil</button>
@@ -91,30 +110,17 @@ export function CinderScene({
         <strong>{mission}</strong>
       </div>
 
-      <div className="cinder-sky" aria-hidden="true">
-        <span className="cinder-sun" />
-        <span className="cinder-dust dust-a" />
-        <span className="cinder-dust dust-b" />
-      </div>
-      <div className="cinder-horizon" aria-hidden="true">
-        <span className="cinder-mesa mesa-a" />
-        <span className="cinder-mesa mesa-b" />
-        <span className="cinder-settlement-shape" />
-        <span className="cinder-turbine turbine-a" />
-        <span className="cinder-turbine turbine-b" />
-      </div>
-
-      <div className="world-crew-focus interactive-crew" aria-label="Crew auf Cinder">
-        {(["charly", "philipp", "olli", "louis"] as const).map((id) => (
+      <div className="native-crew-hotspots" aria-label="Crew auf Cinder">
+        {crewTouchpoints.map((crew) => (
           <button
             type="button"
-            key={id}
-            className={id === profile.id ? "world-person active" : "world-person"}
-            onClick={() => onCrewInteract(id)}
-            aria-label={`${id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1)} ansprechen`}
+            key={crew.id}
+            className={crew.id === profile.id ? "native-crew-hotspot active" : "native-crew-hotspot"}
+            style={{ left: crew.x + "%" }}
+            onClick={() => onCrewInteract(crew.id)}
+            aria-label={crew.label + " ansprechen"}
           >
-            <img src={crewPortraits[id]} alt="" draggable={false} />
-            <span>{id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1)}</span>
+            <span>{crew.label}</span>
           </button>
         ))}
       </div>
