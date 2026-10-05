@@ -6,13 +6,37 @@ Diese Matrix ist die Produktionsgrundlage für alle Welten nach Hangar 3.
 
 ### Unveränderliche Figuren
 
+**Verbindliche Master-Referenzen aus dem aktuellen Spiel:**
+- Philipp: `public/assets/crew/philipp-portrait-v4.webp`
+- Charlotte/Charly: `public/assets/crew/charly-portrait-v4.webp`
+- Olli: `public/assets/crew/olli-portrait-v4.webp`
+- Louis: `public/assets/crew/louis.webp`
+
+Diese vier Dateien sind die Identitätsreferenz. Für neue Weltgrafiken dürfen Gesichter, Frisuren, Haarfarben, Alterswirkung, Proportionen und Farbcodes **nicht frei neu erfunden** werden. Neue Bilder müssen aus diesen freigegebenen Charakteren abgeleitet werden; ein stilistisch passendes, aber anders aussehendes Kind gilt als Grafikfehler.
+
+
 In jeder Szene bleibt die Kerncrew konsistent:
-- **Charly**: etwas größer als die beiden Jungen, lange braune Haare, magenta/pinke Sci-Fi-Jacke
-- **Philipp**: braunes Haar, blaue Sci-Fi-Jacke
-- **Olli**: blondes Haar, orange Sci-Fi-Jacke
-- **Louis**: schlanker, eher brauner **Golden Retriever**, klar als Hund erkennbar; niemals klein/beagleartig
+- **Charlotte/Charly**: leicht größer als Philipp, subtil weiblicher, lange braune Haare, Berry/Magenta als Akzentfarbe
+- **Philipp**: braunes Haar, Türkis/Blau als Akzentfarbe, normale kindliche Proportionen
+- **Olli**: sichtbar kleiner/jünger wirkend, blondes Haar, Amber/Orange als Akzentfarbe, normale Körperproportionen
+- **Louis**: schlanker, eher brauner **Golden Retriever**, klar als Hund erkennbar; niemals klein, beagleartig oder mit anderer Rassewirkung
 
 Zusätzliche Erwachsene/NPCs erscheinen **nur**, wenn die Story sie ausdrücklich verlangt.
+
+### Harte Identitätsprüfung vor jeder Freigabe
+
+Ein Bild darf erst übernommen werden, wenn alle Punkte mit **ja** beantwortet sind:
+- exakt **drei Kinder**: Charlotte/Charly, Philipp und Olli
+- keine vierte Kinderfigur und keine zusätzliche Person ohne Storygrund
+- Charly nicht blond und nicht durch ein beliebiges Mädchen ersetzt
+- Philipp und Olli nicht vertauscht
+- Olli sichtbar kleiner als Charly/Philipp und mit Orange/Amber erkennbar
+- Philipp mit Blau/Türkis erkennbar
+- Charly mit Berry/Magenta erkennbar
+- Gesichter/Frisuren an den V4-Portraits orientiert, nicht neu erfunden
+- Louis eindeutig derselbe schlanke braune Golden Retriever
+- wiederkehrendes Schiff bleibt dasselbe Modell
+- erst danach Prüfung von Welt, Licht, Storyzustand und Bildqualität
 
 ### Bildsprache
 
