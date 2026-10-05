@@ -106,6 +106,9 @@ Dicht gebaute Marktstation im All, Neonmarkt, Werkstätten, Garküchen, Kabel, t
 ### Personen/NPC
 Bram, älterer Mechaniker.
 
+### Easter Egg „67“
+Junction 12 enthält den verbindlichen optionalen 67-/Hitchhiker-Easter-Egg-Moment. Detailablauf: `docs/design/JUNCTION12_EASTER_EGG_67.md`.
+
 ### Bilder
 - `world-junction12-overview-v1.webp` – Crew im Neonmarkt, Antennenlandschaft
 - `world-junction12-bram-v1.webp` – Bram und Louis/Harness im Fokus
