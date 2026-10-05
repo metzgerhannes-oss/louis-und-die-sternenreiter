@@ -3168,3 +3168,148 @@ textarea,
     grid-template-columns: 1fr;
   }
 }
+
+
+/* === ART 0.23 · approved world artwork ================================ */
+.has-native-world-art {
+  background: #080d12;
+}
+
+.world-native-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.has-native-world-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(4,8,12,.32) 0%, rgba(4,8,12,.05) 28%, rgba(4,8,12,.06) 62%, rgba(4,8,12,.34) 100%),
+    radial-gradient(circle at 50% 50%, transparent 40%, rgba(3,7,10,.14) 100%);
+}
+
+.has-native-world-art .world-scene-hud,
+.has-native-world-art .world-scene-mission,
+.has-native-world-art .world-title-card,
+.has-native-world-art .world-hotspots,
+.has-native-world-art .world-npc-focus,
+.has-native-world-art .cinder-water-status,
+.has-native-world-art .world-primary-action,
+.has-native-world-art .native-crew-hotspots {
+  position: absolute;
+}
+
+.native-crew-hotspots {
+  z-index: 30;
+  inset: 0;
+  pointer-events: none;
+}
+
+.native-crew-hotspot {
+  position: absolute;
+  bottom: 3%;
+  width: clamp(76px, 11vw, 150px);
+  height: clamp(150px, 31vh, 330px);
+  transform: translateX(-50%);
+  border: 0;
+  padding: 0;
+  color: #fff;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.native-crew-hotspot > span {
+  position: absolute;
+  left: 50%;
+  bottom: .35rem;
+  transform: translateX(-50%);
+  padding: .25rem .5rem;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  color: #f7f4ec;
+  background: rgba(5,10,15,.66);
+  backdrop-filter: blur(7px);
+  font-size: .66rem;
+  font-weight: 850;
+  white-space: nowrap;
+  opacity: .78;
+  transition: opacity 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.native-crew-hotspot:hover > span,
+.native-crew-hotspot:focus-visible > span,
+.native-crew-hotspot.active > span {
+  opacity: 1;
+  border-color: rgba(225,180,98,.72);
+  background: rgba(29,47,54,.86);
+}
+
+.native-crew-hotspot:active {
+  transform: translateX(-50%) scale(.98);
+}
+
+.test-chapter-grid button.test-chapter-art {
+  position: relative;
+  overflow: hidden;
+  min-height: 138px;
+  align-content: end;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-shadow: 0 2px 8px rgba(0,0,0,.95);
+}
+
+.test-chapter-grid button.test-chapter-art span,
+.test-chapter-grid button.test-chapter-art strong,
+.test-chapter-grid button.test-chapter-art small {
+  position: relative;
+  z-index: 1;
+}
+
+.test-chapter-grid button.test-chapter-art strong {
+  font-size: 1rem;
+}
+
+.test-chapter-grid button.test-chapter-art small {
+  color: #e1e2de;
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  .test-chapter-grid button.test-chapter-art {
+    min-height: 92px;
+  }
+
+  .native-crew-hotspot {
+    bottom: 0;
+    width: clamp(66px, 10vw, 120px);
+    height: clamp(120px, 38vh, 240px);
+  }
+
+  .native-crew-hotspot > span {
+    font-size: .56rem;
+    bottom: .15rem;
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .world-native-background {
+    object-position: center;
+  }
+
+  .native-crew-hotspot {
+    bottom: 1%;
+    width: 22vw;
+    height: 31vh;
+  }
+}

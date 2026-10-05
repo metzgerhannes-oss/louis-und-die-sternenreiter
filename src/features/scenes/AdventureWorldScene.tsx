@@ -1,4 +1,3 @@
-import { crewPortraits } from "../../domain/crewPortraits";
 import type {
   AdventureStep,
   AdventureWorld,
@@ -20,6 +19,19 @@ function hex(value: number): string {
   return "#" + value.toString(16).padStart(6, "0");
 }
 
+const base = import.meta.env.BASE_URL;
+
+const worldArt: Record<AdventureWorldId, string> = {
+  moss: "world-moss-overview-v1.webp",
+  "junction-12": "world-junction12-overview-v1.webp",
+  "empty-path": "world-empty-path-overview-v1.webp",
+  distortion: "world-distortion-overview-v1.webp",
+  "glass-coast": "world-glass-coast-overview-v1.webp",
+  "cloud-ocean": "world-cloud-ocean-overview-v1.webp",
+  "scrap-ring": "world-scrap-ring-overview-v1.webp",
+  "heart-of-ways": "world-heart-of-ways-overview-v1.webp"
+};
+
 export function AdventureWorldScene({
   world,
   step,
@@ -31,8 +43,9 @@ export function AdventureWorldScene({
 }: AdventureWorldSceneProps) {
   return (
     <section
-      className={"world-scene adventure-world world-" + world.id}
+      className={"world-scene adventure-world has-native-world-art world-" + world.id}
       aria-label={world.title}
+      data-active-profile={profile.id}
       style={{
         "--world-sky": hex(world.theme.sky),
         "--world-horizon": hex(world.theme.horizon),
@@ -42,12 +55,19 @@ export function AdventureWorldScene({
         "--world-label": world.theme.labelColor
       } as React.CSSProperties}
     >
+      <img
+        className="world-native-background"
+        src={`${base}assets/scenes/worlds/${worldArt[world.id]}`}
+        alt=""
+        draggable={false}
+      />
+
       <header className="world-scene-hud">
         <div>
           <p className="eyebrow">{world.chapter}</p>
           <strong>{world.title}</strong>
         </div>
-        <div className="world-scene-build">H3 · CINDER 0.21</div>
+        <div className="world-scene-build">H3 · ART 0.23</div>
         <div className="world-scene-status">
           <span>✦ {stardust}</span>
           <button type="button" onClick={onSwitchProfile}>Profil</button>
@@ -59,29 +79,9 @@ export function AdventureWorldScene({
         <strong>{step.objective}</strong>
       </div>
 
-      <div className="adventure-sky" aria-hidden="true">
-        <span className="adventure-orb orb-a" />
-        <span className="adventure-orb orb-b" />
-        <span className="adventure-horizon-line" />
-        <span className="adventure-landform landform-a" />
-        <span className="adventure-landform landform-b" />
-      </div>
-
       <div className="world-title-card">
         <span>{world.subtitle}</span>
         <strong>{world.title}</strong>
-      </div>
-
-      <div className="world-crew-focus" aria-label="Crew">
-        {(["charly", "philipp", "olli", "louis"] as const).map((id) => (
-          <figure
-            key={id}
-            className={id === profile.id ? "world-person active" : "world-person"}
-          >
-            <img src={crewPortraits[id]} alt="" draggable={false} />
-            <figcaption>{id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1)}</figcaption>
-          </figure>
-        ))}
       </div>
 
       <div className="world-hotspots" aria-label={"Orte auf " + world.title}>
