@@ -88,7 +88,7 @@ export function Chapter1StoryDialog({
 
   return (
     <section
-      className="dialog-card story-dialog"
+      className={challengeActive ? "dialog-card story-dialog challenge-dialog" : "dialog-card story-dialog"}
       role="dialog"
       aria-modal="true"
       aria-labelledby="chapter-story-title"
