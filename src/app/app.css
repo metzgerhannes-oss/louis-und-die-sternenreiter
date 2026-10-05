@@ -1511,10 +1511,6 @@ textarea,
   font-weight: 900;
 }
 
-.challenge-sequence button.current {
-  border-color: rgba(222, 178, 103, 0.72);
-}
-
 .navigation-tuner {
   display: grid;
   gap: 0.58rem;
@@ -1619,5 +1615,50 @@ textarea,
 @media (orientation: landscape) and (max-height: 700px) {
   .story-dialog.challenge-dialog {
     overflow: hidden;
+  }
+}
+
+
+/* === PLAY 0.16 · discovery feedback =================================== */
+.challenge-sequence-unordered button,
+.system-check-grid-unordered button {
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.challenge-sequence-unordered button:not(:disabled):active,
+.system-check-grid-unordered button:not(:disabled):active {
+  transform: scale(0.985);
+}
+
+.signal-meter {
+  display: block;
+  width: 100%;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.signal-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(86, 145, 171, 0.85), rgba(132, 221, 202, 0.95));
+  transition: width 100ms linear;
+}
+
+.challenge-sequence-unordered button:disabled,
+.system-check-grid-unordered button:disabled {
+  opacity: 0.72;
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  .challenge-sequence-unordered,
+  .system-check-grid-unordered {
+    gap: 0.32rem;
+  }
+
+  .signal-meter {
+    height: 5px;
   }
 }

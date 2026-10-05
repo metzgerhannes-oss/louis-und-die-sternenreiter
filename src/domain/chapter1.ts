@@ -66,7 +66,7 @@ export const chapter1StoryBeats: Record<Chapter1StoryBeatId, Chapter1StoryBeat> 
       { speaker: "Charly", text: "Wenn wir damit starten, kocht uns der Antrieb weg." },
       { speaker: "Philipp", text: "Die Kühlleitung ist gerissen." },
       { speaker: "Olli", text: "Kann Louis nicht einfach eine neue machen?" },
-      { speaker: "Louis", text: "Nicht nötig. Das hier können wir selbst reparieren. Reicht mir die Klemme." }
+      { speaker: "Louis", text: "Nicht nötig. Wir bekommen die Leitung wieder dicht. Aber unter Druck wird das nichts." }
     ],
     action: "cooling-repaired",
     actionLabel: "Kühlleitung reparieren"
@@ -89,10 +89,10 @@ export const chapter1StoryBeats: Record<Chapter1StoryBeatId, Chapter1StoryBeat> 
     eyebrow: "Crew · Systemtest",
     title: "Das Schiff wacht auf",
     lines: [
-      { speaker: "Philipp", text: "Energie stabil." },
-      { speaker: "Charly", text: "Kühlung?" },
-      { speaker: "Olli", text: "Grün! Alles grün!" },
-      { speaker: "Louis", text: "Navigation reagiert. Das Schiff will los. Nur das Hangartor hält uns noch auf." }
+      { speaker: "Philipp", text: "Die Konsole ist wieder da. Aber nach der Reparatur vertraue ich keinem grünen Licht." },
+      { speaker: "Charly", text: "Dann fahren wir die Systeme kontrolliert hoch." },
+      { speaker: "Olli", text: "Und womit fangen wir an?" },
+      { speaker: "Louis", text: "Probiert es aus. Das Schiff sagt uns, was es akzeptiert." }
     ],
     action: "ship-tested",
     actionLabel: "Systemtest abschließen"
