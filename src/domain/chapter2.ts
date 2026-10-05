@@ -5,6 +5,7 @@ export type CinderAction =
   | "problem-known"
   | "intake-inspected"
   | "stardust-collected"
+  | "route-surveyed"
   | "water-celebrated"
   | "drive-upgraded"
   | "cinder-complete";
@@ -21,6 +22,7 @@ export type CinderStoryBeatId =
   | "settlement"
   | "inspect-intake"
   | "stardust"
+  | "route-survey"
   | "water-restored"
   | "drive-upgrade";
 
@@ -54,7 +56,7 @@ export const cinderStoryBeats: Record<CinderStoryBeatId, CinderStoryBeat> = {
     lines: [
       { speaker: "Rika", text: "Ihr seid wirklich durch den Sternenpfad gekommen? Dann funktioniert da draußen wenigstens noch irgendetwas." },
       { speaker: "Philipp", text: "Was ist hier passiert?" },
-      { speaker: "Rika", text: "Unsere alten Kondensatoren liefern fast nichts mehr. Ohne Wasser hält Staubhafen nicht lange durch." },
+      { speaker: "Rika", text: "Unsere alten Kondensatoren liefern fast nichts mehr. Die Tanks reichen vielleicht noch ein paar Tage." },
       { speaker: "Charly", text: "Dann zeigen Sie uns die Anlage." },
       { speaker: "Olli", text: "Louis leuchtet schon wieder." },
       { speaker: "Louis", text: "Noch nicht. Erst müssen wir verstehen, was fehlt." }
@@ -67,13 +69,14 @@ export const cinderStoryBeats: Record<CinderStoryBeatId, CinderStoryBeat> = {
     eyebrow: "Cinder · Alte Kondensatorfelder",
     title: "Die Luft ist nicht leer",
     lines: [
-      { speaker: "Philipp", text: "Die Maschinen sind alt, aber nicht tot. Sie bekommen die Luft nur nicht mehr kalt genug." },
-      { speaker: "Charly", text: "Nachts fällt die Temperatur hier stark. Dann müsste man Feuchtigkeit sammeln können." },
-      { speaker: "Olli", text: "Also Wasser aus Luft?" },
-      { speaker: "Louis", text: "Genau. Und jetzt reagiert mein Harness. Hier ist ein Sternenpunkt." }
+      { speaker: "Rika", text: "Die Anlage läuft, aber fast ohne Ertrag. Wir haben schon Lüfter und Pumpen getauscht. Nichts hat geholfen." },
+      { speaker: "Philipp", text: "Dann sollten wir nicht weiter raten. Ich will die Temperaturen an verschiedenen Stellen sehen." },
+      { speaker: "Charly", text: "Und vergleichen, was die Anlage tatsächlich macht – nicht, was sie machen sollte." },
+      { speaker: "Olli", text: "Also erst messen, dann schrauben. Langweilig vernünftig." },
+      { speaker: "Louis", text: "Mein Harness reagiert hier ganz schwach. Finden wir zuerst heraus, warum." }
     ],
     action: "intake-inspected",
-    actionLabel: "Louis' Sternenpunkt ansehen"
+    actionLabel: "Anlage untersuchen"
   },
   stardust: {
     id: "stardust",
@@ -87,6 +90,20 @@ export const cinderStoryBeats: Record<CinderStoryBeatId, CinderStoryBeat> = {
     ],
     action: "stardust-collected",
     actionLabel: "Sternenstaub aufnehmen"
+  },
+  "route-survey": {
+    id: "route-survey",
+    eyebrow: "Cinder · Canyonrand",
+    title: "Der Weg nach Staubhafen",
+    lines: [
+      { speaker: "Rika", text: "Das Wasser ist da draußen. Jetzt müssen wir es nur noch durch diesen Canyon bekommen." },
+      { speaker: "Charly", text: "Bevor Louis etwas Großes formt, sollten wir wissen, wo es überhaupt entlang kann." },
+      { speaker: "Philipp", text: "Drei mögliche Korridore. Jeder hat einen Haken." },
+      { speaker: "Olli", text: "Gut. Dann finden wir den mit dem kleinsten Haken." },
+      { speaker: "Louis", text: "Ich warte mit der Formung. Erst die Route." }
+    ],
+    action: "route-surveyed",
+    actionLabel: "Route erkunden"
   },
   "water-restored": {
     id: "water-restored",

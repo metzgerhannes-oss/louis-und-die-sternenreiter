@@ -37,6 +37,7 @@ const cinderStart = {
   problemKnown: false,
   intakeInspected: false,
   stardustCollected: false,
+  routeSurveyed: false,
   waterCelebrated: false,
   driveUpgraded: false,
   complete: false
@@ -47,6 +48,7 @@ const cinderComplete = {
   problemKnown: true,
   intakeInspected: true,
   stardustCollected: true,
+  routeSurveyed: true,
   waterCelebrated: true,
   driveUpgraded: true,
   complete: true

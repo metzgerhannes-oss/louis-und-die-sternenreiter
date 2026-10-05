@@ -2851,3 +2851,320 @@ textarea,
     font-size: .58rem;
   }
 }
+
+
+/* === CINDER 0.21 · person-first exploration and consequence play ===== */
+.interactive-crew {
+  pointer-events: auto;
+}
+
+.interactive-crew .world-person {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.interactive-crew .world-person > span {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  padding: .25rem .48rem;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(4,8,12,.68);
+  font-size: clamp(.58rem, 1.5vw, .78rem);
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.interactive-crew .world-person:active {
+  transform: translateY(-2%) scale(1.03);
+}
+
+.rika-focus {
+  appearance: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.world-npc-copy {
+  display: grid;
+}
+
+.cinder-action-challenge {
+  position: relative;
+}
+
+.cinder-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .55rem;
+}
+
+.cinder-choice-grid button,
+.cinder-sensor-grid button,
+.cinder-diagnosis button {
+  min-height: 48px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: .8rem;
+  padding: .65rem .72rem;
+  color: #f8f1e5;
+  background: rgba(48, 39, 34, .92);
+}
+
+.cinder-choice-grid button {
+  display: grid;
+  gap: .2rem;
+  text-align: left;
+}
+
+.cinder-choice-grid button span {
+  color: #c9b6a6;
+  font-size: .72rem;
+  line-height: 1.3;
+}
+
+.cinder-choice-grid button.done {
+  border-color: rgba(112, 211, 178, .74);
+  background: rgba(28, 79, 66, .82);
+}
+
+.cinder-sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .55rem;
+}
+
+.cinder-sensor-grid button {
+  display: grid;
+  gap: .18rem;
+  text-align: left;
+}
+
+.cinder-sensor-grid button > span {
+  color: #e3b56d;
+  font-size: .7rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+}
+
+.cinder-sensor-grid button small {
+  color: #b7b9b6;
+  font-size: .68rem;
+  line-height: 1.28;
+}
+
+.cinder-sensor-grid button.scanned {
+  border-color: rgba(105, 188, 198, .65);
+  background: rgba(31, 66, 70, .78);
+}
+
+.cinder-diagnosis {
+  display: grid;
+  gap: .45rem;
+}
+
+.cinder-diagnosis > p {
+  margin: 0;
+  color: #dfd2c4;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.cinder-diagnosis > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: .45rem;
+}
+
+.cinder-diagnosis button:disabled {
+  opacity: .38;
+}
+
+.cinder-diagnosis button.done {
+  border-color: rgba(112, 211, 178, .74);
+  background: rgba(28, 79, 66, .82);
+}
+
+.cinder-reaction-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 280;
+  overflow: hidden;
+  display: grid;
+  place-items: stretch;
+  color: #fff7e8;
+  background: #130b08;
+  pointer-events: all;
+  animation: reaction-frame-in 120ms ease-out both;
+}
+
+.cinder-reaction-world {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(255,209,138,.28), transparent 16%),
+    linear-gradient(180deg, #37130e 0%, #873d28 46%, #b65f36 63%, #53271e 100%);
+}
+
+.reaction-cinder-sun {
+  position: absolute;
+  right: 12%;
+  top: 12%;
+  width: min(15vw, 170px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffe0a0;
+  box-shadow: 0 0 80px rgba(255,185,105,.55);
+}
+
+.reaction-cinder-mesa {
+  position: absolute;
+  bottom: 20%;
+  width: 46vw;
+  height: 34vh;
+  background: linear-gradient(180deg, #9b5232, #4a241d);
+  clip-path: polygon(0 100%, 9% 56%, 26% 50%, 37% 20%, 52% 24%, 67% 7%, 84% 31%, 100% 100%);
+}
+
+.reaction-cinder-mesa-a { left: -8%; }
+.reaction-cinder-mesa-b { right: -9%; transform: scaleX(-1) scale(.76); opacity: .68; }
+
+.reaction-cinder-dust {
+  position: absolute;
+  width: 80vw;
+  height: 24vh;
+  border-radius: 50%;
+  background: rgba(223, 119, 61, .34);
+  filter: blur(24px);
+  opacity: 0;
+}
+
+.reaction-cinder-dust-a { left: -16%; top: 38%; }
+.reaction-cinder-dust-b { right: -24%; top: 52%; }
+
+.cinder-reaction-dust-blast .reaction-cinder-dust,
+.cinder-reaction-fan-dust .reaction-cinder-dust {
+  animation: cinder-dust-surge .7s ease-out 2 alternate;
+}
+
+.reaction-cinder-crack {
+  position: absolute;
+  left: 43%;
+  bottom: 8%;
+  width: 28vw;
+  height: 24vh;
+  opacity: 0;
+  background:
+    linear-gradient(135deg, transparent 0 46%, rgba(35,18,15,.95) 47% 52%, transparent 53%),
+    linear-gradient(52deg, transparent 0 48%, rgba(35,18,15,.88) 49% 53%, transparent 54%);
+  filter: drop-shadow(0 0 8px rgba(255,104,48,.35));
+}
+
+.cinder-reaction-ground-crack .reaction-cinder-crack {
+  animation: cinder-crack-open .9s ease-out both;
+}
+
+.reaction-cinder-spark {
+  position: absolute;
+  left: 55%;
+  top: 47%;
+  width: 6px;
+  height: 27vh;
+  border-radius: 999px;
+  opacity: 0;
+  background: linear-gradient(180deg, #fff7c5, #81dfff 42%, #ff9a45 68%, transparent);
+  filter: drop-shadow(0 0 10px #9fe8ff);
+  transform-origin: 50% 0;
+}
+
+.spark-a { transform: rotate(35deg); }
+.spark-b { transform: rotate(-42deg); left: 48%; }
+.spark-c { transform: rotate(78deg); left: 52%; }
+
+.cinder-reaction-coil-spark .reaction-cinder-spark,
+.cinder-reaction-coil-kickback .reaction-cinder-spark {
+  animation: cinder-spark-pop .42s steps(3,end) 2;
+}
+
+.reaction-cinder-coil {
+  position: absolute;
+  left: 49%;
+  top: 48%;
+  width: min(16vw, 170px);
+  aspect-ratio: 1.5;
+  border: 10px solid #b5834c;
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: inset 0 0 0 8px #39271e, 0 0 28px rgba(121,217,255,.5);
+}
+
+.cinder-reaction-coil-kickback .reaction-cinder-coil {
+  animation: cinder-coil-kick 1s ease-out both;
+}
+
+.cinder-reaction-system-lock .cinder-reaction-world,
+.cinder-reaction-dry-air .cinder-reaction-world {
+  animation: cinder-warning-pulse .45s ease-in-out 2;
+}
+
+@keyframes cinder-dust-surge {
+  from { opacity: 0; transform: translateX(-12%) scale(.8); }
+  to { opacity: .95; transform: translateX(16%) scale(1.25); }
+}
+
+@keyframes cinder-crack-open {
+  0% { opacity: 0; transform: scale(.3); }
+  28% { opacity: 1; transform: scale(.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes cinder-spark-pop {
+  0%,100% { opacity: 0; transform: scaleY(.5) rotate(35deg); }
+  45% { opacity: 1; transform: scaleY(1.1) rotate(28deg); }
+}
+
+@keyframes cinder-coil-kick {
+  0% { opacity: 0; transform: translate(0,0) rotate(0deg) scale(.7); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(36vw,-20vh) rotate(190deg) scale(1.05); }
+}
+
+@keyframes cinder-warning-pulse {
+  0%,100% { filter: brightness(1); }
+  50% { filter: brightness(.52) saturate(.7); }
+}
+
+@media (orientation: landscape) and (max-height: 700px) {
+  .cinder-choice-grid,
+  .cinder-sensor-grid,
+  .cinder-diagnosis > div {
+    gap: .32rem;
+  }
+
+  .cinder-choice-grid button,
+  .cinder-sensor-grid button,
+  .cinder-diagnosis button {
+    min-height: 40px;
+    padding: .42rem .48rem;
+    font-size: .7rem;
+  }
+
+  .cinder-choice-grid button span,
+  .cinder-sensor-grid button small {
+    font-size: .58rem;
+  }
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+  .cinder-choice-grid,
+  .cinder-sensor-grid,
+  .cinder-diagnosis > div {
+    grid-template-columns: 1fr;
+  }
+}

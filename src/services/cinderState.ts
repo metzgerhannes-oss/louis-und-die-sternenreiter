@@ -15,6 +15,7 @@ export type CinderState = {
   problemKnown: boolean;
   intakeInspected: boolean;
   stardustCollected: boolean;
+  routeSurveyed: boolean;
   waterCelebrated: boolean;
   driveUpgraded: boolean;
   complete: boolean;
@@ -27,6 +28,7 @@ const initialState: CinderState = {
   problemKnown: false,
   intakeInspected: false,
   stardustCollected: false,
+  routeSurveyed: false,
   waterCelebrated: false,
   driveUpgraded: false,
   complete: false
@@ -44,6 +46,7 @@ export function loadCinderState(): CinderState {
       problemKnown: Boolean(parsed.problemKnown),
       intakeInspected: Boolean(parsed.intakeInspected),
       stardustCollected: Boolean(parsed.stardustCollected),
+      routeSurveyed: Boolean(parsed.routeSurveyed),
       waterCelebrated: Boolean(parsed.waterCelebrated),
       driveUpgraded: Boolean(parsed.driveUpgraded),
       complete: Boolean(parsed.complete)
@@ -68,6 +71,9 @@ export function applyCinderAction(action: CinderAction): CinderState {
       break;
     case "stardust-collected":
       next.stardustCollected = true;
+      break;
+    case "route-surveyed":
+      next.routeSurveyed = true;
       break;
     case "water-celebrated":
       next.waterCelebrated = true;
@@ -95,6 +101,7 @@ export function getCinderObjective(state = loadCinderState()): string {
     return "Hilf Louis, wieder Wasser aus Cinders Luft zu gewinnen.";
   }
   if (!state.stardustCollected) return "Untersucht das Leuchten am reparierten Kondensatorfeld.";
+  if (!state.routeSurveyed) return "Findet einen sicheren Weg für das Wasser durch den Canyon.";
   if (!isStarPointCompleted(cinderDistributionStarPoint.id)) {
     return "Bringt das gewonnene Wasser bis nach Staubhafen.";
   }
@@ -112,6 +119,9 @@ export function getCinderBeatForHotspot(
 ): CinderStoryBeat | null {
   if (hotspotId === "settlement") {
     if (!state.problemKnown) return cinderStoryBeats.settlement;
+    if (state.stardustCollected && !state.routeSurveyed) {
+      return cinderStoryBeats["route-survey"];
+    }
     if (
       isStarPointCompleted(cinderDistributionStarPoint.id) &&
       !state.waterCelebrated

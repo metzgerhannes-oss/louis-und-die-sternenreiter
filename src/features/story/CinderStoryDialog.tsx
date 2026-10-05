@@ -11,6 +11,10 @@ import { addStardust } from "../../services/crewResources";
 import { browserSpeech } from "../../services/speech/browserSpeech";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
 import { SpeakerFocus } from "./SpeakerFocus";
+import {
+  CinderActionChallenge,
+  hasCinderActionChallenge
+} from "./CinderActionChallenge";
 
 type CinderStoryDialogProps = {
   beat: CinderStoryBeat;
@@ -37,19 +41,21 @@ export function CinderStoryDialog({
   onClose
 }: CinderStoryDialogProps) {
   const [lineIndex, setLineIndex] = useState(0);
+  const [challengeActive, setChallengeActive] = useState(false);
   const line = beat.lines[lineIndex];
   const isLast = lineIndex === beat.lines.length - 1;
+  const hasChallenge = Boolean(beat.action) && hasCinderActionChallenge(beat.id);
 
   const spokenText = useMemo(() => line.text, [line.text]);
 
   useEffect(() => {
-    if (autoRead) {
+    if (autoRead && !challengeActive) {
       browserSpeech.speak(spokenText, { rate: speechRate, speaker: line.speaker });
     }
     return () => browserSpeech.stop();
-  }, [autoRead, speechRate, spokenText]);
+  }, [autoRead, challengeActive, line.speaker, speechRate, spokenText]);
 
-  const finishBeat = () => {
+  const completeBeat = () => {
     browserSpeech.stop();
 
     if (beat.action) {
@@ -62,6 +68,17 @@ export function CinderStoryDialog({
     onClose();
   };
 
+  const finishDialogue = () => {
+    browserSpeech.stop();
+
+    if (hasChallenge) {
+      setChallengeActive(true);
+      return;
+    }
+
+    completeBeat();
+  };
+
   const advance = () => {
     browserSpeech.stop();
     if (!isLast) {
@@ -69,20 +86,24 @@ export function CinderStoryDialog({
       return;
     }
 
-    finishBeat();
+    finishDialogue();
   };
 
   return (
     <section
-      className="dialog-card story-dialog"
+      className={challengeActive ? "dialog-card story-dialog challenge-dialog" : "dialog-card story-dialog"}
       role="dialog"
       aria-modal="true"
       aria-labelledby="cinder-story-title"
       onClick={(event) => event.stopPropagation()}
     >
       <p className="eyebrow">{beat.eyebrow}</p>
-      <h2 id="cinder-story-title">{beat.title}</h2>
+      <h2 id="cinder-story-title">
+        {challengeActive ? "Jetzt seid ihr dran" : beat.title}
+      </h2>
 
+      {!challengeActive ? (
+        <>
       <div className="story-crew-strip" aria-label="Die ganze Crew ist anwesend">
         {(["Philipp", "Charly", "Olli", "Louis"] as const).map((speaker) => (
           <span
@@ -98,6 +119,14 @@ export function CinderStoryDialog({
             {speaker.toLowerCase() === profile.id ? " · aktiv" : ""}
           </span>
         ))}
+        {beat.lines.some((storyLine) => storyLine.speaker === "Rika") && (
+          <span
+            className={line.speaker === "Rika" ? "story-crew active" : "story-crew"}
+            style={{ "--speaker-color": cinderSpeakerColor.Rika } as React.CSSProperties}
+          >
+            Rika
+          </span>
+        )}
       </div>
 
       <div className="story-person-layout">
@@ -130,15 +159,23 @@ export function CinderStoryDialog({
         <button
           type="button"
           className="secondary-button story-skip-button"
-          onClick={finishBeat}
+          onClick={finishDialogue}
         >
-          Überspringen
+          Dialog überspringen
         </button>
         <ReadAloudButton text={spokenText} rate={speechRate} speaker={line.speaker} />
         <button type="button" onClick={advance}>
-          {isLast ? beat.actionLabel : "Weiter"}
+          {isLast
+            ? hasChallenge
+              ? "An die Arbeit"
+              : beat.actionLabel
+            : "Weiter"}
         </button>
       </div>
+        </>
+      ) : (
+        <CinderActionChallenge beatId={beat.id} onComplete={completeBeat} />
+      )}
     </section>
   );
 }

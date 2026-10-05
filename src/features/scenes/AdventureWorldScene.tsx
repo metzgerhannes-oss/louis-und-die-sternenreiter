@@ -47,7 +47,7 @@ export function AdventureWorldScene({
           <p className="eyebrow">{world.chapter}</p>
           <strong>{world.title}</strong>
         </div>
-        <div className="world-scene-build">H3 · TEST 0.20</div>
+        <div className="world-scene-build">H3 · CINDER 0.21</div>
         <div className="world-scene-status">
           <span>✦ {stardust}</span>
           <button type="button" onClick={onSwitchProfile}>Profil</button>
