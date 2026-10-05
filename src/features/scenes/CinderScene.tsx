@@ -8,6 +8,8 @@ export type CinderHotspotId =
   | "stardust"
   | "workshop";
 
+export type CinderCrewId = "charly" | "philipp" | "olli" | "louis";
+
 type CinderSceneProps = {
   profile: PlayerProfile;
   mission: string;
@@ -16,6 +18,7 @@ type CinderSceneProps = {
   moistureReady: boolean;
   distributionReady: boolean;
   onInteract: (id: CinderHotspotId) => void;
+  onCrewInteract: (id: CinderCrewId) => void;
   onSwitchProfile: () => void;
   onTravelToMoss: () => void;
 };
@@ -65,6 +68,7 @@ export function CinderScene({
   moistureReady,
   distributionReady,
   onInteract,
+  onCrewInteract,
   onSwitchProfile,
   onTravelToMoss
 }: CinderSceneProps) {
@@ -75,7 +79,7 @@ export function CinderScene({
           <p className="eyebrow">Kapitel 2 · Cinder</p>
           <strong>Staubhafen</strong>
         </div>
-        <div className="world-scene-build">H3 · TEST 0.20</div>
+        <div className="world-scene-build">H3 · CINDER 0.21</div>
         <div className="world-scene-status">
           <span>✦ {stardust}</span>
           <button type="button" onClick={onSwitchProfile}>Profil</button>
@@ -100,26 +104,34 @@ export function CinderScene({
         <span className="cinder-turbine turbine-b" />
       </div>
 
-      <div className="world-crew-focus" aria-label="Crew auf Cinder">
+      <div className="world-crew-focus interactive-crew" aria-label="Crew auf Cinder">
         {(["charly", "philipp", "olli", "louis"] as const).map((id) => (
-          <figure
+          <button
+            type="button"
             key={id}
             className={id === profile.id ? "world-person active" : "world-person"}
+            onClick={() => onCrewInteract(id)}
+            aria-label={`${id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1)} ansprechen`}
           >
             <img src={crewPortraits[id]} alt="" draggable={false} />
-            <figcaption>{id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1)}</figcaption>
-          </figure>
+            <span>{id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1)}</span>
+          </button>
         ))}
       </div>
 
       {state.landingSeen && (
-        <div className="world-npc-focus rika-focus" aria-label="Rika aus Staubhafen">
+        <button
+          type="button"
+          className="world-npc-focus rika-focus"
+          aria-label="Mit Rika sprechen"
+          onClick={() => onInteract("settlement")}
+        >
           <span className="npc-portrait-placeholder">R</span>
-          <div>
+          <span className="world-npc-copy">
             <strong>Rika</strong>
             <small>Staubhafen</small>
-          </div>
-        </div>
+          </span>
+        </button>
       )}
 
       <div className="world-hotspots" aria-label="Orte auf Cinder">
