@@ -38,6 +38,8 @@ jobs:
         run: npm run test
 
       - name: Build
+        env:
+          VITE_RELEASE_ID: ${{ github.sha }}
         run: npm run build
 
       - name: Configure GitHub Pages
