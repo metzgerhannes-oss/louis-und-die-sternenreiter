@@ -9,9 +9,9 @@ const STORAGE_KEY = "sternenreiter.audio";
 
 export const defaultAudioSettings: AudioSettings = {
   enabled: true,
-  masterVolume: 0.72,
-  ambienceVolume: 0.38,
-  effectsVolume: 0.72
+  masterVolume: 0.68,
+  ambienceVolume: 0.22,
+  effectsVolume: 0.56
 };
 
 function clamp(value: number, fallback: number): number {
