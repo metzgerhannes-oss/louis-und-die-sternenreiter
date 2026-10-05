@@ -30,6 +30,7 @@ import { isStarPointCompleted } from "../../services/starPointState";
 import { AdventureWorldScene } from "../scenes/AdventureWorldScene";
 import {
   CinderScene,
+  type CinderCrewId,
   type CinderHotspotId
 } from "../scenes/CinderScene";
 import { ReadAloudButton } from "../speech/ReadAloudButton";
@@ -100,6 +101,38 @@ export function PostHangarJourney({
 
   const showInfo = (title: string, text: string) => {
     setDialog({ kind: "info", title, text });
+  };
+
+  const interactCinderCrew = (id: CinderCrewId) => {
+    const state = loadCinderState();
+
+    const textByCrew: Record<CinderCrewId, string> = {
+      philipp: state.driveUpgraded
+        ? "Die Impulsspule sitzt sauber. Ich will wissen, wie sie sich im nächsten Sternenpfad verhält."
+        : state.intakeInspected
+          ? "Die Messwerte passen nicht zusammen. Genau da steckt wahrscheinlich die Lösung."
+          : "Ich will erst verstehen, wie die alte Technik hier funktioniert, bevor wir irgendetwas umbauen.",
+      charly: state.waterCelebrated
+        ? "Staubhafen sieht sofort anders aus, nur weil wieder Wasser fließt. Das ist schon ziemlich stark."
+        : state.problemKnown
+          ? "Rika versucht ruhig zu bleiben, aber die leeren Tanks sagen eigentlich alles."
+          : "Die Siedlung dort hinten sieht bewohnt aus. Wir sollten zuerst mit den Leuten sprechen.",
+      olli: state.stardustCollected
+        ? "Ich hab immer noch roten Staub in den Schuhen. Aber der glitzernde war eindeutig cooler."
+        : state.problemKnown
+          ? "Wenn Louis wieder leuchtet, sag ich diesmal nichts. Also … fast nichts."
+          : "Die Windräder sehen aus, als könnten sie jeden Moment auseinanderfallen.",
+      louis: state.stardustCollected
+        ? "Der Sternenstaub fühlt sich nicht wie Energie an. Eher wie etwas, das Formen festhält."
+        : state.intakeInspected
+          ? "Hier ist wieder dieses Ziehen im Harness. Nicht stark, aber eindeutig."
+          : "Ich rieche heißen Metallstaub, altes Kühlmittel und Wasser. Sehr wenig Wasser."
+    };
+
+    showInfo(
+      id === "louis" ? "Louis" : id[0].toUpperCase() + id.slice(1),
+      textByCrew[id]
+    );
   };
 
   const interactCinder = (id: CinderHotspotId) => {
@@ -252,6 +285,7 @@ export function PostHangarJourney({
       moistureReady={moistureReady}
       distributionReady={distributionReady}
       onInteract={interactCinder}
+      onCrewInteract={interactCinderCrew}
       onSwitchProfile={onSwitchProfile}
       onTravelToMoss={travelToMoss}
     />
