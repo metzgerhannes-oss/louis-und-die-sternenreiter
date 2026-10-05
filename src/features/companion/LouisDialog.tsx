@@ -147,6 +147,42 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
               />
             </label>
 
+            <label className="audio-volume">
+              Hintergrund
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={audioSettings.ambienceVolume}
+                disabled={!audioSettings.enabled}
+                onChange={(event) =>
+                  updateAudioSettings({
+                    ...audioSettings,
+                    ambienceVolume: Number(event.target.value)
+                  })
+                }
+              />
+            </label>
+
+            <label className="audio-volume">
+              Effekte
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={audioSettings.effectsVolume}
+                disabled={!audioSettings.enabled}
+                onChange={(event) =>
+                  updateAudioSettings({
+                    ...audioSettings,
+                    effectsVolume: Number(event.target.value)
+                  })
+                }
+              />
+            </label>
+
             <button
               type="button"
               className="voice-preview-button"
@@ -209,10 +245,10 @@ export function LouisDialog({ profile, onClose }: LouisDialogProps) {
           </div>
 
           <p className="voice-note">
-            Die vier Crew-Stimmen werden auf diesem Gerät möglichst auf
-            unterschiedliche deutsche Systemstimmen verteilt. Falls das Gerät
-            nur eine deutsche Stimme bereitstellt, unterscheiden sie sich
-            zusätzlich deutlich in Tempo und Tonlage.
+            Stimmenmodus: natürlich. Die App bevorzugt die beste deutsche
+            Systemstimme des Geräts und vermeidet starke künstliche
+            Tonhöhenverschiebungen. Wenn mehrere gute Stimmen verfügbar sind,
+            werden sie passend auf die Crew verteilt.
           </p>
 
           <div className="dialog-actions">
