@@ -1,6 +1,10 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { Chapter1StoryBeatId } from "../../domain/chapter1";
 import { gameAudio, type GameSoundId } from "../../services/audio/gameAudio";
+import {
+  Chapter1FailureReaction,
+  type FailureReaction
+} from "./Chapter1FailureReaction";
 
 type Chapter1ActionChallengeProps = {
   beatId: Chapter1StoryBeatId;
@@ -22,6 +26,32 @@ export function hasChapter1ActionChallenge(id: Chapter1StoryBeatId): boolean {
 async function cue(sound: GameSoundId): Promise<void> {
   await gameAudio.unlock();
   gameAudio.play(sound);
+}
+
+function useFailureReaction() {
+  const [reaction, setReaction] = useState<FailureReaction | null>(null);
+  const clearReaction = useCallback(() => setReaction(null), []);
+
+  const trigger = useCallback(
+    (next: FailureReaction, sound: GameSoundId) => {
+      setReaction(next);
+      void cue(sound);
+    },
+    []
+  );
+
+  return { reaction, clearReaction, trigger };
+}
+
+function ReactionLayer({
+  reaction,
+  onDone
+}: {
+  reaction: FailureReaction | null;
+  onDone: () => void;
+}) {
+  if (!reaction) return null;
+  return <Chapter1FailureReaction reaction={reaction} onDone={onDone} />;
 }
 
 export type CoolingControlId = "pressure" | "seal" | "valve" | "clamp";
@@ -112,32 +142,68 @@ function EnergyCellChallenge({ onComplete }: { onComplete: () => void }) {
   const [message, setMessage] = useState(
     "Am Anschluss steht 48 V. Die Schutzanzeige warnt vor Hitze."
   );
+  const { reaction, clearReaction, trigger } = useFailureReaction();
 
   const choose = (id: "a" | "b" | "c") => {
-    setSelected(id);
     setPlus(false);
     setGround(false);
 
     if (id === "a") {
-      setMessage("Die Anzeige bleibt dunkel. Die Spannung reicht offenbar nicht.");
-      void cue("error");
+      setSelected(null);
+      setMessage("Die Anzeige bleibt dunkel.");
+      trigger(
+        {
+          kind: "energy-low",
+          title: "Nichts passiert",
+          text: "Die Anzeigen flackern kurz und fallen wieder aus."
+        },
+        "alarm"
+      );
       return;
     }
 
     if (id === "c") {
-      setMessage("Warnsignal: Die Zelle wird zu heiß.");
-      void cue("error");
+      setSelected(null);
+      setMessage("Die Schutzanzeige meldet Überhitzung.");
+      trigger(
+        {
+          kind: "energy-overheat",
+          title: "Funkenstoß!",
+          text: "Die heiße Zelle schlägt Funken. Louis zieht sie sofort zurück."
+        },
+        "failure-burst"
+      );
       return;
     }
 
+    setSelected(id);
     setMessage("Die Kontakte passen. Versucht, die Zelle anzuschließen.");
     void cue("repair-step");
   };
 
   const ready = selected === "b" && plus && ground;
 
+  const tryLock = () => {
+    if (!ready) {
+      trigger(
+        {
+          kind: "energy-lock",
+          title: "Verriegelung blockiert",
+          text: "Die Halterung stößt die Zelle wieder zurück."
+        },
+        "alarm"
+      );
+      return;
+    }
+
+    void cue("system-ready");
+    onComplete();
+  };
+
   return (
     <div className="chapter-action-challenge" aria-label="Energiezelle vorbereiten">
+      <ReactionLayer reaction={reaction} onDone={clearReaction} />
+
       <div className="challenge-status">
         <strong>Energiezelle</strong>
         <span>{message}</span>
@@ -197,12 +263,8 @@ function EnergyCellChallenge({ onComplete }: { onComplete: () => void }) {
 
       <button
         type="button"
-        className="challenge-complete"
-        disabled={!ready}
-        onClick={() => {
-          void cue("system-ready");
-          onComplete();
-        }}
+        className={ready ? "challenge-complete" : ""}
+        onClick={tryLock}
       >
         Zelle verriegeln
       </button>
@@ -217,11 +279,27 @@ const coolingLabels: Record<CoolingControlId, string> = {
   clamp: "Reparaturklemme setzen"
 };
 
-const coolingFailure: Record<CoolingControlId, string> = {
-  pressure: "Der Druck fällt sofort wieder ab. Die Leitung ist noch nicht dicht.",
-  seal: "Die Dichtung rutscht am bewegten Rohr wieder weg.",
-  valve: "Das Ventil reagiert, aber die Leitung ist noch nicht gesichert.",
-  clamp: "Die Leitung schlägt unter Druck. So hält die Klemme nicht."
+const coolingFailure: Record<CoolingControlId, FailureReaction> = {
+  pressure: {
+    kind: "coolant-burst",
+    title: "Kühlmittel schießt heraus!",
+    text: "Der Drucktest drückt das Kühlmittel direkt durch den offenen Riss."
+  },
+  seal: {
+    kind: "seal-slip",
+    title: "Dichtung rutscht weg",
+    text: "Die Leitung bewegt sich zu stark. Die Dichtung hält nicht."
+  },
+  valve: {
+    kind: "coolant-burst",
+    title: "Das Ventil schlägt zurück",
+    text: "Im falschen Zustand drückt die Leitung gegen das Ventil."
+  },
+  clamp: {
+    kind: "clamp-kickback",
+    title: "Klemme springt ab!",
+    text: "Die Leitung steht noch so stark unter Druck, dass die Klemme nicht hält."
+  }
 };
 
 const coolingSuccess: Record<CoolingControlId, string> = {
@@ -236,13 +314,20 @@ function CoolingChallenge({ onComplete }: { onComplete: () => void }) {
   const [message, setMessage] = useState(
     "Die Leitung zischt und steht unter Druck. Probiert aus, wie ihr sie sicher dicht bekommt."
   );
+  const { reaction, clearReaction, trigger } = useFailureReaction();
 
   const runControl = (control: CoolingControlId) => {
     if (completed.includes(control)) return;
 
     if (!coolingControlCanRun(completed, control)) {
-      setMessage(coolingFailure[control]);
-      void cue("error");
+      setMessage("Der Versuch hat nicht funktioniert.");
+      const sound: GameSoundId =
+        control === "pressure"
+          ? "coolant-spray"
+          : control === "clamp"
+            ? "failure-burst"
+            : "alarm";
+      trigger(coolingFailure[control], sound);
       return;
     }
 
@@ -256,6 +341,8 @@ function CoolingChallenge({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="chapter-action-challenge" aria-label="Kühlleitung reparieren">
+      <ReactionLayer reaction={reaction} onDone={clearReaction} />
+
       <div className="challenge-status">
         <strong>Kühlleitung</strong>
         <span>{message}</span>
@@ -298,6 +385,7 @@ function NavigationChallenge({ onComplete }: { onComplete: () => void }) {
   const [message, setMessage] = useState(
     "Drei Resonanzbänder sind verstimmt. Sucht den stärksten gemeinsamen Empfang."
   );
+  const { reaction, clearReaction, trigger } = useFailureReaction();
 
   const strengths = useMemo(
     () => bands.map((value, index) => navigationBandStrength(value, navTargets[index])),
@@ -317,12 +405,22 @@ function NavigationChallenge({ onComplete }: { onComplete: () => void }) {
       const strongBands = strengths.filter((strength) => strength >= 80).length;
       setMessage(
         strongBands === 0
-          ? "Das Signal zerfällt noch."
+          ? "Das Signal ist noch instabil."
           : strongBands === 1
-            ? "Ein Band ist klar, die anderen verlieren die Route."
-            : "Fast stabil. Ein Band stört noch."
+            ? "Ein Teil der Route hält."
+            : "Fast stabil."
       );
-      void cue("error");
+      trigger(
+        {
+          kind: "navigation-glitch",
+          title: "Signal verloren",
+          text:
+            strongBands >= 2
+              ? "Die Sternenkarte hält kurz – dann zerreißt ein einzelnes Störband die Route."
+              : "Die Sternenkarte springt auseinander und verliert Cinder wieder."
+        },
+        "glitch"
+      );
       return;
     }
 
@@ -333,6 +431,8 @@ function NavigationChallenge({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="chapter-action-challenge" aria-label="Navigation kalibrieren">
+      <ReactionLayer reaction={reaction} onDone={clearReaction} />
+
       <div className="challenge-status">
         <strong>Navigation</strong>
         <span>{message}</span>
@@ -384,11 +484,27 @@ const systemLabels: Record<SystemControlId, string> = {
   cooling: "Kühlpumpe"
 };
 
-const systemFailure: Record<SystemControlId, string> = {
-  drive: "Abbruch. Der Antrieb bekommt noch keine sichere Freigabe.",
-  navigation: "Die Navigation findet noch keine stabile Systembasis.",
-  energy: "Der Verteiler wartet auf die Grundversorgung.",
-  cooling: "Die Pumpe läuft kurz an und fällt wieder zurück."
+const systemFailure: Record<SystemControlId, FailureReaction> = {
+  drive: {
+    kind: "system-abort",
+    title: "Antrieb bricht ab",
+    text: "Ein harter Ruck geht durchs Schiff. Die Sicherheitslogik nimmt den Antrieb sofort zurück."
+  },
+  navigation: {
+    kind: "system-abort",
+    title: "Navigation fällt zurück",
+    text: "Die Projektion flackert und verliert ihre Systembasis."
+  },
+  energy: {
+    kind: "system-abort",
+    title: "Verteiler verweigert",
+    text: "Die Anzeigen blitzen rot auf und schalten den Kreis wieder frei."
+  },
+  cooling: {
+    kind: "system-abort",
+    title: "Pumpe stoppt",
+    text: "Die Kühlpumpe läuft an, rattert kurz und fällt wieder aus."
+  }
 };
 
 const systemSuccess: Record<SystemControlId, string> = {
@@ -403,13 +519,14 @@ function SystemTestChallenge({ onComplete }: { onComplete: () => void }) {
   const [message, setMessage] = useState(
     "Die Konsole ist wieder da. Findet heraus, in welcher Reihenfolge die Systeme hochfahren."
   );
+  const { reaction, clearReaction, trigger } = useFailureReaction();
 
   const runControl = (control: SystemControlId) => {
     if (completed.includes(control)) return;
 
     if (!systemControlCanRun(completed, control)) {
-      setMessage(systemFailure[control]);
-      void cue("error");
+      setMessage("Das Schiff hat den Versuch abgebrochen.");
+      trigger(systemFailure[control], control === "drive" ? "failure-burst" : "alarm");
       return;
     }
 
@@ -423,6 +540,8 @@ function SystemTestChallenge({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div className="chapter-action-challenge" aria-label="Schiffssysteme testen">
+      <ReactionLayer reaction={reaction} onDone={clearReaction} />
+
       <div className="challenge-status">
         <strong>Systemkonsole</strong>
         <span>{message}</span>
@@ -468,6 +587,7 @@ const launchChecks = [
 function LaunchChallenge({ onComplete }: { onComplete: () => void }) {
   const [ready, setReady] = useState<boolean[]>([false, false, false]);
   const allReady = ready.every(Boolean);
+  const { reaction, clearReaction, trigger } = useFailureReaction();
 
   const toggle = (index: number) => {
     const next = [...ready];
@@ -476,8 +596,31 @@ function LaunchChallenge({ onComplete }: { onComplete: () => void }) {
     void cue("switch");
   };
 
+  const tryLaunch = () => {
+    if (!allReady) {
+      const missing = ready.filter((value) => !value).length;
+      trigger(
+        {
+          kind: "launch-abort",
+          title: "STARTABBRUCH",
+          text:
+            missing === 1
+              ? "Eine Sicherheitsfreigabe fehlt. Die Triebwerke gehen sofort wieder aus."
+              : "Mehrere Sicherheitsfreigaben fehlen. Das Schiff verweigert den Start."
+        },
+        "alarm"
+      );
+      return;
+    }
+
+    void cue("travel");
+    onComplete();
+  };
+
   return (
     <div className="chapter-action-challenge" aria-label="Startsequenz vorbereiten">
+      <ReactionLayer reaction={reaction} onDone={clearReaction} />
+
       <div className="challenge-status">
         <strong>Startkonsole</strong>
         <span>Die Freigaben sind noch offen.</span>
@@ -499,12 +642,8 @@ function LaunchChallenge({ onComplete }: { onComplete: () => void }) {
 
       <button
         type="button"
-        className="challenge-complete"
-        disabled={!allReady}
-        onClick={() => {
-          void cue("travel");
-          onComplete();
-        }}
+        className={allReady ? "challenge-complete" : "challenge-risk-action"}
+        onClick={tryLaunch}
       >
         Startsequenz auslösen
       </button>
