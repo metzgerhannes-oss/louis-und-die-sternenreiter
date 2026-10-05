@@ -52,39 +52,48 @@ const cinderComplete = {
   complete: true
 };
 
-function write(key: string, value: unknown): void {
-  window.localStorage.setItem(key, JSON.stringify(value));
+export type TestChapterStorage = Pick<
+  Storage,
+  "getItem" | "setItem" | "removeItem"
+>;
+
+function write(storage: TestChapterStorage, key: string, value: unknown): void {
+  storage.setItem(key, JSON.stringify(value));
 }
 
-export function prepareTestChapter(target: TestChapterTarget): void {
-  if (typeof window === "undefined") return;
+export function prepareTestChapter(
+  target: TestChapterTarget,
+  storage?: TestChapterStorage
+): void {
+  if (!storage && typeof window === "undefined") return;
+  const targetStorage = storage ?? window.localStorage;
 
-  window.localStorage.removeItem(STARPOINTS_KEY);
+  targetStorage.removeItem(STARPOINTS_KEY);
 
   if (target === "chapter1") {
-    write(CHAPTER1_KEY, chapter1Start);
-    write(CINDER_KEY, cinderStart);
-    window.localStorage.removeItem(ADVENTURE_KEY);
-    write(RESOURCES_KEY, { stardust: 0, scrapParts: 0 });
+    write(targetStorage, CHAPTER1_KEY, chapter1Start);
+    write(targetStorage, CINDER_KEY, cinderStart);
+    targetStorage.removeItem(ADVENTURE_KEY);
+    write(targetStorage, RESOURCES_KEY, { stardust: 0, scrapParts: 0 });
     return;
   }
 
-  write(CHAPTER1_KEY, chapter1Complete);
+  write(targetStorage, CHAPTER1_KEY, chapter1Complete);
 
   if (target === "cinder") {
-    write(CINDER_KEY, cinderStart);
-    window.localStorage.removeItem(ADVENTURE_KEY);
-    write(RESOURCES_KEY, { stardust: 0, scrapParts: 0 });
+    write(targetStorage, CINDER_KEY, cinderStart);
+    targetStorage.removeItem(ADVENTURE_KEY);
+    write(targetStorage, RESOURCES_KEY, { stardust: 0, scrapParts: 0 });
     return;
   }
 
-  write(CINDER_KEY, cinderComplete);
+  write(targetStorage, CINDER_KEY, cinderComplete);
 
   const targetIndex = adventureWorldOrder.indexOf(target);
   const completedWorlds =
     targetIndex > 0 ? adventureWorldOrder.slice(0, targetIndex) : [];
 
-  write(ADVENTURE_KEY, {
+  write(targetStorage, ADVENTURE_KEY, {
     currentWorld: target,
     stepByWorld: { [target]: 0 },
     completedWorlds,
@@ -94,5 +103,5 @@ export function prepareTestChapter(target: TestChapterTarget): void {
 
   // Teststarts in later chapters need enough shared resource so that upcoming
   // tier-C star points are not blocked by skipped reward beats.
-  write(RESOURCES_KEY, { stardust: 12, scrapParts: 0 });
+  write(targetStorage, RESOURCES_KEY, { stardust: 12, scrapParts: 0 });
 }
