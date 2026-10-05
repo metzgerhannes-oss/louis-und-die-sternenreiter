@@ -148,7 +148,7 @@ export function CinderScene({
             (hotspot.id === "settlement" && state.problemKnown && state.waterCelebrated) ||
             (hotspot.id === "condensers" && state.intakeInspected && moistureReady) ||
             (hotspot.id === "stardust" && state.stardustCollected) ||
-            (hotspot.id === "workshop" && state.complete);
+            (hotspot.id === "workshop" && state.driveUpgraded);
 
           return (
             <button
