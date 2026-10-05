@@ -159,7 +159,7 @@ export function CinderScene({
         <span className={distributionReady ? "lit" : ""}>Wasserleitung</span>
       </div>
 
-      {state.complete && (
+      {state.driveUpgraded && !state.complete && (
         <button type="button" className="world-primary-action" onClick={onTravelToMoss}>
           Kurs Moss setzen
         </button>
