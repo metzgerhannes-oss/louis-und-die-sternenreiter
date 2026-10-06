@@ -32,6 +32,28 @@ const worldArt: Record<AdventureWorldId, string> = {
   "heart-of-ways": "world-heart-of-ways-overview-v1.webp"
 };
 
+function artForStep(worldId: AdventureWorldId, step: AdventureStep): string {
+  if (worldId !== "glass-coast") return worldArt[worldId];
+
+  if (step.kind === "story" && step.beat.id === "glass-arrival") {
+    return "world-glass-coast-fracture-v1.webp";
+  }
+
+  if (step.kind === "starpoint") {
+    return "world-glass-coast-bridge-v1.webp";
+  }
+
+  if (step.kind === "story" && step.beat.id === "glass-fragment") {
+    return "world-glass-coast-fragment-v1.webp";
+  }
+
+  if (step.kind === "travel") {
+    return "world-glass-coast-success-v1.webp";
+  }
+
+  return worldArt[worldId];
+}
+
 export function AdventureWorldScene({
   world,
   step,
@@ -57,7 +79,7 @@ export function AdventureWorldScene({
     >
       <img
         className="world-native-background"
-        src={`${base}assets/scenes/worlds/${worldArt[world.id]}`}
+        src={`${base}assets/scenes/worlds/${artForStep(world.id, step)}`}
         alt=""
         draggable={false}
       />
@@ -67,7 +89,7 @@ export function AdventureWorldScene({
           <p className="eyebrow">{world.chapter}</p>
           <strong>{world.title}</strong>
         </div>
-        <div className="world-scene-build">H3 · ART 0.24</div>
+        <div className="world-scene-build">H3 · ART 0.25</div>
         <div className="world-scene-status">
           <span>✦ {stardust}</span>
           <button type="button" onClick={onSwitchProfile}>Profil</button>
