@@ -262,5 +262,6 @@ for (const panel of panels) {
         );
     }
   }
+}
 
 console.log(`Generated ${panels.length} world overviews plus Glasküste story variants (ART 0.25).`);
