@@ -34,7 +34,12 @@ const worldAssets = [
   "world-glass-coast-overview-v1.webp",
   "world-cloud-ocean-overview-v1.webp",
   "world-scrap-ring-overview-v1.webp",
-  "world-heart-of-ways-overview-v1.webp"
+  "world-heart-of-ways-overview-v1.webp",
+  "world-glass-coast-fracture-v1.webp",
+  "world-glass-coast-bridge-v1.webp",
+  "world-glass-coast-fragment-v1.webp",
+  "world-glass-coast-success-v1.webp",
+  "world-glass-coast-failure-v1.webp"
 ];
 
 async function verifyWorld(asset) {
@@ -101,5 +106,5 @@ for (const asset of worldAssets) {
 }
 
 console.log(
-  `Verified ${runtimeAssets.length} Hangar runtime assets, ${sourceAssets.length} approved Hangar source assets and ${worldAssets.length} approved world overview assets.`
+  `Verified ${runtimeAssets.length} Hangar runtime assets, ${sourceAssets.length} approved Hangar source assets and ${worldAssets.length} world/story-state assets.`
 );
