@@ -46,3 +46,19 @@ Charly ist im Gruppenvergleich leicht größer als Philipp.
 Olli ist sichtbar jünger/kleiner.
 
 Charlys Gestaltung ist subtil femininer, ohne die gemeinsame Sternenreiter-Ausrüstung oder den robusten Abenteuerstil zu verlassen.
+
+
+## Verbindliches Größenverhältnis
+
+Charlotte ist im direkten Standvergleich **ca. 15 cm größer als Philipp**.
+Olli bleibt sichtbar jünger und kleiner als beide.
+
+## Handanatomie – Release-Blocker
+
+Bei jeder sichtbaren menschlichen Hand gilt:
+- exakt 4 Finger + 1 Daumen
+- keine zusätzlichen, gegabelten oder verschmolzenen Finger
+- keine doppelten Daumen
+- verdeckte/eingeklappte Finger sind zulässig, müssen anatomisch plausibel bleiben
+
+Jede neue Grafik wird vor Freigabe handweise geprüft.
