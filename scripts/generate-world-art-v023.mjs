@@ -64,10 +64,82 @@ for (const panel of panels) {
   const x = Math.max(0, Math.round((TARGET_W - (fgMeta.width ?? TARGET_W)) / 2));
   const top = Math.max(0, Math.round((TARGET_H - (fgMeta.height ?? TARGET_H)) / 2));
 
-  await sharp(background)
-    .composite([{ input: foreground, left: x, top }])
+  const scene = sharp(background)
+    .composite([{ input: foreground, left: x, top }]);
+
+  if (panel.id === "distortion") {
+    // Störungsknoten: the world overlap is baked into the native WebP at build time.
+    // Keep the lower character zone untouched so crew anatomy and identities remain
+    // exactly as in the approved source artwork.
+    const distortionOverlay = Buffer.from(`
+      <svg width="1600" height="900" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="blur24"><feGaussianBlur stdDeviation="24"/></filter>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="10" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <linearGradient id="cinder" x1="0" x2="1">
+            <stop offset="0" stop-color="#e36a36" stop-opacity=".74"/>
+            <stop offset="1" stop-color="#e36a36" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="moss" x1="1" x2="0">
+            <stop offset="0" stop-color="#58d391" stop-opacity=".62"/>
+            <stop offset="1" stop-color="#58d391" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="junction" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#58c8ff" stop-opacity=".18"/>
+            <stop offset=".5" stop-color="#78a7ff" stop-opacity=".52"/>
+            <stop offset="1" stop-color="#cf69ff" stop-opacity=".1"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Cinder dust bleeding into the node -->
+        <path d="M0 84 C250 30 470 150 645 315 C520 400 290 470 0 432 Z"
+              fill="url(#cinder)" filter="url(#blur24)"/>
+        <path d="M0 220 C270 140 470 250 625 390"
+              fill="none" stroke="#ffad68" stroke-opacity=".48" stroke-width="10"/>
+
+        <!-- Moss organic light bleeding in from the opposite side -->
+        <path d="M1600 65 C1375 40 1190 160 1030 320 C1150 420 1360 475 1600 420 Z"
+              fill="url(#moss)" filter="url(#blur24)"/>
+        <path d="M1590 240 C1375 160 1200 260 1040 410"
+              fill="none" stroke="#7ff0ad" stroke-opacity=".42" stroke-width="9"/>
+
+        <!-- Junction-12 route geometry -->
+        <g opacity=".55" stroke="#63cfff" fill="none">
+          <path d="M280 115 L520 215 L710 132 L930 215 L1190 115" stroke-width="4"/>
+          <path d="M350 175 L560 300 L800 170 L1040 300 L1250 175" stroke-width="2"/>
+          <circle cx="800" cy="260" r="150" stroke-width="3" stroke-dasharray="16 12"/>
+          <circle cx="800" cy="260" r="205" stroke-width="2" stroke-dasharray="9 17"/>
+        </g>
+
+        <!-- central unstable route-node -->
+        <g filter="url(#glow)">
+          <circle cx="800" cy="250" r="76" fill="url(#junction)" stroke="#bdeaff" stroke-width="7"/>
+          <circle cx="800" cy="250" r="37" fill="#f2c5ff" fill-opacity=".64"/>
+          <path d="M800 85 C735 155 865 205 800 275 C735 345 865 395 800 505"
+                fill="none" stroke="#92ddff" stroke-width="12" stroke-linecap="round"/>
+          <path d="M735 105 C800 165 690 225 765 300 C835 370 735 420 785 510"
+                fill="none" stroke="#d673ff" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+        </g>
+
+        <!-- small reality tears; all stay above the character zone -->
+        <g fill="#e9f7ff" fill-opacity=".72">
+          <path d="M420 92 l38 24 -31 25 -42 -18z"/>
+          <path d="M1110 122 l42 -20 23 36 -48 17z"/>
+          <path d="M620 390 l34 -17 25 32 -39 22z"/>
+          <path d="M1000 395 l43 -22 18 35 -47 22z"/>
+        </g>
+      </svg>
+    `);
+
+    scene.composite([{ input: distortionOverlay, left: 0, top: 0 }]);
+  }
+
+  await scene
     .webp({ quality: 92, effort: 5 })
     .toFile(fileURLToPath(new URL(`world-${panel.id}-overview-v1.webp`, outputDir)));
 }
 
-console.log(`Generated ${panels.length} approved world overview assets.`);
+console.log(`Generated ${panels.length} approved world overview assets (ART 0.24 with native Distortion node).`);
