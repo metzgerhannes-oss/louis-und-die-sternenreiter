@@ -98,7 +98,7 @@ export function CinderScene({
           <p className="eyebrow">Kapitel 2 · Cinder</p>
           <strong>Staubhafen</strong>
         </div>
-        <div className="world-scene-build">H3 · ART 0.23</div>
+        <div className="world-scene-build">H3 · ART 0.24</div>
         <div className="world-scene-status">
           <span>✦ {stardust}</span>
           <button type="button" onClick={onSwitchProfile}>Profil</button>
